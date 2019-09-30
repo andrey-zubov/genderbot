@@ -1,0 +1,25 @@
+{% extends 'help_bot/main_template.html' %}
+
+{% block title %}
+    Tree
+{% endblock %}
+
+{% block content %}
+
+    <h3>Tree</h3>
+
+    {% load mptt_tags %}
+    <ul class="root">
+        {% recursetree nodes %}
+            <li>
+                {{ node.name }}
+                {% if not node.is_leaf_node %}
+                    <ul class="children">
+                        {{ children }}
+                    </ul>
+                {% endif %}
+            </li>
+        {% endrecursetree %}
+    </ul>
+
+{% endblock %}
