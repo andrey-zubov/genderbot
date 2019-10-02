@@ -43,16 +43,22 @@ def start(update, context):
 
 
 def coords(update, context):
-    print("telega.coords(); chat_id: %s\nin_message: %s" % (update.message.chat_id, update.message.text))
+    time_0 = perf_counter()
+    c_id = update.message.chat_id
+    print("telega.coords(); chat_id: %s\nin_message: %s" % (c_id, update.message.text))
 
     lat = float(update.message.location.latitude)
     lng = float(update.message.location.longitude)
     print("coord: %s, %s" % (lat, lng))
 
     context.bot.send_message(
-        chat_id=update.message.chat_id,
+        chat_id=c_id,
         text="lat: %s, lng: %s" % (lat, lng),
     )
+    print("TIME coords() = %s" % (perf_counter() - time_0))
+    """
+    02.10 21:50 - TIME coords() = 2.1390733160005766
+    """
 
 
 def key_bord(update, context):
@@ -70,7 +76,7 @@ def key_bord(update, context):
 
     print("TIME key_bord() = %s" % (perf_counter() - time_0))
     """
-    02.10 20:10 - TIME key_bord() = 0.5482659560002503
+    02.10 20:10 - TIME key_bord() = 0.5482659560002503  == ping api.telegram.org  # OMG!
     """
 
 

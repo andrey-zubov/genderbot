@@ -1,7 +1,11 @@
 from django.contrib import admin
 from mptt.admin import MPTTModelAdmin
 
-from help_bot.models import NeedHelp, TelegramBot
+from help_bot.models import (NeedHelp, TelegramBot, HelpText, StartMessage)
+
+
+class HelpTextForTreeAdmin(admin.StackedInline):
+    model = HelpText
 
 
 class NeedHelpAdmin(MPTTModelAdmin):
@@ -10,6 +14,8 @@ class NeedHelpAdmin(MPTTModelAdmin):
     #  http://django-mptt.github.io/django-mptt/admin.html#mptt-admin-draggablempttadmin
     #  2) Admin filter class which filters models related to parent model with all it’s descendants.
     #  http://django-mptt.github.io/django-mptt/admin.html#mptt-admin-treerelatedfieldlistfilter
+
+    inlines = [HelpTextForTreeAdmin]
 
     model = NeedHelp
     fields = ['name', 'parent']
@@ -26,5 +32,17 @@ class TelegramAdmin(admin.ModelAdmin):
     search_fields = ('name',)
 
 
+class HelpTextAdmin(admin.ModelAdmin):
+    model = HelpText
+    fields = ('text',)
+
+
+class StartMessageAdmin(admin.ModelAdmin):
+    model = StartMessage
+    fields = ('text',)
+
+
 admin.site.register(NeedHelp, NeedHelpAdmin)
 admin.site.register(TelegramBot, TelegramAdmin)
+admin.site.register(HelpText, HelpTextAdmin)
+admin.site.register(StartMessage, StartMessageAdmin)
