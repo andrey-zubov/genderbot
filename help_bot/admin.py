@@ -1,7 +1,7 @@
 from django.contrib import admin
 from mptt.admin import MPTTModelAdmin
 
-from .models import NeedHelp, TelegramBot
+from help_bot.models import NeedHelp, TelegramBot
 
 
 class NeedHelpAdmin(MPTTModelAdmin):

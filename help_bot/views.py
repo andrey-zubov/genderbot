@@ -1,15 +1,14 @@
 from django.http import HttpResponse
 from django.shortcuts import render
 
-from .models import NeedHelp
-from .telega import go_go_bot
+from help_bot.models import NeedHelp
+
 
 def main_page(request):
     return render(request, template_name='help_bot/main_page.html')
 
 
 def chat_page(request):
-    go_go_bot()
     return render(request, template_name='help_bot/chat.html')
 
 

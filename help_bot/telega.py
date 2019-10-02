@@ -1,18 +1,27 @@
 import logging
+import os
 
+import django
 from telegram import ReplyKeyboardMarkup, KeyboardButton
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 
-from .models import TelegramBot
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "HelpBot.settings")
+django.setup()
 
 
 def sey_hello(bot, update):
+    print("chat_id: %s" % update.message.chat_id)
+    print("in_message: %s" % update.message.text)
+
     update.message.reply_text(
         "Hello %s" % update.message.from_user.first_name
     )
 
 
 def start(update, context):
+    print("chat_id: %s" % update.message.chat_id)
+    print("in_message: %s" % update.message.text)
+
     context.bot.send_message(
         chat_id=update.message.chat_id,
         text="I'm a bot, please talk to me!"
@@ -33,6 +42,7 @@ def coords(update, context):
     lat = float(update.message.location.latitude)
     lng = float(update.message.location.longitude)
     print("coord: %s, %s" % (lat, lng))
+
     context.bot.send_message(
         chat_id=update.message.chat_id,
         text="lat: %s, lng: %s" % (lat, lng)
@@ -40,6 +50,9 @@ def coords(update, context):
 
 
 def key_bord(update, context):
+    print("chat_id: %s" % update.message.chat_id)
+    print("in_message: %s" % update.message.text)
+
     key_bord_btn = [[KeyboardButton(text='Yes')], [KeyboardButton(text='No')]]
     context.bot.send_message(
         chat_id=update.message.chat_id,
@@ -50,6 +63,7 @@ def key_bord(update, context):
 
 
 def go_go_bot():
+    from help_bot.models import TelegramBot
     bot = TelegramBot.objects.get(in_work=True)
     print('bot_name: %s' % bot.name)
 
@@ -71,5 +85,7 @@ def go_go_bot():
 
     updater.start_polling()
 
-# if __name__ == "__main__":
-#     go_go_bot()
+
+if __name__ == "__main__":
+    print('bot script / __main__')
+    go_go_bot()
