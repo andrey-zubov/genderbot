@@ -1,6 +1,6 @@
 import logging
 import os
-
+from time import perf_counter
 import django
 from telegram import ReplyKeyboardMarkup, KeyboardButton
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
@@ -19,8 +19,7 @@ def sey_hello(bot, update):
 
 
 def start(update, context):
-    print("chat_id: %s" % update.message.chat_id)
-    print("in_message: %s" % update.message.text)
+    print("telega.start(); chat_id: %s\nin_message: %s" % (update.message.chat_id, update.message.text))
 
     context.bot.send_message(
         chat_id=update.message.chat_id,
@@ -29,8 +28,7 @@ def start(update, context):
 
 
 def echo(update, context):
-    print("chat_id: %s" % update.message.chat_id)
-    print("in_message: %s" % update.message.text)
+    print("telega.echo(); chat_id: %s\nin_message: %s" % (update.message.chat_id, update.message.text))
 
     context.bot.send_message(
         chat_id=update.message.chat_id,
@@ -39,6 +37,8 @@ def echo(update, context):
 
 
 def coords(update, context):
+    print("telega.coords(); chat_id: %s\nin_message: %s" % (update.message.chat_id, update.message.text))
+
     lat = float(update.message.location.latitude)
     lng = float(update.message.location.longitude)
     print("coord: %s, %s" % (lat, lng))
@@ -50,19 +50,43 @@ def coords(update, context):
 
 
 def key_bord(update, context):
-    print("chat_id: %s" % update.message.chat_id)
-    print("in_message: %s" % update.message.text)
+    time_0 = perf_counter()
+    c_id = update.message.chat_id
+    massage = update.message.text
+    print("telega.key_bord(); chat_id: %s\nin_message: %s" % (c_id, massage))
 
-    key_bord_btn = [[KeyboardButton(text='Yes')], [KeyboardButton(text='No')]]
+    buttons = None
+    if massage:
+        from help_bot.models import NeedHelp
+        root_nodes = NeedHelp.objects.root_nodes()
+        root_nodes_names = [i.name for i in root_nodes]
+
+        """ [[KeyboardButton(text='Yes')], [KeyboardButton(text='No')]] """
+        root_kb = [[KeyboardButton(text=i)] for i in root_nodes_names]
+        buttons = root_kb
+
+        if massage in root_nodes_names:
+            children = root_nodes.get(name=massage).get_children()
+            if children:
+                children_names = [i.name for i in children]
+                children_kb = [[KeyboardButton(text=i)] for i in children_names]
+                buttons = children_kb
+            else:
+                print("No Children in the root: %s" % massage)
+
+    key_bord_btn = buttons
     context.bot.send_message(
         chat_id=update.message.chat_id,
         text="Do you need Help?",
-
         reply_markup=ReplyKeyboardMarkup(key_bord_btn, one_time_keyboard=True)
     )
 
+    print("TIME - key_bord = %s" % (perf_counter() - time_0))
+
 
 def go_go_bot():
+    print("telega.go_go_bot()")
+
     from help_bot.models import TelegramBot
     bot = TelegramBot.objects.get(in_work=True)
     print('bot_name: %s' % bot.name)
@@ -87,5 +111,5 @@ def go_go_bot():
 
 
 if __name__ == "__main__":
-    print('bot script / __main__')
+    print('telega __main__')
     go_go_bot()
