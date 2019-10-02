@@ -1,12 +1,10 @@
 import logging
-import os
 from time import perf_counter
-import django
-from telegram import ReplyKeyboardMarkup, KeyboardButton
+
+from telegram import ReplyKeyboardMarkup
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "HelpBot.settings")
-django.setup()
+from help_bot.work_with_db import keyboard_button
 
 
 def sey_hello(bot, update):
@@ -18,22 +16,30 @@ def sey_hello(bot, update):
     )
 
 
-def start(update, context):
-    print("telega.start(); chat_id: %s\nin_message: %s" % (update.message.chat_id, update.message.text))
-
-    context.bot.send_message(
-        chat_id=update.message.chat_id,
-        text="I'm a bot, please talk to me!"
-    )
-
-
 def echo(update, context):
     print("telega.echo(); chat_id: %s\nin_message: %s" % (update.message.chat_id, update.message.text))
-
     context.bot.send_message(
         chat_id=update.message.chat_id,
         text=update.message.text
     )
+
+
+def start(update, context):
+    time_0 = perf_counter()
+    c_id = update.message.chat_id
+    print("telega.start(); chat_id: %s" % (c_id,))
+
+    key_bord_btn, help_text = keyboard_button(update.message.text)
+
+    context.bot.send_message(
+        chat_id=c_id,
+        text=help_text,
+        reply_markup=ReplyKeyboardMarkup(key_bord_btn, one_time_keyboard=True),
+    )
+    print("TIME start() = %s" % (perf_counter() - time_0))
+    """
+    02.10 21:10 - TIME start() = 1.7262450889975298
+    """
 
 
 def coords(update, context):
@@ -45,43 +51,27 @@ def coords(update, context):
 
     context.bot.send_message(
         chat_id=update.message.chat_id,
-        text="lat: %s, lng: %s" % (lat, lng)
+        text="lat: %s, lng: %s" % (lat, lng),
     )
 
 
 def key_bord(update, context):
     time_0 = perf_counter()
     c_id = update.message.chat_id
-    massage = update.message.text
-    print("telega.key_bord(); chat_id: %s\nin_message: %s" % (c_id, massage))
+    print("telega.key_bord(); chat_id: %s" % (c_id,))
 
-    buttons = None
-    if massage:
-        from help_bot.models import NeedHelp
-        root_nodes = NeedHelp.objects.root_nodes()
-        root_nodes_names = [i.name for i in root_nodes]
+    key_bord_btn, help_text = keyboard_button(update.message.text)
 
-        """ [[KeyboardButton(text='Yes')], [KeyboardButton(text='No')]] """
-        root_kb = [[KeyboardButton(text=i)] for i in root_nodes_names]
-        buttons = root_kb
-
-        if massage in root_nodes_names:
-            children = root_nodes.get(name=massage).get_children()
-            if children:
-                children_names = [i.name for i in children]
-                children_kb = [[KeyboardButton(text=i)] for i in children_names]
-                buttons = children_kb
-            else:
-                print("No Children in the root: %s" % massage)
-
-    key_bord_btn = buttons
     context.bot.send_message(
-        chat_id=update.message.chat_id,
-        text="Do you need Help?",
-        reply_markup=ReplyKeyboardMarkup(key_bord_btn, one_time_keyboard=True)
+        chat_id=c_id,
+        text=help_text,
+        reply_markup=ReplyKeyboardMarkup(key_bord_btn, one_time_keyboard=True),
     )
 
-    print("TIME - key_bord = %s" % (perf_counter() - time_0))
+    print("TIME key_bord() = %s" % (perf_counter() - time_0))
+    """
+    02.10 20:10 - TIME key_bord() = 0.5482659560002503
+    """
 
 
 def go_go_bot():
