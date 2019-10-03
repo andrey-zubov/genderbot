@@ -11,39 +11,92 @@ django.setup()
 from help_bot.models import (NeedHelp, HelpText, StartMessage, ChatPosition)
 
 
-def keyboard_button(_massage, chat_id):
+def keyboard_button(_massage, _chat_id):
     if _massage:
         time_0 = perf_counter()
         print("_massage: %s" % _massage)
 
-        root_nodes = NeedHelp.objects.root_nodes()
-        root_nodes_names = [i.name for i in root_nodes]
+        user_position = 0
+        user = None
+        try:
+            """ TBA """
+            users = ChatPosition.objects.all()
+            for u in users.values():
+                if u['chat_id'] == _chat_id:
+                    user = ChatPosition.objects.get(chat_id=_chat_id)
+                    user_position = user.user_chat_position
+                    print("user_chat_position: %s" % user_position)
+                    break
+                else:
+                    user_position = 0
+                    print("user_position: %s" % user_position)
+        except Exception as ex:
+            logging.error("Exception in keyboard_button().user_position\n%s" % ex)
 
-        """ [[KeyboardButton(text='Yes')], [KeyboardButton(text='No')]] """
-        root_kb = [[KeyboardButton(text=i)] for i in root_nodes_names]
+        if user and not user_position:
+            """ TBA """
+            print("user.id: %s" % user.id)
+            root_nodes = NeedHelp.objects.root_nodes()
+            for r in root_nodes:
+                if _massage == r.user_input:
+                    user_position = r.id
+                    children = r.get_children()
+                    btn_text = [i.user_input for i in children]
+                    print("btn_text: %s" % btn_text)
 
-        buttons = root_kb
-        text = StartMessage.objects.get().text
+                    btn_to_send = [[KeyboardButton(text=i)] for i in btn_text]
+                    text = HelpText.objects.get(relation_to=user_position).text
+                    print("text: %s" % text)
 
-        if _massage in root_nodes_names:
-            parent = root_nodes.get(name=_massage)
-            children = parent.get_children()
-            if children:
-                children_names = [i.name for i in children]
-                children_kb = [[KeyboardButton(text=i)] for i in children_names]
-                buttons = children_kb
+                    """ TBA """
+                    print("Save user position: %s" % user_position)
+                    chat = ChatPosition.objects.get(chat_id=_chat_id)
+                    chat.user_chat_position = user_position
+                    chat.save()
 
-                text = HelpText.objects.get(relation_to=parent).text
+                    print("TIME keyboard_button() = %s" % (perf_counter() - time_0))
+                    return btn_to_send, text
+
+        if user_position:
+            """ TBA """
+            print("user_has_position: %s" % user_position)
+
+            print("TIME keyboard_button() = %s" % (perf_counter() - time_0))
+            return None
+
+        else:
+            """ TBA """
+            print("else")
+            root_nodes = NeedHelp.objects.root_nodes()
+            btn_text = [i.user_input for i in root_nodes]
+            print("btn_text: %s" % btn_text)
+            """ [[KeyboardButton(text='Yes')], [KeyboardButton(text='No')]] """
+            btn_to_send = [[KeyboardButton(text=i)] for i in btn_text]
+
+            text = StartMessage.objects.get().text
+            print("text: %s" % text)
+
+            if user:
+                """ TBA """
+                print("Save user position: %s" % user_position)
+                chat = ChatPosition.objects.get(chat_id=_chat_id)
+                chat.user_chat_position = user_position
+                chat.save()
             else:
-                print("No Children in the root: %s" % _massage)
+                """ TBA """
+                print("Save User: _chat_id = %s, user_position = %s" % (_chat_id, user_position))
+                ChatPosition(chat_id=_chat_id, user_chat_position=user_position).save()
 
-        print("TIME keyboard_button() = %s" % (perf_counter() - time_0))
-        """
-        02.10 20:10 - TIME keyboard_button() = 0.005887855993933044
-        """
-        return buttons, text
+            print("TIME keyboard_button() = %s" % (perf_counter() - time_0))
+            return btn_to_send, text
+
     else:
         print("No _massage keyboard_button()")
         logging.basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
                             level=logging.INFO)
         return None
+
+
+"""
+02.10 20:10 - TIME keyboard_button() = 0.005887855993933044
+"""

@@ -29,7 +29,7 @@ def start(update, context):
     c_id = update.message.chat_id
     print("telega.start(); chat_id: %s" % (c_id,))
 
-    key_bord_btn, help_text = keyboard_button(update.message.text)
+    key_bord_btn, help_text = keyboard_button(update.message.text, c_id)
 
     context.bot.send_message(
         chat_id=c_id,
