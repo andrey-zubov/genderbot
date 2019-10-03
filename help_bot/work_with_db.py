@@ -19,7 +19,8 @@ def keyboard_button(_massage, _chat_id):
         user_position = 0
         user = None
         try:
-            """ TBA """
+            """ If user has ever used HelpBot -> find _chat_id id DB and get user last position, 
+            else set user_position = 0. """
             users = ChatPosition.objects.all()
             for u in users.values():
                 if u['chat_id'] == _chat_id:
@@ -34,7 +35,7 @@ def keyboard_button(_massage, _chat_id):
             logging.error("Exception in keyboard_button().user_position\n%s" % ex)
 
         if user and not user_position:
-            """ TBA """
+            """ user came from a start questions """
             print("user.id: %s" % user.id)
             root_nodes = NeedHelp.objects.root_nodes()
             for r in root_nodes:
@@ -54,47 +55,60 @@ def keyboard_button(_massage, _chat_id):
                     chat.user_chat_position = user_position
                     chat.save()
 
-                    print("TIME keyboard_button() = %s" % (perf_counter() - time_0))
+                    print("TIME keyboard_button() = %s\n" % (perf_counter() - time_0))
                     return btn_to_send, text
+            else:
+                print("_massage not in root_nodes.user_input")
+                return default_output(_chat_id, sorry="Извените, произошла ошибка!\n\n")
 
         if user_position:
-            """ TBA """
+            """ user used HelpBot and have last saved position """
             print("user_has_position: %s" % user_position)
 
-            print("TIME keyboard_button() = %s" % (perf_counter() - time_0))
-            return None
+            print("TIME keyboard_button() = %s\n" % (perf_counter() - time_0))
+            return default_output(_chat_id, sorry="Извените, произошла ошибка!\n\n")
 
         else:
-            """ TBA """
+            """ From user input: /start, random input """
             print("else")
-            root_nodes = NeedHelp.objects.root_nodes()
-            btn_text = [i.user_input for i in root_nodes]
-            print("btn_text: %s" % btn_text)
-            """ [[KeyboardButton(text='Yes')], [KeyboardButton(text='No')]] """
-            btn_to_send = [[KeyboardButton(text=i)] for i in btn_text]
 
-            text = StartMessage.objects.get().text
-            print("text: %s" % text)
-
-            if user:
-                """ TBA """
-                print("Save user position: %s" % user_position)
-                chat = ChatPosition.objects.get(chat_id=_chat_id)
-                chat.user_chat_position = user_position
-                chat.save()
-            else:
-                """ TBA """
+            if not user:
+                """ Save User """
                 print("Save User: _chat_id = %s, user_position = %s" % (_chat_id, user_position))
                 ChatPosition(chat_id=_chat_id, user_chat_position=user_position).save()
 
-            print("TIME keyboard_button() = %s" % (perf_counter() - time_0))
-            return btn_to_send, text
+            print("TIME keyboard_button() = %s\n" % (perf_counter() - time_0))
+            return default_output(_chat_id, us_pos=user_position)
 
     else:
         print("No _massage keyboard_button()")
         logging.basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
                             level=logging.INFO)
-        return None
+        return default_output(_chat_id, sorry="Извените, произошла ошибка!\n\n")
+
+
+def default_output(ch_id, us_pos=0, sorry=''):
+    print("default_output()")
+    root_nodes = NeedHelp.objects.root_nodes()
+    btn_text = [i.user_input for i in root_nodes]
+    # print("btn_text: %s" % btn_text)
+    """ [[KeyboardButton(text='Yes')], [KeyboardButton(text='No')]] """
+    btn_to_send = [[KeyboardButton(text=i)] for i in btn_text]
+
+    text = StartMessage.objects.get().text
+    # print("text: %s" % text)
+
+    """ Save user position or Reset to 0"""
+    if us_pos == 0:
+        print("Reset user position to 0")
+    else:
+        print("Save user position: %s" % us_pos)
+    chat = ChatPosition.objects.get(chat_id=ch_id)
+    chat.user_chat_position = us_pos
+    chat.save()
+
+    """ sorry = error massage to the user. """
+    return btn_to_send, "%s%s" % (sorry, text)
 
 
 """

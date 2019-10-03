@@ -36,7 +36,7 @@ def start(update, context):
         text=help_text,
         reply_markup=ReplyKeyboardMarkup(key_bord_btn, one_time_keyboard=True),
     )
-    print("TIME start() = %s" % (perf_counter() - time_0))
+    print("TIME start() = %s\n" % (perf_counter() - time_0))
     """
     02.10 21:10 - TIME start() = 1.7262450889975298
     """
@@ -55,7 +55,7 @@ def coords(update, context):
         chat_id=c_id,
         text="lat: %s, lng: %s" % (lat, lng),
     )
-    print("TIME coords() = %s" % (perf_counter() - time_0))
+    print("TIME coords() = %s\n" % (perf_counter() - time_0))
     """
     02.10 21:50 - TIME coords() = 2.1390733160005766
     """
@@ -74,7 +74,7 @@ def key_bord(update, context):
         reply_markup=ReplyKeyboardMarkup(key_bord_btn, one_time_keyboard=True),
     )
 
-    print("TIME key_bord() = %s" % (perf_counter() - time_0))
+    print("TIME key_bord() = %s\n" % (perf_counter() - time_0))
     """
     02.10 20:10 - TIME key_bord() = 0.5482659560002503  == ping api.telegram.org  # OMG!
     """
