@@ -42,21 +42,11 @@ def keyboard_button(_massage, _chat_id):
                 if _massage == r.user_input:
                     user_position = r.id
                     children = r.get_children()
-                    btn_text = [i.user_input for i in children]
-                    print("btn_text: %s" % btn_text)
 
-                    btn_to_send = [[KeyboardButton(text=i)] for i in btn_text]
-                    text = HelpText.objects.get(relation_to=user_position).text
-                    print("text: %s" % text)
-
-                    """ TBA """
-                    print("Save user position: %s" % user_position)
-                    chat = ChatPosition.objects.get(chat_id=_chat_id)
-                    chat.user_chat_position = user_position
-                    chat.save()
+                    save_user_pos(_chat_id, user_position)
 
                     print("TIME keyboard_button() = %s\n" % (perf_counter() - time_0))
-                    return btn_to_send, text
+                    return btn_and_text(children, user_position)
             else:
                 print("_massage not in root_nodes.user_input")
                 return default_output(_chat_id, sorry="Извените, произошла ошибка!\n\n")
@@ -65,7 +55,31 @@ def keyboard_button(_massage, _chat_id):
             """ user used HelpBot and have last saved position """
             print("user_has_position: %s" % user_position)
 
-            print("TIME keyboard_button() = %s\n" % (perf_counter() - time_0))
+            child = NeedHelp.objects.get(id=user_position).get_children()
+            for c in child:
+                if _massage == c.user_input:
+
+                    if c.link_to:
+                        """ TBA """
+                        print("link_to: %s" % c.link_to.id)
+                        user_position = c.link_to.id
+                        ch_ch = NeedHelp.objects.get(id=user_position).get_children()
+
+                    elif c.go_back:
+                        """ TBA """
+                        return default_output(_chat_id)
+
+                    else:
+                        """ TBA """
+                        user_position = c.id
+                        ch_ch = c.get_children()
+
+                    save_user_pos(_chat_id, user_position)
+
+                    print("TIME keyboard_button() = %s\n" % (perf_counter() - time_0))
+                    return btn_and_text(ch_ch, user_position)
+                else:
+                    print("_massage not in child.user_input")
             return default_output(_chat_id, sorry="Извените, произошла ошибка!\n\n")
 
         else:
@@ -88,6 +102,7 @@ def keyboard_button(_massage, _chat_id):
 
 
 def default_output(ch_id, us_pos=0, sorry=''):
+    """ TBA """
     print("default_output()")
     root_nodes = NeedHelp.objects.root_nodes()
     btn_text = [i.user_input for i in root_nodes]
@@ -109,6 +124,26 @@ def default_output(ch_id, us_pos=0, sorry=''):
 
     """ sorry = error massage to the user. """
     return btn_to_send, "%s%s" % (sorry, text)
+
+
+def btn_and_text(child, us_pos):
+    """ TBA """
+    btn_text = [i.user_input for i in child]
+    print("btn_text: %s" % btn_text)
+    btn = [[KeyboardButton(text=i)] for i in btn_text]
+
+    text = HelpText.objects.get(relation_to=us_pos).text
+    # print("text: %s" % text)
+
+    return btn, text
+
+
+def save_user_pos(_chat_id, _us_pos):
+    """ TBA """
+    print("Save user position: %s" % _us_pos)
+    chat = ChatPosition.objects.get(chat_id=_chat_id)
+    chat.user_chat_position = _us_pos
+    chat.save()
 
 
 """
