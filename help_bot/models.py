@@ -7,9 +7,14 @@ class NeedHelp(MPTTModel):
     # http://django-mptt.github.io/django-mptt/models.html
     """
 
-    name = models.CharField(max_length=20, unique=True)
+    name = models.CharField(max_length=100)
     parent = TreeForeignKey('self', on_delete=models.CASCADE, null=True, blank=True,
-                            related_name='children', db_index=True)
+                            related_name='children', db_index=True)  # TODO: on_delete ?
+
+    user_input = models.CharField(max_length=100, default='-')
+    go_back = models.BooleanField(default=False, blank=True, null=True)
+    link_to = models.ForeignKey(to='NeedHelp', blank=True, null=True, default=None,
+                                on_delete=models.CASCADE)  # TODO: on_delete ?
 
     class MPTTMeta:
         order_insertion_by = ['name']
@@ -34,12 +39,28 @@ class TelegramBot(models.Model):
 
 class HelpText(models.Model):
     """ TBA """
+    relation_to = models.OneToOneField(to='NeedHelp', on_delete=models.CASCADE)  # TODO: on_delete ???
 
-    relation_to = models.OneToOneField(to='NeedHelp', on_delete=models.CASCADE)
-    # +smt like slag
-    text = models.TextField(blank=True, null=True, max_length=2000)
+    name = models.CharField(max_length=100, default='-')
+    text = models.TextField(max_length=2000, default='-')
+
+    def __str__(self):
+        return self.name
 
 
 class StartMessage(models.Model):
     """ TBA """
-    text = models.TextField(blank=True, null=True, max_length=1000)
+    name = models.CharField(default='-', max_length=100)
+    text = models.TextField(max_length=1000, default='-')
+
+    def __str__(self):
+        return self.name
+
+
+class ChatPosition(models.Model):
+    """ TBA """
+    chat_id = models.PositiveIntegerField(default=0)
+    user_chat_position = models.PositiveIntegerField(default=0)
+
+    def __str__(self):
+        return self.chat_id

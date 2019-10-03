@@ -18,9 +18,9 @@ class NeedHelpAdmin(MPTTModelAdmin):
     inlines = [HelpTextForTreeAdmin]
 
     model = NeedHelp
-    fields = ['name', 'parent']
-    list_display = ('name', 'parent',)
-    list_filter = ('name', 'parent',)
+    fields = ('name', 'parent', 'user_input', 'go_back', 'link_to',)
+    list_display = ('name', 'parent', 'user_input', 'go_back', 'link_to',)
+    list_filter = ('name', 'parent', 'user_input', 'go_back', 'link_to',)
     search_fields = ('name',)
 
 
@@ -34,12 +34,17 @@ class TelegramAdmin(admin.ModelAdmin):
 
 class HelpTextAdmin(admin.ModelAdmin):
     model = HelpText
-    fields = ('text',)
+    fields = ('name', 'text',)
+    list_display = ('name',)
+    list_filter = ('name',)
+    search_fields = ('name',)
 
 
 class StartMessageAdmin(admin.ModelAdmin):
     model = StartMessage
-    fields = ('text',)
+    fields = ('name', 'text',)
+    list_display = ('name', 'text',)
+    search_fields = ('name',)
 
 
 admin.site.register(NeedHelp, NeedHelpAdmin)

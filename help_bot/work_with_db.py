@@ -8,13 +8,13 @@ from telegram import KeyboardButton
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "HelpBot.settings")
 django.setup()
 
-from help_bot.models import NeedHelp, HelpText, StartMessage
+from help_bot.models import (NeedHelp, HelpText, StartMessage, ChatPosition)
 
 
-def keyboard_button(massage):
-    if massage:
+def keyboard_button(_massage, chat_id):
+    if _massage:
         time_0 = perf_counter()
-        print("massage: %s" % massage)
+        print("_massage: %s" % _massage)
 
         root_nodes = NeedHelp.objects.root_nodes()
         root_nodes_names = [i.name for i in root_nodes]
@@ -23,10 +23,10 @@ def keyboard_button(massage):
         root_kb = [[KeyboardButton(text=i)] for i in root_nodes_names]
 
         buttons = root_kb
-        text = "Вам нужна помощь?"
+        text = StartMessage.objects.get().text
 
-        if massage in root_nodes_names:
-            parent = root_nodes.get(name=massage)
+        if _massage in root_nodes_names:
+            parent = root_nodes.get(name=_massage)
             children = parent.get_children()
             if children:
                 children_names = [i.name for i in children]
@@ -35,7 +35,7 @@ def keyboard_button(massage):
 
                 text = HelpText.objects.get(relation_to=parent).text
             else:
-                print("No Children in the root: %s" % massage)
+                print("No Children in the root: %s" % _massage)
 
         print("TIME keyboard_button() = %s" % (perf_counter() - time_0))
         """
@@ -43,7 +43,7 @@ def keyboard_button(massage):
         """
         return buttons, text
     else:
-        print("No massage keyboard_button()")
+        print("No _massage keyboard_button()")
         logging.basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
                             level=logging.INFO)
         return None
