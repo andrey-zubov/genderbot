@@ -28,11 +28,11 @@
                         var pattern_1 = new RegExp(/(.+)[#]/);
                         var r1 = data.match(pattern_1)[1];
                         console.log(r1);
-                        var btn = r1.split(/[|]/);
+                        var btn = r1.split(/[|]/);  // Array
                         console.log(btn);
 
                         var pattern_2 = new RegExp(/[#](.+[\s]+.+)+/);
-                        var text = data.match(pattern_2)[1];
+                        var text = data.match(pattern_2)[1];    // Text
                         console.log(text);
 
                         $("#chat_div").append(bot_p_new.text(text));
@@ -53,6 +53,11 @@
         <p id="user_text" hidden
            class="text-right alert alert-success text-wrap shadow-sm rounded"></p>
     </div>
+
+{#    <div>#}
+{#        {{ datas }}#}
+{#    </div>#}
+
     <div class="my-2">
         <label for="user_input">Send msg</label>
         <input id="user_input" type="text">
