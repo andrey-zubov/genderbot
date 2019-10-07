@@ -10,6 +10,10 @@ def chat_req_get(request):
 
     if any(request.GET.values()):
         ui = request.GET['us_in']
+        print("user_input: %s" % ui)
+
+        btn_clicked = request.GET['btn_text']
+        print("btn_clicked: %s" % btn_clicked)
 
         data = start_chat()
 
@@ -29,4 +33,4 @@ def start_chat():
     btn = '|'.join(btn_text)
     text = StartMessage.objects.get().text
 
-    return "%s#%s" % (btn, text)
+    return "%s#####%s" % (btn, text)
