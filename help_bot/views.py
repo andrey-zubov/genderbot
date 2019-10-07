@@ -20,7 +20,7 @@ class ChatPage(TemplateView):
     template_name = 'help_bot/chat.html'
 
     def get(self, request, *args, **kwargs):
-        print("ChatPage.GET: %s" % request.GET)
+        print("ChatPage.GET")
         response = {'data': '-------ChatPage.GET-------',
                     }
         return render(request, template_name=self.template_name, context=response)

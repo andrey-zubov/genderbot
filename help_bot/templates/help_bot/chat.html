@@ -10,10 +10,12 @@
         $(document).ready(function () {
             var bot_p = $("#bot_text").clone().removeAttr('hidden');
             var us_t = $("#user_text").clone().removeAttr('hidden');
+            var btn_s = $("#btn_select").clone().removeAttr('hidden');
 
             $("#btn_send").on("click", function () {
                 var bot_p_new = bot_p.clone();
                 var user_t_new = us_t.clone();
+                var btn_s_new = btn_s.clone();
 
                 var us_in = $("#user_input").val();
                 console.log(us_in);
@@ -36,6 +38,11 @@
                         console.log(text);
 
                         $("#chat_div").append(bot_p_new.text(text));
+                        for (var i = 0; i < btn.length; i++) {
+                            console.log(btn[i]);
+                            var btn_clone = btn_s_new.clone();
+                            $("#div_add_btn").append(btn_clone.text(btn[i]));
+                        }
                     }
                 });
             });
@@ -52,11 +59,15 @@
            class="text-left alert alert-dark text-wrap shadow-sm rounded"></p>
         <p id="user_text" hidden
            class="text-right alert alert-success text-wrap shadow-sm rounded"></p>
+
+    </div>
+    <div id="div_add_btn">
+        <button id="btn_select" hidden>-</button>
     </div>
 
-{#    <div>#}
-{#        {{ datas }}#}
-{#    </div>#}
+    {#    <div>#}
+    {#        {{ datas }}#}
+    {#    </div>#}
 
     <div class="my-2">
         <label for="user_input">Send msg</label>
