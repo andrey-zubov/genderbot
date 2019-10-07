@@ -4,6 +4,10 @@ from mptt.admin import MPTTModelAdmin
 from help_bot.models import (NeedHelp, TelegramBot, HelpText, StartMessage)
 
 
+# class NeedHelp1t1Admin(admin.StackedInline):
+#     model = NeedHelp
+
+
 class HelpTextForTreeAdmin(admin.StackedInline):
     model = HelpText
 
@@ -18,7 +22,7 @@ class NeedHelpAdmin(MPTTModelAdmin):
     inlines = [HelpTextForTreeAdmin]
 
     model = NeedHelp
-    fields = ('name', 'parent', 'user_input', 'go_back', 'link_to',)
+    fields = ['name', 'parent', 'user_input', 'go_back', 'link_to', 'select_help_text']
     list_display = ('name', 'parent', 'user_input', 'go_back', 'link_to',)
     list_filter = ('name', 'parent', 'user_input', 'go_back', 'link_to',)
     search_fields = ('name',)
@@ -33,8 +37,9 @@ class TelegramAdmin(admin.ModelAdmin):
 
 
 class HelpTextAdmin(admin.ModelAdmin):
+    # inlines = [NeedHelp1t1Admin]
     model = HelpText
-    fields = ('name', 'text',)
+    fields = ['name', 'text', 'relation_to']
     list_display = ('name',)
     list_filter = ('name',)
     search_fields = ('name',)
@@ -42,7 +47,7 @@ class HelpTextAdmin(admin.ModelAdmin):
 
 class StartMessageAdmin(admin.ModelAdmin):
     model = StartMessage
-    fields = ('name', 'text',)
+    fields = ['name', 'text']
     list_display = ('name', 'text',)
     search_fields = ('name',)
 

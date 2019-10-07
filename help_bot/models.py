@@ -16,6 +16,9 @@ class NeedHelp(MPTTModel):
     link_to = models.ForeignKey(to='NeedHelp', blank=True, null=True, default=None,
                                 on_delete=models.CASCADE)  # TODO: on_delete ?
 
+    select_help_text = models.ForeignKey(to='HelpText', blank=True, null=True,
+                                         on_delete=models.SET_NULL)
+
     class MPTTMeta:
         order_insertion_by = ['name']
 
@@ -39,7 +42,8 @@ class TelegramBot(models.Model):
 
 class HelpText(models.Model):
     """ TBA """
-    relation_to = models.OneToOneField(to='NeedHelp', on_delete=models.CASCADE)  # TODO: on_delete ???
+    relation_to = models.OneToOneField(to='NeedHelp', blank=True, null=True,
+                                       on_delete=models.SET_NULL)  # TODO: on_delete ???
 
     name = models.CharField(max_length=100, default='-')
     text = models.TextField(max_length=2000, default='-')

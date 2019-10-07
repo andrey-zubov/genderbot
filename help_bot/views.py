@@ -3,6 +3,7 @@ from django.shortcuts import render
 from django.views.generic import TemplateView
 
 from help_bot.models import NeedHelp
+from help_bot.web_chat_logic import chat_req_get
 
 
 class MainPage(TemplateView):
@@ -19,21 +20,20 @@ class ChatPage(TemplateView):
     template_name = 'help_bot/chat.html'
 
     def get(self, request, *args, **kwargs):
-        print("ChatPage - GET\n%s" % request.GET)
-        response = {'data': 'some_data.GET',
+        print("ChatPage.GET: %s" % request.GET)
+        response = {'data': 'ChatPage.GET',
                     }
         return render(request, template_name=self.template_name, context=response)
 
     def post(self, request):
-        print("ChatPage - POST\n%s" % request.POST)
+        print("ChatPage.POST\n%s" % request.POST)
 
 
 class ChatTest(TemplateView):
     def get(self, request, *args, **kwargs):
-        print('ChatTest.GET\n%s' % request.GET)
-        ui = request.GET['us_in']
-        q = "%s%s" % (ui, 'test_bot_test_bot')
-        return HttpResponse(q)
+        print('ChatTest.GET: %s' % request.GET)
+        response = chat_req_get(request)
+        return HttpResponse(response)
 
 
 def tree_page(request):

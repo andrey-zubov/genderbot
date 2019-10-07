@@ -4,7 +4,7 @@ from time import perf_counter
 from telegram import ReplyKeyboardMarkup
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 
-from help_bot.work_with_db import keyboard_button
+from help_bot.telega_logic import keyboard_button
 
 
 def sey_hello(bot, update):
