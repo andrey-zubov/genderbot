@@ -8,10 +8,9 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+            integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
             crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
             integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
@@ -21,6 +20,8 @@
             crossorigin="anonymous"></script>
 
     {% load staticfiles %}
+    {#    <style type="text/css" href="{% static '' %}"></style>#}
+
     <title>{% block title %}{% endblock %} - ChatBot</title>
 </head>
 
@@ -29,9 +30,8 @@
 <div class="container">
 
     <header>
-        <h3>Header</h3>
-        <div class="p-sm-2 pt-sm-2">
-            <nav class="nav fixed-top" style="background-color: #344955">
+        <div class="container">
+            <nav class="nav" style="background-color: #344955">
                 <a class="nav-link text-white" href="/">Main</a>
                 <a class="nav-link text-white" href="{% url 'chat' %}">Chat</a>
                 <a class="nav-link text-white" href="{% url 'tree' %}">Tree</a>
@@ -43,7 +43,7 @@
     </header>
 
     <main>
-        <div>
+        <div class="container my-2" style="min-height: 600px">
             <section class="content">
                 {% block content %}{% endblock %}
             </section>
@@ -51,7 +51,11 @@
     </main>
 
     <footer>
-
+        <div class="container">
+            <nav class="nav" style="background-color: #344955">
+                <h4 class="text-white">Footer</h4>
+            </nav>
+        </div>
     </footer>
 
 </div>

@@ -6,6 +6,47 @@
 
 {% block content %}
 
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var bot_p = $("#bot_text").clone().removeAttr('hidden');
+            var us_t = $("#user_text").clone().removeAttr('hidden');
+
+            $("#btn_send").on("click", function () {
+                var bot_p_new = bot_p.clone();
+                var user_t_new = us_t.clone();
+
+                var us_in = $("#user_input").val();
+                console.log(us_in);
+                $("#chat_div").append(user_t_new.text(us_in));
+
+                $.ajax({
+                    'url':{% url 'chat_test' %},
+                    'data': {'us_in': us_in},
+                    success: function (data) {
+                        $("#chat_div").append(bot_p_new.text(data));
+                    }
+                });
+            });
+        });
+    </script>
+
     <h3>Chat Bot can help you!</h3>
+
+    {#    <form method="post">#}
+    {#        {% csrf_token %}#}
+    <div id="chat_div" class="py-1 col-6 d-inline-flex flex-column rounded"
+         style="background-color: #F5F5F5; min-height: 200px;min-width: 300px">
+        <p id="bot_text" hidden
+           class="text-left alert alert-dark text-wrap shadow-sm rounded"></p>
+        <p id="user_text" hidden
+           class="text-right alert alert-success text-wrap shadow-sm rounded"></p>
+    </div>
+    <div class="my-2">
+        <label for="user_input">Send msg</label>
+        <input id="user_input" type="text">
+
+        <button type="submit" id="btn_send">Send</button>
+    </div>
+    {#    </form>#}
 
 {% endblock %}
