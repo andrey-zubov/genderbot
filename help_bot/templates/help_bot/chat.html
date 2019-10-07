@@ -23,7 +23,19 @@
                     'url':{% url 'chat_test' %},
                     'data': {'us_in': us_in},
                     success: function (data) {
-                        $("#chat_div").append(bot_p_new.text(data));
+                        console.log(data);
+
+                        var pattern_1 = new RegExp(/(.+)[#]/);
+                        var r1 = data.match(pattern_1)[1];
+                        console.log(r1);
+                        var btn = r1.split(/[|]/);
+                        console.log(btn);
+
+                        var pattern_2 = new RegExp(/[#](.+[\s]+.+)+/);
+                        var text = data.match(pattern_2)[1];
+                        console.log(text);
+
+                        $("#chat_div").append(bot_p_new.text(text));
                     }
                 });
             });
