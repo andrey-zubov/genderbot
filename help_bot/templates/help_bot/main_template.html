@@ -30,20 +30,19 @@
 <div class="container">
 
     <header>
-        <div class="container">
-            <nav class="nav" style="background-color: #344955">
-                <a class="nav-link text-white" href="/">Main</a>
-                <a class="nav-link text-white" href="{% url 'chat' %}">Chat</a>
-                <a class="nav-link text-white" href="{% url 'tree' %}">Tree</a>
-                <a class="nav-link text-white" href="#">3</a>
-                <a class="nav-link text-white" href="#">4</a>
-                <a class="nav-link text-white" href="#">5</a>
-            </nav>
-        </div>
+        <nav class="nav" style="background-color: #344955">
+            <a class="nav-link text-white" href="/">Main</a>
+            <a class="nav-link text-white" href="{% url 'chat' %}">Chat</a>
+            <a class="nav-link text-white" href="{% url 'tree' %}">Tree</a>
+            <a class="nav-link text-white" href="#">3</a>
+            <a class="nav-link text-white" href="#">4</a>
+            <a class="nav-link text-white" href="#">5</a>
+        </nav>
     </header>
 
     <main>
-        <div class="container my-2" style="min-height: 600px">
+        <div class="container my-2"
+             style="min-height: 600px; background-color: whitesmoke">
             <section class="content">
                 {% block content %}{% endblock %}
             </section>
@@ -51,12 +50,18 @@
     </main>
 
     <footer>
-        <div class="container">
-            <nav class="nav" style="background-color: #344955">
-                <h4 class="text-white">Footer</h4>
-            </nav>
-        </div>
+        <nav class="nav" style="background-color: #344955">
+            <h4 class="text-white">Footer</h4>
+        </nav>
     </footer>
+
+    <div id="id_chat_panel"
+         class="chat_panel fixed-bottom col-6 rounded mx-2 border"
+         style="background-color: white;">
+        <button class="btn btn-outline-success m-sm-1">Chat</button>
+        {#        {% block chat_panel %}{% endblock %}#}
+        {% include 'help_bot/chat.html' %}
+    </div>
 
 </div>
 

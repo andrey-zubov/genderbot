@@ -1,88 +1,90 @@
-{% extends 'help_bot/main_template.html' %}
+{#{% extends 'help_bot/main_template.html' %}#}
 
-{% block title %}
-    Chat
-{% endblock %}
+{#{% block title %}#}
+{#    Chat#}
+{#{% endblock %}#}
 
-{% block content %}
+{#{% block content %}#}
+{#{% block chat_panel %}#}
 
-    <script type="text/javascript">
-        $(document).ready(function f1() {
-            var bot_p = $("#bot_text").clone().removeAttr('hidden');
-            var us_t = $("#user_text").clone().removeAttr('hidden');
-            var btn_s = $("#btn_select").clone().removeAttr('hidden');
+<script type="text/javascript">
+    $(document).ready(function f1() {
+        var bot_p = $("#bot_text").clone().removeAttr('hidden');
+        var us_t = $("#user_text").clone().removeAttr('hidden');
+        var btn_s = $("#btn_select").clone().removeAttr('hidden');
 
-            $("#btn_send").on("click", foo);
+        $("#btn_send").on("click", foo);
 
-            function foo() {
-                var bot_p_new = bot_p.clone();
-                var user_t_new = us_t.clone();
-                var btn_s_new = btn_s.clone();
+        function foo() {
+            var bot_p_new = bot_p.clone();
+            var user_t_new = us_t.clone();
+            var btn_s_new = btn_s.clone();
 
-                var us_in = $("#user_input").val();
-                if (us_in === '') {
-                    us_in = $(this).text()
-                }
-                //console.log(us_in);
-                $("#chat_div").append(user_t_new.text(us_in));
-                $.ajax({
-                    'url':{% url 'chat_test' %},
-                    'data': {'us_in': us_in, 'btn_text': $(this).text()},
-                    success: function (data) {
-                        //console.log(data);
-                        var pattern_1 = new RegExp(/(.+)[#]{5}/);
-                        var r1 = data.match(pattern_1)[1];
-                        //console.log(r1);
-                        var btn = r1.split(/[|]/);  // Array
-                        console.log(btn);
-
-                        var pattern_2 = new RegExp(/[#]{5}(.+[\s]+.+)+/);
-                        var text = data.match(pattern_2)[1];    // Text
-                        //console.log(text);
-
-                        $("#user_input").val('');
-                        $("#chat_div").append(bot_p_new.text(text));
-                        for (var r = 0; r < btn.length; r++) {
-                            $("#id_new_btn").remove();
-                        }
-                        for (var i = 0; i < btn.length; i++) {
-                            //console.log(btn[i]);
-                            var btn_clone = btn_s_new.clone();
-                            btn_clone.attr('id', 'id_new_btn').on("click", foo);
-                            $("#div_add_btn").append(btn_clone.text(btn[i]));
-                        }
-                    }
-                });
+            var us_in = $("#user_input").val();
+            if (us_in === '') {
+                us_in = $(this).text()
             }
-        });
-    </script>
+            //console.log(us_in);
+            $("#chat_div").append(user_t_new.text(us_in));
+            $.ajax({
+                'url':{% url 'chat_test' %},
+                'data': {'us_in': us_in, 'btn_text': $(this).text()},
+                success: function (data) {
+                    //console.log(data);
+                    var pattern_1 = new RegExp(/(.+)[#]{5}/);
+                    var r1 = data.match(pattern_1)[1];
+                    //console.log(r1);
+                    var btn = r1.split(/[|]/);  // Array
+                    console.log(btn);
 
-    <h3>Chat Bot can help you!</h3>
+                    var pattern_2 = new RegExp(/[#]{5}(.+[\s]+.+)+/);
+                    var text = data.match(pattern_2)[1];    // Text
+                    //console.log(text);
 
-    {#    <form method="post">#}
-    {#        {% csrf_token %}#}
-    <div id="chat_div" class="py-1 col-6 d-inline-flex flex-column rounded"
-         style="background-color: #F5F5F5; min-height: 200px;min-width: 300px">
-        <p hidden id="bot_text"
-           class="text-left alert alert-dark text-wrap shadow-sm rounded"></p>
-        <p hidden id="user_text"
-           class="text-right alert alert-success text-wrap shadow-sm rounded"></p>
-    </div>
+                    $("#user_input").val('');
+                    $("#chat_div").append(bot_p_new.text(text));
+                    for (var r = 0; r < btn.length; r++) {
+                        $("#id_new_btn").remove();
+                    }
+                    for (var i = 0; i < btn.length; i++) {
+                        //console.log(btn[i]);
+                        var btn_clone = btn_s_new.clone();
+                        btn_clone.attr('id', 'id_new_btn').on("click", foo);
+                        $("#div_add_btn").append(btn_clone.text(btn[i]));
+                    }
+                }
+            });
+        }
+    });
+</script>
 
-    <div id="div_add_btn" class="col-6 my-2">
-        <button hidden id="btn_select" type="button"
-                class="btn btn-outline-primary m-sm-1"></button>
-    </div>
+<h3>Chat Bot can help you!</h3>
 
-    <div class="my-2 col-6">
-        <label for="user_input">Send msg</label>
-        <input id="user_input" type="text">
+{#    <form method="post">#}
+{#        {% csrf_token %}#}
+<div id="chat_div"
+     class="py-1 d-inline-flex flex-column rounded"
+     style="background-color: #F5F5F5; overflow: scroll; max-height: 400px">
+    <p hidden id="bot_text"
+       class="text-left alert alert-dark text-wrap shadow-sm rounded"></p>
+    <p hidden id="user_text"
+       class="text-right alert alert-success text-wrap shadow-sm rounded"></p>
+</div>
 
-        <button type="submit" id="btn_send"
-                class="btn btn-outline-success m-sm-1">
-            Send
-        </button>
-    </div>
-    {#    </form>#}
+<div id="div_add_btn" class="my-2">
+    <button hidden id="btn_select" type="button"
+            class="btn btn-outline-primary m-sm-1"></button>
+</div>
 
-{% endblock %}
+<div class="my-2">
+    <label for="user_input">Send msg</label>
+    <input id="user_input" type="text">
+
+    <button type="submit" id="btn_send"
+            class="btn btn-outline-success m-sm-1">
+        Send
+    </button>
+</div>
+{#    </form>#}
+
+{#{% endblock %}#}
