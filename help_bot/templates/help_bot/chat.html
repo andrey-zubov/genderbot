@@ -1,12 +1,3 @@
-{#{% extends 'help_bot/main_template.html' %}#}
-
-{#{% block title %}#}
-{#    Chat#}
-{#{% endblock %}#}
-
-{#{% block content %}#}
-{#{% block chat_panel %}#}
-
 <script type="text/javascript">
     $(document).ready(function f1() {
         var bot_p = $("#bot_text").clone().removeAttr('hidden');
@@ -28,7 +19,7 @@
             $("#chat_div").append(user_t_new.text(us_in));
             $.ajax({
                 'url':{% url 'chat_test' %},
-                'data': {'us_in': us_in, 'btn_text': $(this).text()},
+                'data': {'us_in': us_in},
                 success: function (data) {
                     //console.log(data);
                     var pattern_1 = new RegExp(/(.+)[#]{5}/);
@@ -56,12 +47,25 @@
             });
         }
     });
+    // auto scroll to the bottom of the chat div
+    window.setInterval(function () {
+        var elem = document.getElementById("chat_div");
+        elem.scrollTop = elem.scrollHeight;
+    }, 1000);
 </script>
 
-<h3>Chat Bot can help you!</h3>
+<p>
+    <button id="btn_open_chat"
+            class="btn btn-outline-success m-sm-1">
+        Chat Bot can help you!
+    </button>
+    <button id="btn_close_chat"
+            class="btn btn-outline-danger m-sm-1">x
+    </button>
+</p>
 
-{#    <form method="post">#}
-{#        {% csrf_token %}#}
+{#<form method="post">#}
+{#{% csrf_token %}#}
 <div id="chat_div"
      class="py-1 d-inline-flex flex-column rounded"
      style="background-color: #F5F5F5; overflow: scroll; max-height: 400px">
@@ -80,11 +84,9 @@
     <label for="user_input">Send msg</label>
     <input id="user_input" type="text">
 
-    <button type="submit" id="btn_send"
+    <button type="button" id="btn_send"
             class="btn btn-outline-success m-sm-1">
         Send
     </button>
 </div>
-{#    </form>#}
-
-{#{% endblock %}#}
+{#</form>#}

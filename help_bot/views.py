@@ -17,7 +17,7 @@ class MainPage(TemplateView):
 
 
 class ChatPage(TemplateView):
-    template_name = 'help_bot/chat.html'
+    template_name = 'help_bot/chat_page.html'
 
     def get(self, request, *args, **kwargs):
         print("ChatPage.GET")
@@ -40,6 +40,9 @@ class ChatTest(TemplateView):
         #     'datas': chat_req_get(request)
         # }
         # return render(request, template_name=self.template_name, context=response)
+
+    def post(self, request):
+        print('ChatTest.POST: %s' % request.POST)
 
 
 def tree_page(request):

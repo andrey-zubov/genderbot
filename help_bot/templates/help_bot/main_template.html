@@ -32,7 +32,7 @@
     <header>
         <nav class="nav" style="background-color: #344955">
             <a class="nav-link text-white" href="/">Main</a>
-            <a class="nav-link text-white" href="{% url 'chat' %}">Chat</a>
+            <a class="nav-link text-white" href="{% url 'chat_page' %}">Chat</a>
             <a class="nav-link text-white" href="{% url 'tree' %}">Tree</a>
             <a class="nav-link text-white" href="#">3</a>
             <a class="nav-link text-white" href="#">4</a>
@@ -58,8 +58,7 @@
     <div id="id_chat_panel"
          class="chat_panel fixed-bottom col-6 rounded mx-2 border"
          style="background-color: white;">
-        <button class="btn btn-outline-success m-sm-1">Chat</button>
-        {#        {% block chat_panel %}{% endblock %}#}
+
         {% include 'help_bot/chat.html' %}
     </div>
 

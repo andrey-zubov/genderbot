@@ -9,11 +9,8 @@ def chat_req_get(request):
     time_0 = perf_counter()
 
     if any(request.GET.values()):
-        ui = request.GET['us_in']
+        ui = str(request.GET['us_in']).strip()
         print("user_input: %s" % ui)
-
-        btn_clicked = request.GET['btn_text']
-        print("btn_clicked: %s" % btn_clicked)
 
         data = start_chat()
 
