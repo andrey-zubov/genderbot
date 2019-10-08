@@ -42,7 +42,7 @@ def keyboard_button(_massage, _chat_id):
                     user_position = r.id
                     children = r.get_children()
 
-                    save_user_pos(_chat_id, user_position)
+                    save_user_pos(_chat_id, user_position, True)
 
                     print("TIME keyboard_button() = %s\n" % (perf_counter() - time_0))
                     return btn_and_text(children, user_position)
@@ -50,7 +50,7 @@ def keyboard_button(_massage, _chat_id):
                 print("_massage not in root_nodes.user_input")
                 return default_output(_chat_id, sorry="Извените, произошла ошибка!\n\n")
 
-        if user_position:
+        elif user_position:
             """ user used HelpBot and have last saved position """
             print("user_has_position: %s" % user_position)
 
@@ -59,37 +59,34 @@ def keyboard_button(_massage, _chat_id):
                 if _massage == c.user_input:
 
                     if c.link_to:
-                        """ TBA """
+                        """ If this button has a link to the other help option. Select list in Admin. """
                         print("link_to: %s" % c.link_to.id)
                         user_position = c.link_to.id
                         ch_ch = NeedHelp.objects.get(id=user_position).get_children()
 
                     elif c.go_back:
-                        """ TBA """
+                        """ Back to the main questions. Check_box in Admin. """
                         return default_output(_chat_id)
 
                     else:
-                        """ TBA """
+                        """ Normal buttons in the chat. Go deeper. """
                         user_position = c.id
                         ch_ch = c.get_children()
 
-                    save_user_pos(_chat_id, user_position)
+                    save_user_pos(_chat_id, user_position, True)
 
                     print("TIME keyboard_button() = %s\n" % (perf_counter() - time_0))
                     return btn_and_text(ch_ch, user_position)
-                else:
-                    print("_massage not in child.user_input")
-            return default_output(_chat_id, sorry="Извените, произошла ошибка!\n\n")
+            else:
+                print("_massage not in child.user_input")
+                return default_output(_chat_id, sorry="Извените, произошла ошибка!\n\n")
 
         else:
             """ From user input: /start, random input """
             print("else")
-
             if not user:
-                """ Save User """
-                print("Save User: _chat_id = %s, user_position = %s" % (_chat_id, user_position))
-                ChatPositionTelegram(chat_id=_chat_id, position=user_position).save()
-
+                """ Save/remember the User """
+                save_user_pos(_chat_id, user_position, None)
             print("TIME keyboard_button() = %s\n" % (perf_counter() - time_0))
             return default_output(_chat_id, us_pos=user_position)
 
@@ -100,8 +97,8 @@ def keyboard_button(_massage, _chat_id):
         return default_output(_chat_id, sorry="Извените, произошла ошибка!\n\n")
 
 
-def default_output(ch_id, us_pos=0, sorry=''):
-    """ TBA """
+def default_output(ch_id: int, us_pos=0, sorry=''):
+    """ Reset user position to the Start Questions menu. """
     print("default_output()")
     root_nodes = NeedHelp.objects.root_nodes()
     btn_text = [i.user_input for i in root_nodes]
@@ -112,21 +109,15 @@ def default_output(ch_id, us_pos=0, sorry=''):
     text = StartMessage.objects.get().text
     # print("text: %s" % text)
 
-    """ Save user position or Reset to 0"""
-    if us_pos == 0:
-        print("Reset user position to 0")
-    else:
-        print("Save user position: %s" % us_pos)
-    chat = ChatPositionTelegram.objects.get(chat_id=ch_id)
-    chat.position = us_pos
-    chat.save()
+    save_user_pos(ch_id, us_pos, True)
 
     """ sorry = error massage to the user. """
     return btn_to_send, "%s%s" % (sorry, text)
 
 
-def btn_and_text(child, us_pos):
-    """ TBA """
+def btn_and_text(child, us_pos: int):
+    """ Avery Tree Field in the Admin menu has 'User input' option.
+    'User input' = text buttons, that must be send to the chat. """
     btn_text = [i.user_input for i in child]
     print("btn_text: %s" % btn_text)
     btn = [[KeyboardButton(text=i)] for i in btn_text]
@@ -137,12 +128,15 @@ def btn_and_text(child, us_pos):
     return btn, text
 
 
-def save_user_pos(_chat_id, _us_pos):
+def save_user_pos(_chat_id: int, _us_pos: int, _user=None):
     """ TBA """
-    print("Save user position: %s" % _us_pos)
-    chat = ChatPositionTelegram.objects.get(chat_id=_chat_id)
-    chat.position = _us_pos
-    chat.save()
+    print("save_user_pos(); ip: %s, us_pos: %s, user: %s" % (_chat_id, _us_pos, _user))
+    if _user:
+        chat = ChatPositionTelegram.objects.get(chat_id=_chat_id)
+        chat.position = _us_pos
+        chat.save()
+    else:
+        ChatPositionTelegram(chat_id=_chat_id, position=_us_pos).save()
 
 
 """

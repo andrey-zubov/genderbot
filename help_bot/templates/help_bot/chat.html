@@ -3,6 +3,7 @@
         var bot_p = $("#bot_text").clone().removeAttr('hidden');
         var us_t = $("#user_text").clone().removeAttr('hidden');
         var btn_s = $("#btn_select").clone().removeAttr('hidden');
+        var btn_length = 0;
 
         $("#btn_send").on("click", foo);
 
@@ -22,11 +23,16 @@
                 'data': {'us_in': us_in},
                 success: function (data) {
                     //console.log(data);
+                    for (var r = 0; r < btn_length; r++) {
+                        $("#id_new_btn").remove();
+                    }
+
                     var pattern_1 = new RegExp(/(.+)[#]{5}/);
                     var r1 = data.match(pattern_1)[1];
                     //console.log(r1);
                     var btn = r1.split(/[|]/);  // Array
                     console.log(btn);
+                    btn_length = btn.length;
 
                     var pattern_2 = new RegExp(/[#]{5}(.+[\s]+.+)+/);
                     var text = data.match(pattern_2)[1];    // Text
@@ -34,10 +40,8 @@
 
                     $("#user_input").val('');
                     $("#chat_div").append(bot_p_new.text(text));
-                    for (var r = 0; r < btn.length; r++) {
-                        $("#id_new_btn").remove();
-                    }
-                    for (var i = 0; i < btn.length; i++) {
+
+                    for (var i = 0; i < btn_length; i++) {
                         //console.log(btn[i]);
                         var btn_clone = btn_s_new.clone();
                         btn_clone.attr('id', 'id_new_btn').on("click", foo);
