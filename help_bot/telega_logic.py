@@ -8,7 +8,7 @@ from telegram import KeyboardButton
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "HelpBot.settings")
 django.setup()
 
-from help_bot.models import (NeedHelp, HelpText, StartMessage, ChatPosition)
+from help_bot.models import (NeedHelp, HelpText, StartMessage, ChatPositionTelegram)
 
 
 def keyboard_button(_massage, _chat_id):
@@ -21,16 +21,15 @@ def keyboard_button(_massage, _chat_id):
         try:
             """ If user has ever used HelpBot -> find _chat_id id DB and get user last position, 
             else set user_position = 0. """
-            users = ChatPosition.objects.all()
+            users = ChatPositionTelegram.objects.all()
             for u in users.values():
                 if u['chat_id'] == _chat_id:
-                    user = ChatPosition.objects.get(chat_id=_chat_id)
-                    user_position = user.user_chat_position
-                    print("user_chat_position: %s" % user_position)
+                    user = ChatPositionTelegram.objects.get(chat_id=_chat_id)
+                    user_position = user.position
                     break
                 else:
                     user_position = 0
-                    print("user_position: %s" % user_position)
+            print("user_position: %s" % user_position)
         except Exception as ex:
             logging.error("Exception in keyboard_button().user_position\n%s" % ex)
 
@@ -89,7 +88,7 @@ def keyboard_button(_massage, _chat_id):
             if not user:
                 """ Save User """
                 print("Save User: _chat_id = %s, user_position = %s" % (_chat_id, user_position))
-                ChatPosition(chat_id=_chat_id, user_chat_position=user_position).save()
+                ChatPositionTelegram(chat_id=_chat_id, position=user_position).save()
 
             print("TIME keyboard_button() = %s\n" % (perf_counter() - time_0))
             return default_output(_chat_id, us_pos=user_position)
@@ -118,8 +117,8 @@ def default_output(ch_id, us_pos=0, sorry=''):
         print("Reset user position to 0")
     else:
         print("Save user position: %s" % us_pos)
-    chat = ChatPosition.objects.get(chat_id=ch_id)
-    chat.user_chat_position = us_pos
+    chat = ChatPositionTelegram.objects.get(chat_id=ch_id)
+    chat.position = us_pos
     chat.save()
 
     """ sorry = error massage to the user. """
@@ -141,8 +140,8 @@ def btn_and_text(child, us_pos):
 def save_user_pos(_chat_id, _us_pos):
     """ TBA """
     print("Save user position: %s" % _us_pos)
-    chat = ChatPosition.objects.get(chat_id=_chat_id)
-    chat.user_chat_position = _us_pos
+    chat = ChatPositionTelegram.objects.get(chat_id=_chat_id)
+    chat.position = _us_pos
     chat.save()
 
 

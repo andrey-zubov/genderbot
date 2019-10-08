@@ -61,10 +61,22 @@ class StartMessage(models.Model):
         return self.name
 
 
-class ChatPosition(models.Model):
-    """ TBA """
+class ChatPositionTelegram(models.Model):
+    """ Key element of my algorithm - remember a user position to send relevant questions to user.
+    position == MPTT (NeedHelp) element id """
+    """ telegram chat id """
     chat_id = models.PositiveIntegerField(default=0)
-    user_chat_position = models.PositiveIntegerField(default=0)
+    """ user chat-bot position """
+    position = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return self.chat_id
+
+
+class ChatPositionWeb(models.Model):
+    """ Key element of my algorithm - remember user position to send relevant questions to user.
+    position == MPTT (NeedHelp) element id """
+    """ user IP address """
+    ip_address = models.GenericIPAddressField()
+    """ user chat-bot position """
+    position = models.PositiveIntegerField(default=0)
