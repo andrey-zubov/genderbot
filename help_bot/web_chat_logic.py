@@ -98,24 +98,50 @@ def user_from_start_q(_massage: str, ip: str):
 def user_has_position(_ip, _user_position, _massage):
     """ user used HelpBot and have last saved position """
     print("user_has_position(); ip: %s, us_pos: %s" % (_ip, _user_position))
-    child = NeedHelp.objects.get(id=_user_position).get_children()
-    for c in child:
-        if _massage == c.user_input:
-            if c.link_to:
-                """ If this button has a link to the other help option. Select_list in the Admin menu. """
-                user_position = c.link_to.id
-                child = NeedHelp.objects.get(id=user_position).get_children()
-            elif c.go_back:
-                """ Back to the main questions. Check_box in the Admin menu. """
-                save_web_user(_ip, 0, True)
-                return start_chat()
-            else:
-                """ Normal buttons in the chat. Go deeper. """
-                user_position = c.id
-                child = c.get_children()
+    root = NeedHelp.objects.get(id=_user_position)
+    child = root.get_children()
+    if child:
+        """ normal tree branch """
+        for c in child:
+            if _massage == c.user_input:
+                if c.link_to:
+                    """ If this button has a link to the other help option. Select_list in the Admin menu. """
+                    user_position = c.link_to.id
+                    new_child = NeedHelp.objects.get(id=user_position).get_children()
+                elif c.go_back:
+                    """ Back to the main questions. Check_box in the Admin menu. """
+                    save_web_user(_ip, 0, True)
+                    return start_chat()
+                elif c.go_default:
+                    """ if user clicked last element of the Tree - go to default branch. """
+                    user_position = c.id
+                    new_child = NeedHelp.objects.get(is_default=True).get_children()
+                else:
+                    """ Normal buttons in the chat. Go deeper. """
+                    user_position = c.id
+                    new_child = c.get_children()
 
-            save_web_user(_ip, user_position, True)
-            return buttons_and_text(child, user_position)
+                save_web_user(_ip, user_position, True)
+                return buttons_and_text(new_child, user_position)
+    elif root.go_default:
+        """ if user at the last element of the Tree - go to default branch.
+        is_default=True - hidden root node for a default output that repeats at last tree element. """
+        print("root.go_default")
+        new_root = NeedHelp.objects.get(is_default=True)
+        new_child = new_root.get_children()
+        for c in new_child:
+            if _massage == c.user_input:
+                if c.go_back:
+                    """ Back to the main questions. Check_box in the Admin menu. """
+                    save_web_user(_ip, 0, True)
+                    return start_chat()
+                else:
+                    return user_has_position(_ip, new_root.id, _massage)
+        # new_user_position = new_root.id
+        # user_has_position(_ip, new_user_position, _massage)
+        # save_web_user(_ip, new_user_position, True)
+        # new_child = new_root.get_children()
+        # return buttons_and_text(new_child, new_user_position)
 
     print("Massage not in root_nodes.user_input")
     save_web_user(_ip, 0, True)
