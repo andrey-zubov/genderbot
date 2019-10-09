@@ -1,5 +1,8 @@
 <script type="text/javascript">
     $(document).ready(function f1() {
+        {#//$(foo);#}
+        setTimeout(foo, 3000);
+
         var bot_p = $("#bot_text").clone().removeAttr('hidden');
         var us_t = $("#user_text").clone().removeAttr('hidden');
         var btn_s = $("#btn_select").clone().removeAttr('hidden');
@@ -14,35 +17,41 @@
 
             var us_in = $("#user_input").val();
             if (us_in === '') {
-                us_in = $(this).text()
+                if ($(this).text().length < 50) {
+                    {#//because Auto start with $(foo) collect all JS+Html code on $(this).text()#}
+                    {#//and send it to the Chat!#}
+                    {#//if -> max length on a text button (UserInput in DB)#}
+                    us_in = $(this).text()
+                }
             }
-            //console.log(us_in);
+            {#//console.log(us_in);#}
             $("#chat_div").append(user_t_new.text(us_in));
             $.ajax({
                 'url':{% url 'chat_test' %},
                 'data': {'us_in': us_in},
                 success: function (data) {
-                    //console.log(data);
+                    {#//console.log(data);#}
                     for (var r = 0; r < btn_length; r++) {
                         $("#id_new_btn").remove();
                     }
 
                     var pattern_1 = new RegExp(/(.+)[#]{5}/);
                     var r1 = data.match(pattern_1)[1];
-                    //console.log(r1);
-                    var btn = r1.split(/[|]/);  // Array
+                    {#//console.log(r1);#}
+                    var btn = r1.split(/[|]/);{#// Array#}
+
                     console.log(btn);
                     btn_length = btn.length;
 
                     var pattern_2 = new RegExp(/[#]{5}(.+[\s]+.+)+/);
-                    var text = data.match(pattern_2)[1];    // Text
-                    //console.log(text);
+                    var text = data.match(pattern_2)[1];{#// Text#}
+                    {#//console.log(text);#}
 
                     $("#user_input").val('');
                     $("#chat_div").append(bot_p_new.text(text));
 
                     for (var i = 0; i < btn_length; i++) {
-                        //console.log(btn[i]);
+                        {#//console.log(btn[i]);#}
                         var btn_clone = btn_s_new.clone();
                         btn_clone.attr('id', 'id_new_btn').on("click", foo);
                         $("#div_add_btn").append(btn_clone.text(btn[i]));
@@ -51,7 +60,7 @@
             });
         }
     });
-    // auto scroll to the bottom of the chat div
+    {#//auto scroll to the bottom of the chat div#}
     window.setInterval(function () {
         var elem = document.getElementById("chat_div");
         elem.scrollTop = elem.scrollHeight;
