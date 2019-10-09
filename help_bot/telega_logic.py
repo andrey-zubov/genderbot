@@ -101,12 +101,12 @@ def default_output(ch_id: int, us_pos=0, sorry=''):
     """ Reset user position to the Start Questions menu. """
     print("default_output()")
     root_nodes = NeedHelp.objects.root_nodes()
-    btn_text = [i.user_input for i in root_nodes]
+    btn_text = [i.user_input for i in root_nodes if not i.is_default]
     # print("btn_text: %s" % btn_text)
     """ [[KeyboardButton(text='Yes')], [KeyboardButton(text='No')]] """
     btn_to_send = [[KeyboardButton(text=i)] for i in btn_text]
 
-    text = StartMessage.objects.get().text
+    text = StartMessage.objects.get(default=True).text
     # print("text: %s" % text)
 
     save_user_pos(ch_id, us_pos, True)
@@ -131,7 +131,7 @@ def btn_and_text(child, us_pos: int):
     # ht_obj = NeedHelp.objects.get(id=us_pos).select_help_text
     # if not text and ht_obj:
     #     text = ht_obj.text
-    print("text: %s" % text)
+    # print("text: %s" % text)
 
     return btn, text
 

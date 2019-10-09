@@ -22,9 +22,11 @@ class NeedHelpAdmin(MPTTModelAdmin):
     inlines = [HelpTextForTreeAdmin]
 
     model = NeedHelp
-    fields = ['name', 'parent', 'user_input', 'question', 'go_back', 'link_to']     # , 'select_help_text'
-    list_display = ('name', 'parent', 'user_input', 'question', 'go_back', 'link_to',)
-    list_filter = ('name', 'parent', 'user_input', 'go_back', 'link_to',)
+    fields = ['name', 'parent', 'user_input', 'question', 'go_back', 'link_to', 'go_default',
+              'is_default']  # , 'select_help_text'
+    list_display = ('name', 'parent', 'user_input', 'question', 'go_back', 'link_to', 'go_default',
+                    'is_default',)  #
+    # list_filter = ('name', 'parent', 'user_input', 'go_back', 'link_to',)
     search_fields = ('name',)
 
 
@@ -47,8 +49,8 @@ class HelpTextAdmin(admin.ModelAdmin):
 
 class StartMessageAdmin(admin.ModelAdmin):
     model = StartMessage
-    fields = ['name', 'text']
-    list_display = ('name', 'text',)
+    fields = ['name', 'text', 'default']
+    list_display = ('name', 'text', 'default',)
     search_fields = ('name',)
 
 

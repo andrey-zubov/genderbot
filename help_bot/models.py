@@ -20,6 +20,11 @@ class NeedHelp(MPTTModel):
                                          on_delete=models.SET_NULL)
     # Field - show_user_input
     question = models.CharField(blank=True, null=True, default='', max_length=100)
+    # end_dialog = models.ManyToManyField(to="StartMessage", blank=True)
+    """ last element in the tree branch """
+    go_default = models.BooleanField(default=False, blank=True, null=True)
+    """ hidden root node for a default output that repeats at last tree element """
+    is_default = models.BooleanField(default=False, blank=True, null=True)
 
     class MPTTMeta:
         order_insertion_by = ['name']
@@ -58,8 +63,8 @@ class StartMessage(models.Model):
     """ TBA """
     name = models.CharField(default='', max_length=100)
     text = models.TextField(max_length=1000, default='')
+    default = models.BooleanField(default=False, blank=True, null=True)
 
-    # field_type = models.
     def __str__(self):
         return self.name
 

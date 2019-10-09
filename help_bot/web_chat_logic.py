@@ -42,11 +42,11 @@ def start_chat() -> str:
     """ Start Questions menu. """
     print("start_chat()")
     root_nodes = NeedHelp.objects.root_nodes()
-    btn_text = [i.user_input for i in root_nodes]
+    btn_text = [i.user_input for i in root_nodes if not i.is_default]
     print("btn_text: %s" % btn_text)
     # """ easy way to RegExp Array in FrontEnd. """
     # btn = '|'.join(btn_text)
-    text = StartMessage.objects.get(id=1).text
+    text = StartMessage.objects.get(default=True).text
 
     json_data = json.dumps({'btn_text': btn_text, "help_text": text}, ensure_ascii=False)
     # print("json: %s" % json_data)
