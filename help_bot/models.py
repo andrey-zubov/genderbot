@@ -6,21 +6,16 @@ class NeedHelp(MPTTModel):
     """ TBA
     # http://django-mptt.github.io/django-mptt/models.html
     """
-
     name = models.CharField(max_length=100)
     parent = TreeForeignKey('self', on_delete=models.CASCADE, null=True, blank=True,
                             related_name='children', db_index=True)  # TODO: on_delete ?
-
     user_input = models.CharField(max_length=100, default='')
     go_back = models.BooleanField(default=False, blank=True, null=True)
     link_to = models.ForeignKey(to='NeedHelp', blank=True, null=True, default=None,
                                 on_delete=models.CASCADE)  # TODO: on_delete ?
-
     select_help_text = models.ForeignKey(to='HelpText', blank=True, null=True,
                                          on_delete=models.SET_NULL)
-    # Field - show_user_input
     question = models.CharField(blank=True, null=True, default='', max_length=100)
-    # end_dialog = models.ManyToManyField(to="StartMessage", blank=True)
     """ last element in the tree branch """
     go_default = models.BooleanField(default=False, blank=True, null=True)
     """ hidden root node for a default output that repeats at last tree element """
@@ -51,7 +46,6 @@ class HelpText(models.Model):
     """ TBA """
     relation_to = models.OneToOneField(to='NeedHelp', blank=True, null=True,
                                        on_delete=models.SET_NULL)  # TODO: on_delete ???
-
     name = models.CharField(max_length=100, null=True, blank=True, default='')
     text = models.TextField(max_length=2000, null=True, blank=True, default='')
 

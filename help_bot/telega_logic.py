@@ -54,32 +54,53 @@ def keyboard_button(_massage, _chat_id):
             """ user used HelpBot and have last saved position """
             print("user_has_position: %s" % user_position)
 
-            child = NeedHelp.objects.get(id=user_position).get_children()
-            for c in child:
-                if _massage == c.user_input:
+            root = NeedHelp.objects.get(id=user_position)
+            child = root.get_children()
+            if child:
+                for c in child:
+                    if _massage == c.user_input:
 
-                    if c.link_to:
-                        """ If this button has a link to the other help option. Select list in Admin. """
-                        print("link_to: %s" % c.link_to.id)
-                        user_position = c.link_to.id
-                        ch_ch = NeedHelp.objects.get(id=user_position).get_children()
+                        if c.link_to:
+                            """ If this button has a link to the other help option. Select list in Admin. """
+                            print("link_to: %s" % c.link_to.id)
+                            user_position = c.link_to.id
+                            new_child = NeedHelp.objects.get(id=user_position).get_children()
 
-                    elif c.go_back:
-                        """ Back to the main questions. Check_box in Admin. """
-                        return default_output(_chat_id)
+                        elif c.go_back:
+                            """ Back to the main questions. Check_box in Admin. """
+                            return default_output(_chat_id)
 
-                    else:
-                        """ Normal buttons in the chat. Go deeper. """
-                        user_position = c.id
-                        ch_ch = c.get_children()
+                        elif c.go_default:
+                            """ if user clicked last element of the Tree - go to default branch. """
+                            user_position = c.id
+                            new_child = NeedHelp.objects.get(is_default=True).get_children()
 
-                    save_user_pos(_chat_id, user_position, True)
+                        else:
+                            """ Normal buttons in the chat. Go deeper. """
+                            user_position = c.id
+                            new_child = c.get_children()
 
-                    print("TIME keyboard_button() = %s\n" % (perf_counter() - time_0))
-                    return btn_and_text(ch_ch, user_position)
-            else:
-                print("_massage not in child.user_input")
-                return default_output(_chat_id, sorry="Извените, произошла ошибка!\n\n")
+                        save_user_pos(_chat_id, user_position, True)
+
+                        print("TIME keyboard_button() = %s\n" % (perf_counter() - time_0))
+                        return btn_and_text(new_child, user_position)
+
+            elif root.go_default:
+                """ if user at the last element of the Tree - go to default branch.
+                is_default=True - hidden root node for a default output that repeats at last tree element. """
+                print("root.go_default")
+                new_root = NeedHelp.objects.get(is_default=True)
+                new_child = new_root.get_children()
+                for c in new_child:
+                    if _massage == c.user_input:
+                        if c.go_back:
+                            return default_output(_chat_id)
+                        else:
+                            # return user_has_position(_ip, new_root.id, _massage)
+                            return default_output(_chat_id)
+
+            print("_massage not in child.user_input")
+            return default_output(_chat_id, sorry="Извените, произошла ошибка!\n\n")
 
         else:
             """ From user input: /start, random input """

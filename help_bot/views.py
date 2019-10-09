@@ -22,8 +22,7 @@ class ChatPage(TemplateView):
 
     def get(self, request, *args, **kwargs):
         print("ChatPage.GET")
-        response = {'data': '-------ChatPage.GET-------',
-                    }
+        response = {'data': '-------ChatPage.GET-------', }
         return render(request, template_name=self.template_name, context=response)
 
     def post(self, request):
@@ -31,16 +30,10 @@ class ChatPage(TemplateView):
 
 
 class ChatTest(TemplateView):
-    # template_name = 'help_bot/chat.html'
 
     def get(self, request, *args, **kwargs):
         print('ChatTest.GET: %s' % request.GET)
-        response = chat_req_get(request)
-        return HttpResponse(response)
-        # response = {
-        #     'datas': chat_req_get(request)
-        # }
-        # return render(request, template_name=self.template_name, context=response)
+        return HttpResponse(chat_req_get(request))
 
     def post(self, request):
         print('ChatTest.POST: %s' % request.POST)

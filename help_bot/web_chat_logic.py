@@ -10,14 +10,11 @@ def chat_req_get(request):
     time_0 = perf_counter()
     if any(request.GET.values()):
         ui = str(request.GET['us_in']).strip()
-        print("user_input: %s" % ui)
-
+        # print("user_input: %s" % ui)
         ip = get_client_ip(request)
         user, user_position = find_web_user(ip)
 
         if check_input(ui):
-            # if ui == "Связаться с консультантом":
-            #     return start_chat()
             if user and not user_position:
                 """ user came from a start questions """
                 send_text = user_from_start_q(ui, ip)
@@ -30,9 +27,9 @@ def chat_req_get(request):
                 return send_text
         else:
             """ random input from a user """
-            random_input(ip, user)
+            st = random_input(ip, user)
             print("\tTIME chat_req_get() = %s\n" % (perf_counter() - time_0))
-            return start_chat()
+            return st
     else:
         logging.error("request.GET is empty!")
         return start_chat()
@@ -64,10 +61,10 @@ def find_web_user(_ip: str) -> (bool, int):
             if w['ip_address'] == _ip:
                 return True, int(w['position'])
         save_web_user(_ip, 0, False)  # create new user, default position = 0
-        return True, 0  # (user, user_position)
+        return True, 0  # -> (user, user_position)
     except Exception as ex:
         logging.error("Exception in find_web_user()\n%s" % ex)
-        return False, 0  # (user, user_position)
+        return False, 0  # -> (user, user_position)
 
 
 def save_web_user(_ip: str, _user_position: int, _user: bool):
@@ -90,9 +87,7 @@ def user_from_start_q(_massage: str, ip: str):
             children = r.get_children()
             save_web_user(ip, user_position, True)
             return buttons_and_text(children, user_position)
-    print("Massage not in root_nodes.user_input")
-    save_web_user(ip, 0, True)
-    return start_chat()
+    return random_input(ip, True)
 
 
 def user_has_position(_ip, _user_position, _massage):
@@ -116,36 +111,36 @@ def user_has_position(_ip, _user_position, _massage):
                     """ if user clicked last element of the Tree - go to default branch. """
                     user_position = c.id
                     new_child = NeedHelp.objects.get(is_default=True).get_children()
-                else:
-                    """ Normal buttons in the chat. Go deeper. """
+                else:  # How to speed up: add new field -> normal_element = models.BooleanField,
+                    """ Normal buttons in the chat. Go deeper. """  # but it'l be to hard for Admin ?!
                     user_position = c.id
                     new_child = c.get_children()
 
                 save_web_user(_ip, user_position, True)
                 return buttons_and_text(new_child, user_position)
-    elif root.go_default:
-        """ if user at the last element of the Tree - go to default branch.
-        is_default=True - hidden root node for a default output that repeats at last tree element. """
-        print("root.go_default")
-        new_root = NeedHelp.objects.get(is_default=True)
-        new_child = new_root.get_children()
-        for c in new_child:
-            if _massage == c.user_input:
-                if c.go_back:
-                    """ Back to the main questions. Check_box in the Admin menu. """
-                    save_web_user(_ip, 0, True)
-                    return start_chat()
-                else:
-                    return user_has_position(_ip, new_root.id, _massage)
-        # new_user_position = new_root.id
-        # user_has_position(_ip, new_user_position, _massage)
-        # save_web_user(_ip, new_user_position, True)
-        # new_child = new_root.get_children()
-        # return buttons_and_text(new_child, new_user_position)
+        return random_input(_ip, True)
 
-    print("Massage not in root_nodes.user_input")
-    save_web_user(_ip, 0, True)
-    return start_chat()
+    elif root.go_default:
+        """ if user at the last element of the Tree - go to default branch. """
+        return go_default_branch(_ip, _massage)
+
+    return random_input(_ip, True)
+
+
+def go_default_branch(_ip, _massage):
+    """ is_default=True - hidden root node for a default output that repeats at last tree elements. """
+    print("go_default_branch()")
+    new_root = NeedHelp.objects.get(is_default=True)
+    new_child = new_root.get_children()
+    for c in new_child:
+        if _massage == c.user_input:
+            if c.go_back:
+                """ Back to the main questions. Check_box in the Admin menu. """
+                save_web_user(_ip, 0, True)
+                return start_chat()
+            else:
+                return user_has_position(_ip, new_root.id, _massage)
+    return random_input(_ip, True)
 
 
 def random_input(_ip, _user):
@@ -160,22 +155,10 @@ def buttons_and_text(_child, _user_position: int) -> str:
     'User input' = text buttons, that must be send to the chat. """
     print("buttons_and_text(); user_position: %s" % _user_position)
     btn_text = [i.user_input for i in _child]  # if i.show_ui
-    print("btn_text: %s" % btn_text)
-    # """ easy way to RegExp Array in FrontEnd. """
-    # btn = '|'.join(btn_text)
-
-    text = None
-    text_obj = HelpText.objects.get(relation_to=_user_position)
-    if text_obj:
-        text = text_obj.text
-    # ht_obj = NeedHelp.objects.get(id=_user_position).select_help_text
-    # if not text and ht_obj:
-    #     text = ht_obj.text
-    print("text: %s" % text)
+    # print("btn_text: %s" % btn_text)
+    text = HelpText.objects.get(relation_to=_user_position).text
+    # print("text: %s" % text)
     json_data = json.dumps({'btn_text': btn_text, "help_text": text}, ensure_ascii=False)
-    # print("json: %s" % json_data)
-    # """ easy way to RegExp Array of the buttons and Help Text in FrontEnd. """
-    # return "%s#####%s" % (btn, text)
     return json_data
 
 
