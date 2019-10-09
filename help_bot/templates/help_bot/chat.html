@@ -38,13 +38,15 @@
                     var pattern_1 = new RegExp(/(.+)[#]{5}/);
                     var r1 = data.match(pattern_1)[1];
                     {#//console.log(r1);#}
-                    var btn = r1.split(/[|]/);{#// Array#}
+                    var btn = r1.split(/[|]/);
+                    {#// Array#}
 
                     console.log(btn);
                     btn_length = btn.length;
 
                     var pattern_2 = new RegExp(/[#]{5}(.+[\s]+.+)+/);
-                    var text = data.match(pattern_2)[1];{#// Text#}
+                    var text = data.match(pattern_2)[1];
+                    {#// Text#}
                     {#//console.log(text);#}
 
                     $("#user_input").val('');
@@ -59,6 +61,15 @@
                 }
             });
         }
+
+        $("#btn_hide_chat").on("click", function () {
+            $("#chat_show_hide").hide();
+            $("#div_add_btn").hide();
+        });
+        $("#btn_open_chat").on("click", function () {
+            $("#chat_show_hide").show();
+            $("#div_add_btn").show();
+        });
     });
     {#//auto scroll to the bottom of the chat div#}
     window.setInterval(function () {
@@ -72,20 +83,22 @@
             class="btn btn-outline-success m-sm-1">
         Chat Bot can help you!
     </button>
-    <button id="btn_close_chat"
+    <button id="btn_hide_chat"
             class="btn btn-outline-danger m-sm-1">x
     </button>
 </p>
 
 {#<form method="post">#}
 {#{% csrf_token %}#}
-<div id="chat_div"
-     class="py-1 d-inline-flex flex-column rounded"
-     style="background-color: #F5F5F5; overflow: scroll; max-height: 400px">
-    <p hidden id="bot_text"
-       class="text-left alert alert-dark text-wrap shadow-sm rounded"></p>
-    <p hidden id="user_text"
-       class="text-right alert alert-success text-wrap shadow-sm rounded"></p>
+<div id="chat_show_hide">
+    <div id="chat_div"
+         class="py-1 d-inline-flex flex-column rounded"
+         style="background-color: #F5F5F5; overflow: scroll; max-height: 400px">
+        <p hidden id="bot_text"
+           class="text-left alert alert-dark text-wrap shadow-sm rounded"></p>
+        <p hidden id="user_text"
+           class="text-right alert alert-success text-wrap shadow-sm rounded"></p>
+    </div>
 </div>
 
 <div id="div_add_btn" class="my-2">
