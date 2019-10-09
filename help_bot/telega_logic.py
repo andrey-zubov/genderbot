@@ -122,8 +122,16 @@ def btn_and_text(child, us_pos: int):
     print("btn_text: %s" % btn_text)
     btn = [[KeyboardButton(text=i)] for i in btn_text]
 
-    text = HelpText.objects.get(relation_to=us_pos).text
+    # text = HelpText.objects.get(relation_to=us_pos).text
     # print("text: %s" % text)
+    text = None
+    text_obj = HelpText.objects.get(relation_to=us_pos)
+    if text_obj:
+        text = text_obj.text
+    # ht_obj = NeedHelp.objects.get(id=us_pos).select_help_text
+    # if not text and ht_obj:
+    #     text = ht_obj.text
+    print("text: %s" % text)
 
     return btn, text
 

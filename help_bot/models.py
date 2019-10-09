@@ -11,13 +11,15 @@ class NeedHelp(MPTTModel):
     parent = TreeForeignKey('self', on_delete=models.CASCADE, null=True, blank=True,
                             related_name='children', db_index=True)  # TODO: on_delete ?
 
-    user_input = models.CharField(max_length=100, default='-')
+    user_input = models.CharField(max_length=100, default='')
     go_back = models.BooleanField(default=False, blank=True, null=True)
     link_to = models.ForeignKey(to='NeedHelp', blank=True, null=True, default=None,
                                 on_delete=models.CASCADE)  # TODO: on_delete ?
 
     select_help_text = models.ForeignKey(to='HelpText', blank=True, null=True,
                                          on_delete=models.SET_NULL)
+    # Field - show_user_input
+    question = models.CharField(blank=True, null=True, default='', max_length=100)
 
     class MPTTMeta:
         order_insertion_by = ['name']
@@ -45,8 +47,8 @@ class HelpText(models.Model):
     relation_to = models.OneToOneField(to='NeedHelp', blank=True, null=True,
                                        on_delete=models.SET_NULL)  # TODO: on_delete ???
 
-    name = models.CharField(max_length=100, default='-')
-    text = models.TextField(max_length=2000, default='-')
+    name = models.CharField(max_length=100, null=True, blank=True, default='')
+    text = models.TextField(max_length=2000, null=True, blank=True, default='')
 
     def __str__(self):
         return self.name
@@ -54,9 +56,10 @@ class HelpText(models.Model):
 
 class StartMessage(models.Model):
     """ TBA """
-    name = models.CharField(default='-', max_length=100)
-    text = models.TextField(max_length=1000, default='-')
+    name = models.CharField(default='', max_length=100)
+    text = models.TextField(max_length=1000, default='')
 
+    # field_type = models.
     def __str__(self):
         return self.name
 

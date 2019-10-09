@@ -1,3 +1,4 @@
+import json
 import logging
 from time import perf_counter
 
@@ -15,6 +16,8 @@ def chat_req_get(request):
         user, user_position = find_web_user(ip)
 
         if check_input(ui):
+            # if ui == "Связаться с консультантом":
+            #     return start_chat()
             if user and not user_position:
                 """ user came from a start questions """
                 send_text = user_from_start_q(ui, ip)
@@ -41,11 +44,16 @@ def start_chat() -> str:
     root_nodes = NeedHelp.objects.root_nodes()
     btn_text = [i.user_input for i in root_nodes]
     print("btn_text: %s" % btn_text)
-    """ easy way to RegExp Array in FrontEnd. """
-    btn = '|'.join(btn_text)
-    text = StartMessage.objects.get().text
-    """ easy way to RegExp Array of the buttons and Help Text in FrontEnd. """
-    return "%s#####%s" % (btn, text)
+    # """ easy way to RegExp Array in FrontEnd. """
+    # btn = '|'.join(btn_text)
+    text = StartMessage.objects.get(id=1).text
+
+    json_data = json.dumps({'btn_text': btn_text, "help_text": text}, ensure_ascii=False)
+    # print("json: %s" % json_data)
+
+    # """ easy way to RegExp Array of the buttons and Help Text in FrontEnd. """
+    # return "%s#####%s" % (btn, text)
+    return json_data
 
 
 def find_web_user(_ip: str) -> (bool, int):
@@ -125,14 +133,24 @@ def buttons_and_text(_child, _user_position: int) -> str:
     """ Avery Tree Field in the Admin menu has 'User input' option.
     'User input' = text buttons, that must be send to the chat. """
     print("buttons_and_text(); user_position: %s" % _user_position)
-    btn_text = [i.user_input for i in _child]
+    btn_text = [i.user_input for i in _child]  # if i.show_ui
     print("btn_text: %s" % btn_text)
-    """ easy way to RegExp Array in FrontEnd. """
-    btn = '|'.join(btn_text)
-    text = HelpText.objects.get(relation_to=_user_position).text
+    # """ easy way to RegExp Array in FrontEnd. """
+    # btn = '|'.join(btn_text)
+
+    text = None
+    text_obj = HelpText.objects.get(relation_to=_user_position)
+    if text_obj:
+        text = text_obj.text
+    # ht_obj = NeedHelp.objects.get(id=_user_position).select_help_text
+    # if not text and ht_obj:
+    #     text = ht_obj.text
     print("text: %s" % text)
-    """ easy way to RegExp Array of the buttons and Help Text in FrontEnd. """
-    return "%s#####%s" % (btn, text)
+    json_data = json.dumps({'btn_text': btn_text, "help_text": text}, ensure_ascii=False)
+    # print("json: %s" % json_data)
+    # """ easy way to RegExp Array of the buttons and Help Text in FrontEnd. """
+    # return "%s#####%s" % (btn, text)
+    return json_data
 
 
 def check_input(string: str) -> bool:

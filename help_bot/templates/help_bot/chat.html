@@ -31,32 +31,38 @@
                 'data': {'us_in': us_in},
                 success: function (data) {
                     {#//console.log(data);#}
+                    var json_data = jQuery.parseJSON(data);
+                    console.log("json_data: ", json_data);
+                    {#console.log("_btn", _json._btn);#}
+                    {#console.log("_text", _json._text);#}
                     for (var r = 0; r < btn_length; r++) {
                         $("#id_new_btn").remove();
                     }
 
-                    var pattern_1 = new RegExp(/(.+)[#]{5}/);
-                    var r1 = data.match(pattern_1)[1];
+                    {#var pattern_1 = new RegExp(/(.+)[#]{5}/, 'm');#}
+                    {#var r1 = data.match(pattern_1)[1];#}
                     {#//console.log(r1);#}
-                    var btn = r1.split(/[|]/);
+                    {#var btn = r1.split(/[|]/);#}
                     {#// Array#}
 
-                    console.log(btn);
-                    btn_length = btn.length;
+                    {#console.log(btn);#}
+                    {#btn_length = btn.length;#}
+                    btn_length = json_data.btn_text.length;
 
-                    var pattern_2 = new RegExp(/[#]{5}(.+[\s]+.+)+/);
-                    var text = data.match(pattern_2)[1];
+                    {#var pattern_2 = new RegExp(/[#]{5}(.+[\s]+.+)+/, 'm');#}
+                    {#var text = data.match(pattern_2)[1];#}
+
                     {#// Text#}
                     {#//console.log(text);#}
 
                     $("#user_input").val('');
-                    $("#chat_div").append(bot_p_new.text(text));
+                    $("#chat_div").append(bot_p_new.text(json_data.help_text));
 
                     for (var i = 0; i < btn_length; i++) {
                         {#//console.log(btn[i]);#}
                         var btn_clone = btn_s_new.clone();
                         btn_clone.attr('id', 'id_new_btn').on("click", foo);
-                        $("#div_add_btn").append(btn_clone.text(btn[i]));
+                        $("#div_add_btn").append(btn_clone.text(json_data.btn_text[i]));
                     }
                 }
             });
@@ -82,6 +88,10 @@
     <button id="btn_open_chat"
             class="btn btn-outline-success m-sm-1">
         Chat Bot can help you!
+    </button>
+    <button id="btn_consultant"
+            class="btn btn-outline-info m-sm-1">
+        Связаться с консультантом
     </button>
     <button id="btn_hide_chat"
             class="btn btn-outline-danger m-sm-1">x
