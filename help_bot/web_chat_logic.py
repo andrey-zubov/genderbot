@@ -41,7 +41,7 @@ def start_chat() -> str:
     root_nodes = NeedHelp.objects.root_nodes()
     btn_text = [i.user_input for i in root_nodes if not i.is_default]
     print("btn_text: %s" % btn_text)
-    text = StartMessage.objects.get(default=True).text
+    text = StartMessage.objects.get(default=True).text.replace("\n", "<br>")
     json_data = json.dumps({'btn_text': btn_text, "help_text": text}, ensure_ascii=False)
     # print("json: %s" % json_data)
     return json_data
@@ -153,7 +153,8 @@ def buttons_and_text(_child, _user_position: int) -> str:
     print("buttons_and_text()")
     btn_text = [i.user_input for i in _child]
     # print("btn_text: %s" % btn_text)
-    text = HelpText.objects.get(relation_to=_user_position).text
+    text = HelpText.objects.get(relation_to=_user_position).text.replace("\n", "<br>")
+    # text  # TODO: url -> <a>
     # print("text: %s" % text)
     json_data = json.dumps({'btn_text': btn_text, "help_text": text}, ensure_ascii=False)
     return json_data
