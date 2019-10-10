@@ -5,11 +5,11 @@ from time import perf_counter
 from help_bot.models import (NeedHelp, StartMessage, ChatPositionWeb, HelpText)
 
 
-def chat_req_get(request):
+def chat_req_get(request) -> str:
     """ TBA """
     time_0 = perf_counter()
     if any(request.GET.values()):
-        ui = str(request.GET['us_in']).strip()
+        ui = request.GET['us_in'].strip()
         # print("user_input: %s" % ui)
         ip = get_client_ip(request)
         user, user_position = find_web_user(ip)
@@ -41,33 +41,30 @@ def start_chat() -> str:
     root_nodes = NeedHelp.objects.root_nodes()
     btn_text = [i.user_input for i in root_nodes if not i.is_default]
     print("btn_text: %s" % btn_text)
-    # """ easy way to RegExp Array in FrontEnd. """
-    # btn = '|'.join(btn_text)
     text = StartMessage.objects.get(default=True).text
-
     json_data = json.dumps({'btn_text': btn_text, "help_text": text}, ensure_ascii=False)
     # print("json: %s" % json_data)
-
-    # """ easy way to RegExp Array of the buttons and Help Text in FrontEnd. """
-    # return "%s#####%s" % (btn, text)
     return json_data
 
 
 def find_web_user(_ip: str) -> (bool, int):
-    print("find_web_user(); ip: %s" % _ip)
+    """ If user has ever used HelpBot -> find chat_id id DB and get user last position.
+    Else set user_position = 0. """
+    print("find_web_user()")
     try:
         chat_web_all = ChatPositionWeb.objects.all().values()
         for w in chat_web_all:
             if w['ip_address'] == _ip:
-                return True, int(w['position'])
-        save_web_user(_ip, 0, False)  # create new user, default position = 0
-        return True, 0  # -> (user, user_position)
+                return True, w['position']
+        save_web_user(_ip, 0, False)
+        return True, 0
     except Exception as ex:
         logging.error("Exception in find_web_user()\n%s" % ex)
-        return False, 0  # -> (user, user_position)
+        return False, 0
 
 
 def save_web_user(_ip: str, _user_position: int, _user: bool):
+    """ save user current position or create new user with default position = 0. """
     print("save_web_user(); ip: %s, us_pos: %s, user: %s" % (_ip, _user_position, _user))
     if _user:
         web_chat = ChatPositionWeb.objects.get(ip_address=_ip)
@@ -77,9 +74,9 @@ def save_web_user(_ip: str, _user_position: int, _user: bool):
         ChatPositionWeb(ip_address=_ip, position=_user_position).save()
 
 
-def user_from_start_q(_massage: str, ip: str):
+def user_from_start_q(_massage: str, ip: str) -> str:
     """ user came from a start questions """
-    print("user_from_start_q(); m: %s; ip: %s" % (_massage, ip))
+    print("user_from_start_q()")
     root_node = NeedHelp.objects.root_nodes()
     for r in root_node:
         if _massage == r.user_input:
@@ -90,9 +87,9 @@ def user_from_start_q(_massage: str, ip: str):
     return random_input(ip, True)
 
 
-def user_has_position(_ip, _user_position, _massage):
+def user_has_position(_ip: str, _user_position: int, _massage: str) -> str:
     """ user used HelpBot and have last saved position """
-    print("user_has_position(); ip: %s, us_pos: %s" % (_ip, _user_position))
+    print("user_has_position()")
     root = NeedHelp.objects.get(id=_user_position)
     child = root.get_children()
     if child:
@@ -127,7 +124,7 @@ def user_has_position(_ip, _user_position, _massage):
     return random_input(_ip, True)
 
 
-def go_default_branch(_ip, _massage):
+def go_default_branch(_ip: str, _massage: str) -> str:
     """ is_default=True - hidden root node for a default output that repeats at last tree elements. """
     print("go_default_branch()")
     new_root = NeedHelp.objects.get(is_default=True)
@@ -143,7 +140,7 @@ def go_default_branch(_ip, _massage):
     return random_input(_ip, True)
 
 
-def random_input(_ip, _user):
+def random_input(_ip: str, _user: bool) -> str:
     """ Reset user position to the Start Questions menu. """
     print("random_input()")
     save_web_user(_ip, 0, _user)
@@ -153,8 +150,8 @@ def random_input(_ip, _user):
 def buttons_and_text(_child, _user_position: int) -> str:
     """ Avery Tree Field in the Admin menu has 'User input' option.
     'User input' = text buttons, that must be send to the chat. """
-    print("buttons_and_text(); user_position: %s" % _user_position)
-    btn_text = [i.user_input for i in _child]  # if i.show_ui
+    print("buttons_and_text()")
+    btn_text = [i.user_input for i in _child]
     # print("btn_text: %s" % btn_text)
     text = HelpText.objects.get(relation_to=_user_position).text
     # print("text: %s" % text)
@@ -170,7 +167,7 @@ def check_input(string: str) -> bool:
     return False
 
 
-def get_client_ip(request):
+def get_client_ip(request) -> str:
     print("get_client_ip()")
     # print("request.META: %s" % request.META)
     # print("User.HTTP_COOKIE: %s" % request.META.get('HTTP_COOKIE'))
