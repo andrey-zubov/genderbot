@@ -60,7 +60,8 @@ def save_telegram_user(_chat_id: int, _us_pos: int, _user: bool):
         chat.save()
 
         if _us_pos:
-            st_web = StatisticTelegram.objects.get(id=_us_pos)
+            st_web = NeedHelp.objects.get(id=_us_pos).statistic_telegram
+            # st_web = StatisticTelegram.objects.get(id=_us_pos)
             st_web.count += 1
             st_web.save()
     else:

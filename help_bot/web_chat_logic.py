@@ -73,7 +73,8 @@ def save_web_user(_ip: str, _user_position: int, _user: bool):
         web_chat.save()
 
         if _user_position:
-            st_web = StatisticWeb.objects.get(id=_user_position)
+            st_web = NeedHelp.objects.get(id=_user_position).statistic_web
+            # st_web = StatisticWeb.objects.get(id=_user_position)
             st_web.count += 1
             st_web.save()
     else:

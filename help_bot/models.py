@@ -35,21 +35,40 @@ class NeedHelp(MPTTModel):
 
     def save(self, **kwargs):
         """ AutoCreate and AutoSave ForeignKey(and it values) to StatisticWeb and StatisticTelegram """
+
         try:
             sw_c = self.statistic_web.count
         except:
             sw_c = 0
-        sw = StatisticWeb(id=self.id, count=sw_c)
-        sw.save()
-        self.statistic_web = sw
-
         try:
             st_c = self.statistic_telegram.count
         except:
             st_c = 0
-        st = StatisticTelegram(id=self.id, count=st_c)
+
+        if self.id:
+            # sw = NeedHelp.objects.get(id=self.id).statistic_web
+            sw = self.statistic_web
+            if sw:
+                sw.count = sw_c
+            else:
+                sw = StatisticWeb(id=self.id, count=sw_c)
+                sw.count = sw_c
+            # st = NeedHelp.objects.get(id=self.id).statistic_telegram
+            st = self.statistic_telegram
+            if st:
+                st.count = st_c
+            else:
+                st = StatisticTelegram(id=self.id, count=st_c)
+                st.count = st_c
+        else:
+            sw = StatisticWeb(count=sw_c)
+            st = StatisticTelegram(count=st_c)
+
+        sw.save()
+        self.statistic_web = sw
         st.save()
         self.statistic_telegram = st
+
         super(NeedHelp, self).save(**kwargs)
 
 
@@ -58,7 +77,7 @@ class TelegramBot(models.Model):
     name = models.CharField(max_length=50, blank=True, null=True)
     token = models.CharField(max_length=100, blank=True, null=True)
     web_hook = models.CharField(max_length=200, blank=True, null=True)
-    in_work = models.BooleanField(default=False)
+    in_work = models.BooleanField(default=False)  # TODO: rename - default
 
     def __str__(self):
         return self.name
