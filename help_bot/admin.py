@@ -4,17 +4,10 @@ from mptt.admin import MPTTModelAdmin
 from help_bot.models import (NeedHelp, TelegramBot, HelpText, StartMessage, StatisticWeb, StatisticTelegram)
 
 
-# class NeedHelp1t1Admin(admin.StackedInline):
-#     model = NeedHelp
-
-# class InlineStatisticWeb(admin.StackedInline):
-#     model = StatisticWeb
-#     extra = 1
-
-
 class InlineHelpText(admin.StackedInline):
     model = HelpText
     extra = 1
+    max_num = 1
 
 
 class NeedHelpAdmin(MPTTModelAdmin):
@@ -27,19 +20,22 @@ class NeedHelpAdmin(MPTTModelAdmin):
     inlines = [InlineHelpText]
 
     model = NeedHelp
-    fields = ['name', 'parent', 'user_input', 'question', 'go_back', 'link_to', 'go_default',
-              'is_default']  # , 'select_help_text'
+    fieldsets = (
+        (None, {
+            'fields': (('name', 'parent'), 'user_input', 'question', ('go_back', 'go_default', 'is_default', 'link_to'))
+        }),
+    )
     list_display = ('name', 'parent', 'user_input', 'question', 'go_back', 'link_to', 'go_default',
-                    'is_default',)  #
-    # list_filter = ('name', 'parent', 'user_input', 'go_back', 'link_to',)
+                    'is_default')  #
     search_fields = ('name',)
+    autocomplete_fields = ('parent', 'link_to')
 
 
 class TelegramAdmin(admin.ModelAdmin):
     model = TelegramBot
     fields = ['name', 'token', 'web_hook', 'in_work']
-    list_display = ('name', 'token', 'web_hook', 'in_work',)
-    list_filter = ('name', 'web_hook',)
+    list_display = ('name', 'token', 'web_hook', 'in_work')
+    list_filter = ('web_hook',)
     search_fields = ('name',)
 
 
@@ -47,26 +43,28 @@ class HelpTextAdmin(admin.ModelAdmin):
     # inlines = [NeedHelp1t1Admin]
     model = HelpText
     fields = ['name', 'text', 'relation_to']
-    list_display = ('name', 'relation_to',)
-    # list_filter = ('name',)
+    list_display = ('name', 'relation_to')
+    list_filter = ('relation_to',)
     search_fields = ('name',)
 
 
 class StartMessageAdmin(admin.ModelAdmin):
     model = StartMessage
     fields = ['name', 'text', 'default']
-    list_display = ('name', 'text', 'default',)
+    list_display = ('name', 'text', 'default')
     search_fields = ('name',)
 
 
 class StatisticWebAdmin(admin.ModelAdmin):
     model = StatisticWeb
+    readonly_fields = ('count',)
     fields = ('count',)
     list_display = ('count',)
 
 
 class StatisticTelegramAdmin(admin.ModelAdmin):
     model = StatisticTelegram
+    readonly_fields = ('count',)
     fields = ('count',)
     list_display = ('count',)
 
