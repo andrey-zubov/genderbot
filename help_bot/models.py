@@ -7,19 +7,22 @@ class NeedHelp(MPTTModel):
     # http://django-mptt.github.io/django-mptt/models.html
     """
     name = models.CharField(max_length=100)
-    parent = TreeForeignKey('self', on_delete=models.CASCADE, null=True, blank=True,
+    parent = TreeForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True,
                             related_name='children', db_index=True)  # TODO: on_delete ?
     user_input = models.CharField(max_length=100, default='')
     go_back = models.BooleanField(default=False, blank=True, null=True)
     link_to = models.ForeignKey(to='NeedHelp', blank=True, null=True, default=None,
-                                on_delete=models.CASCADE)  # TODO: on_delete ?
-    select_help_text = models.ForeignKey(to='HelpText', blank=True, null=True,
-                                         on_delete=models.SET_NULL)
+                                on_delete=models.SET_NULL)  # TODO: on_delete ?
+    # select_help_text = models.ForeignKey(to='HelpText', blank=True, null=True,
+    #                                      on_delete=models.SET_NULL)
     question = models.CharField(blank=True, null=True, default='', max_length=100)
     """ last element in the tree branch """
     go_default = models.BooleanField(default=False, blank=True, null=True)
     """ hidden root node for a default output that repeats at last tree element """
     is_default = models.BooleanField(default=False, blank=True, null=True)
+
+    statistic_web = models.ForeignKey(to='StatisticWeb', on_delete=models.CASCADE, null=True, blank=True)
+    statistic_telegram = models.ForeignKey(to='StatisticTelegram', on_delete=models.CASCADE, null=True, blank=True)
 
     class MPTTMeta:
         order_insertion_by = ['name']
@@ -29,6 +32,25 @@ class NeedHelp(MPTTModel):
 
     def __str__(self):
         return self.name
+
+    def save(self, **kwargs):
+        """ AutoCreate and AutoSave ForeignKey(and it values) to StatisticWeb and StatisticTelegram """
+        try:
+            sw_c = self.statistic_web.count
+        except:
+            sw_c = 0
+        sw = StatisticWeb(id=self.id, count=sw_c)
+        sw.save()
+        self.statistic_web = sw
+
+        try:
+            st_c = self.statistic_telegram.count
+        except:
+            st_c = 0
+        st = StatisticTelegram(id=self.id, count=st_c)
+        st.save()
+        self.statistic_telegram = st
+        super(NeedHelp, self).save(**kwargs)
 
 
 class TelegramBot(models.Model):
@@ -82,3 +104,13 @@ class ChatPositionWeb(models.Model):
     ip_address = models.GenericIPAddressField()
     """ user chat-bot position """
     position = models.PositiveIntegerField(default=0)
+
+
+class StatisticWeb(models.Model):
+    """ """
+    count = models.PositiveIntegerField(default=0)
+
+
+class StatisticTelegram(models.Model):
+    """ """
+    count = models.PositiveIntegerField(default=0)

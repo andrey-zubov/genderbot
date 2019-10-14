@@ -10,7 +10,7 @@ class MainPage(TemplateView):
     template_name = 'help_bot/main_page.html'
 
     def get(self, request, *args, **kwargs):
-        print("MainPage.request.META: %s" % request.META)
+        # print("MainPage.request.META: %s" % request.META)
         return render(request, template_name=self.template_name)
 
     def post(self, request):

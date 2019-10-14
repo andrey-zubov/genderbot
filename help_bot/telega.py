@@ -1,9 +1,20 @@
 import logging
+import os
+import sys
 from time import perf_counter
 
+import django
 from telegram import ReplyKeyboardMarkup
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 
+path = os.path.expanduser('/home/bequite/PycharmProjects/HelpBot')
+if path not in sys.path:
+    sys.path.insert(0, path)
+# os.environ['DJANGO_SETTINGS_MODULE'] = 'HelpBot.settings'
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "HelpBot.settings")
+django.setup()
+
+from help_bot.models import TelegramBot
 from help_bot.telega_logic import keyboard_button
 
 
@@ -83,7 +94,6 @@ def key_bord(update, context):
 def go_go_bot():
     print("telega.go_go_bot()")
 
-    from help_bot.models import TelegramBot
     bot = TelegramBot.objects.get(in_work=True)
     print('bot_name: %s' % bot.name)
 

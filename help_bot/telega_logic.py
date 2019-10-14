@@ -1,14 +1,9 @@
 import logging
-import os
 from time import perf_counter
 
-import django
 from telegram import KeyboardButton
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "HelpBot.settings")
-django.setup()
-
-from help_bot.models import (NeedHelp, HelpText, StartMessage, ChatPositionTelegram)
+from help_bot.models import (NeedHelp, HelpText, StartMessage, ChatPositionTelegram, StatisticTelegram)
 
 
 def keyboard_button(_massage: str, _chat_id: int) -> (list, str):
@@ -58,11 +53,16 @@ def find_telegram_user(_chat_id: int) -> (bool, int):
 
 def save_telegram_user(_chat_id: int, _us_pos: int, _user: bool):
     """ save user current position or create new user with default position = 0. """
-    print("save_telegram_user(); ip: %s, us_pos: %s, user: %s" % (_chat_id, _us_pos, _user))
+    print("save_telegram_user(); chat_id: %s, us_pos: %s, user: %s" % (_chat_id, _us_pos, _user))
     if _user:
         chat = ChatPositionTelegram.objects.get(chat_id=_chat_id)
         chat.position = _us_pos
         chat.save()
+
+        if _us_pos:
+            st_web = StatisticTelegram.objects.get(id=_us_pos)
+            st_web.count += 1
+            st_web.save()
     else:
         ChatPositionTelegram(chat_id=_chat_id, position=_us_pos).save()
 

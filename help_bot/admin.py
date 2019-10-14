@@ -1,15 +1,20 @@
 from django.contrib import admin
 from mptt.admin import MPTTModelAdmin
 
-from help_bot.models import (NeedHelp, TelegramBot, HelpText, StartMessage)
+from help_bot.models import (NeedHelp, TelegramBot, HelpText, StartMessage, StatisticWeb, StatisticTelegram)
 
 
 # class NeedHelp1t1Admin(admin.StackedInline):
 #     model = NeedHelp
 
+# class InlineStatisticWeb(admin.StackedInline):
+#     model = StatisticWeb
+#     extra = 1
 
-class HelpTextForTreeAdmin(admin.StackedInline):
+
+class InlineHelpText(admin.StackedInline):
     model = HelpText
+    extra = 1
 
 
 class NeedHelpAdmin(MPTTModelAdmin):
@@ -19,7 +24,7 @@ class NeedHelpAdmin(MPTTModelAdmin):
     #  2) Admin filter class which filters models related to parent model with all it’s descendants.
     #  http://django-mptt.github.io/django-mptt/admin.html#mptt-admin-treerelatedfieldlistfilter
 
-    inlines = [HelpTextForTreeAdmin]
+    inlines = [InlineHelpText]
 
     model = NeedHelp
     fields = ['name', 'parent', 'user_input', 'question', 'go_back', 'link_to', 'go_default',
@@ -42,8 +47,8 @@ class HelpTextAdmin(admin.ModelAdmin):
     # inlines = [NeedHelp1t1Admin]
     model = HelpText
     fields = ['name', 'text', 'relation_to']
-    list_display = ('name',)
-    list_filter = ('name',)
+    list_display = ('name', 'relation_to',)
+    # list_filter = ('name',)
     search_fields = ('name',)
 
 
@@ -54,7 +59,21 @@ class StartMessageAdmin(admin.ModelAdmin):
     search_fields = ('name',)
 
 
+class StatisticWebAdmin(admin.ModelAdmin):
+    model = StatisticWeb
+    fields = ('count',)
+    list_display = ('count',)
+
+
+class StatisticTelegramAdmin(admin.ModelAdmin):
+    model = StatisticTelegram
+    fields = ('count',)
+    list_display = ('count',)
+
+
 admin.site.register(NeedHelp, NeedHelpAdmin)
 admin.site.register(TelegramBot, TelegramAdmin)
 admin.site.register(HelpText, HelpTextAdmin)
 admin.site.register(StartMessage, StartMessageAdmin)
+admin.site.register(StatisticWeb, StatisticWebAdmin)
+admin.site.register(StatisticTelegram, StatisticTelegramAdmin)
