@@ -18,8 +18,7 @@
             if (us_in === '') {
                 if ($(this).text().length < 50) {
                     {#//because Auto start with $(foo) collect all JS+Html code on $(this).text()#}
-                    {#//and send it to the Chat!#}
-                    {#//if -> max length on a text button (UserInput in DB)#}
+                    {#//and send it to the Chat! if -> max length on a text button (UserInput in DB)#}
                     us_in = $(this).text()
                 }
             }
@@ -61,17 +60,8 @@
 </script>
 
 <p>
-    <button id="btn_open_chat"
-            class="btn btn-outline-success m-sm-1">
-        Chat Bot can help you!
-    </button>
-    <button id="btn_consultant"
-            class="btn btn-outline-info m-sm-1">
-        Связаться с консультантом
-    </button>
-    <button id="btn_hide_chat"
-            class="btn btn-outline-danger m-sm-1">x
-    </button>
+    <button id="btn_open_chat" class="btn btn-outline-success m-sm-1">Chat Bot can help you!</button>
+    <button id="btn_hide_chat" class="btn btn-outline-danger m-sm-1">x</button>
 </p>
 
 {#<form method="post">#}
@@ -80,7 +70,8 @@
     <div id="chat_div"
          class="py-1 d-inline-flex flex-column rounded"
          style="background-color: #F5F5F5; overflow: scroll; max-height: 400px">
-        <p hidden id="bot_text" class="text-left alert alert-dark text-wrap shadow-sm rounded"></p>
+        <p hidden id="bot_text"
+           class="text-left alert alert-dark text-wrap shadow-sm rounded"></p>
         {# <div hidden id="bot_text" class="text-left alert alert-dark text-wrap shadow-sm rounded"></div>#}
         <p hidden id="user_text"
            class="text-right alert alert-success text-wrap shadow-sm rounded"></p>
@@ -88,17 +79,12 @@
 </div>
 
 <div id="div_add_btn" class="my-2">
-    <button hidden id="btn_select" type="button"
-            class="btn btn-outline-primary m-sm-1"></button>
+    <button hidden id="btn_select" type="button" class="btn btn-outline-primary m-sm-1"></button>
 </div>
 
-<div class="my-2">
-    <label for="user_input">Send msg</label>
-    <input id="user_input" type="text">
-
-    <button type="button" id="btn_send"
-            class="btn btn-outline-success m-sm-1">
-        Send
-    </button>
-</div>
+{#<div class="my-2">#}
+{#    <label for="user_input">Send msg</label>#}
+{#    <input id="user_input" type="text">#}
+{#    <button type="button" id="btn_send" class="btn btn-outline-success m-sm-1">Send</button>#}
+{#</div>#}
 {#</form>#}
