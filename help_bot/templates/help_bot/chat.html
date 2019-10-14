@@ -23,15 +23,12 @@
                     us_in = $(this).text()
                 }
             }
-            {#//console.log(us_in);#}
             $("#chat_div").append(user_t_new.text(us_in));
             $.ajax({
                 'url':{% url 'chat_test' %},
                 'data': {'us_in': us_in},
                 success: function (data) {
-                    {#//console.log(data);#}
                     var json_data = jQuery.parseJSON(data);
-                    {#//console.log("json_data: ", json_data);#}
                     for (var r = 0; r < btn_length; r++) {
                         {#// remove all old buttons#}
                         $("#id_new_btn").remove();
@@ -40,6 +37,8 @@
 
                     $("#user_input").val('');
                     $("#chat_div").append(bot_p_new.html(json_data.help_text));
+                    {#//auto scroll to the bottom of the chat div#}
+                    $("#chat_div").animate({scrollTop: $('#chat_div').prop("scrollHeight")}, 1000);
 
                     for (var i = 0; i < btn_length; i++) {
                         var btn_clone = btn_s_new.clone();
@@ -49,6 +48,7 @@
                 }
             });
         }
+
         $("#btn_hide_chat").on("click", function () {
             $("#chat_show_hide").hide();
             $("#div_add_btn").hide();
@@ -58,11 +58,6 @@
             $("#div_add_btn").show();
         });
     });
-    {#//auto scroll to the bottom of the chat div#}
-    window.setInterval(function () {
-        var elem = document.getElementById("chat_div");
-        elem.scrollTop = elem.scrollHeight;
-    }, 1000);
 </script>
 
 <p>
@@ -86,7 +81,7 @@
          class="py-1 d-inline-flex flex-column rounded"
          style="background-color: #F5F5F5; overflow: scroll; max-height: 400px">
         <p hidden id="bot_text" class="text-left alert alert-dark text-wrap shadow-sm rounded"></p>
-{#        <div hidden id="bot_text" class="text-left alert alert-dark text-wrap shadow-sm rounded"></div>#}
+        {# <div hidden id="bot_text" class="text-left alert alert-dark text-wrap shadow-sm rounded"></div>#}
         <p hidden id="user_text"
            class="text-right alert alert-success text-wrap shadow-sm rounded"></p>
     </div>

@@ -8,13 +8,11 @@ class NeedHelp(MPTTModel):
     """
     name = models.CharField(max_length=100)
     parent = TreeForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True,
-                            related_name='children', db_index=True)  # TODO: on_delete ?
+                            related_name='children', db_index=True)
+
     user_input = models.CharField(max_length=100, default='')
     go_back = models.BooleanField(default=False, blank=True, null=True)
-    link_to = models.ForeignKey(to='NeedHelp', blank=True, null=True, default=None,
-                                on_delete=models.SET_NULL)  # TODO: on_delete ?
-    # select_help_text = models.ForeignKey(to='HelpText', blank=True, null=True,
-    #                                      on_delete=models.SET_NULL)
+    link_to = models.ForeignKey(to='NeedHelp', blank=True, null=True, default=None, on_delete=models.SET_NULL)
     question = models.CharField(blank=True, null=True, default='', max_length=100)
     """ last element in the tree branch """
     go_default = models.BooleanField(default=False, blank=True, null=True)
