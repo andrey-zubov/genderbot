@@ -8,26 +8,29 @@
 
     <h3>Tree</h3>
 
-    <a class="btn btn-primary" data-toggle="collapse" href="#collapseExample" role="button"
-       aria-expanded="false" aria-controls="collapseExample">
-        Link with href
-    </a>
-    <div class="collapse" id="collapseExample">
-        Text
-    </div>
-
     {% load mptt_tags %}
     <div class="root">
         {% recursetree nodes %}
             <div>
                 {% if node.get_children %}
-                    <a class="btn btn-primary" data-toggle="collapse" href="#collapseExample{{ node.id }}" role="button"
-                       aria-expanded="false" aria-controls="collapseExample{{ node.id }}">
-                        {{ node.name }} [{{ node.id }}, get_ancestors.last: {{ node.get_ancestors.last.id }}]   <!--get_children True-->
-                    </a>
+                    {% if node.get_ancestors.count >= 1 %}
+                        <div class="collapse" id="collapseExample{{ node.get_ancestors.last.id }}">
+                            <a class="btn btn-outline-primary btn-sm my-1" role="button"
+                               data-toggle="collapse" href="#collapseExample{{ node.id }}"
+                               aria-expanded="false" aria-controls="collapseExample{{ node.id }}">
+                                {{ node.name }}
+                            </a>
+                        </div>
+                    {% else %}
+                        <a class="btn btn-outline-primary btn-sm my-1" role="button"
+                           data-toggle="collapse" href="#collapseExample{{ node.id }}"
+                           aria-expanded="false" aria-controls="collapseExample{{ node.id }}">
+                            {{ node.name }}
+                        </a>
+                    {% endif %}
                 {% else %}
-                    <div class="collapse" id="collapseExample{{ node.get_ancestors.last.id }}">
-                        {{ node.name }} [get_ancestors.last: {{ node.get_ancestors.last.id }}] <!--get_children False-->
+                    <div class="collapse my-1" id="collapseExample{{ node.get_ancestors.last.id }}">
+                        {{ node.name }}
                     </div>
                 {% endif %}
                 {% if not node.is_leaf_node %}
