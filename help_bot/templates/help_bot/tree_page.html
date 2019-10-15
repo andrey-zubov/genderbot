@@ -8,18 +8,35 @@
 
     <h3>Tree</h3>
 
+    <a class="btn btn-primary" data-toggle="collapse" href="#collapseExample" role="button"
+       aria-expanded="false" aria-controls="collapseExample">
+        Link with href
+    </a>
+    <div class="collapse" id="collapseExample">
+        Text
+    </div>
+
     {% load mptt_tags %}
-    <ul class="root">
+    <div class="root">
         {% recursetree nodes %}
-            <li>
-                {{ node.name }}
-                {% if not node.is_leaf_node %}
-                    <ul class="children">
-                        {{ children }}
-                    </ul>
+            <div>
+                {% if node.get_children %}
+                    <a class="btn btn-primary" data-toggle="collapse" href="#collapseExample{{ node.id }}" role="button"
+                       aria-expanded="false" aria-controls="collapseExample{{ node.id }}">
+                        {{ node.name }} [{{ node.id }}, get_ancestors.last: {{ node.get_ancestors.last.id }}]   <!--get_children True-->
+                    </a>
+                {% else %}
+                    <div class="collapse" id="collapseExample{{ node.get_ancestors.last.id }}">
+                        {{ node.name }} [get_ancestors.last: {{ node.get_ancestors.last.id }}] <!--get_children False-->
+                    </div>
                 {% endif %}
-            </li>
+                {% if not node.is_leaf_node %}
+                    <div class="children">
+                        {{ children }}
+                    </div>
+                {% endif %}
+            </div>
         {% endrecursetree %}
-    </ul>
+    </div>
 
 {% endblock %}

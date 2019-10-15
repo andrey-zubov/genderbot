@@ -1,3 +1,5 @@
+from time import perf_counter
+
 from help_bot.models import (NeedHelp)
 
 """
@@ -8,8 +10,9 @@ from help_bot.models import (NeedHelp)
 """
 
 
-def get_statistic_web_chat():
-
+def get_chat_statistic():
+    print("get_chat_statistic()")
+    time_0 = perf_counter()
     nh_all = NeedHelp.objects.all()
     nh_all_len = len(nh_all)
 
@@ -21,10 +24,12 @@ def get_statistic_web_chat():
 
     # send
     response = {
+        "nh_all": nh_all,
         "nh_all_len": nh_all_len,
         "count_web_sum": count_web_sum,
         "count_tel_sum": count_tel_sum,
     }
+    print("get_chat_statistic() - OK; TIME: %s" % (perf_counter() - time_0))
     return response
 
 

@@ -5,7 +5,7 @@
 
     <div class="container">
         <h3>Hello Chat statistic</h3>
-
+        <br>
         <h6>Всего элементов дерева отслеживается: {{ my_data.nh_all_len }}.</h6>
         <h6 class="mt-2">1. Суммарная статистика переходов по "дереву" чат-бота:</h6>
         <div class="container my-2">
@@ -40,7 +40,20 @@
                 <div class="col-sm border">{{ d }}</div>
             </div>
         </div>
+        <br>
+        <h6 class="mt-2">2. Подробная статистика переходов по "дереву" чат-бота:</h6>
+        <input class="form-control" id="input_for_table_2" type="text" placeholder="Search..">
+        <br>
+        <div class="container my-2" id="table_2">
+            <div class="row bg-light">
+                <div class="col-sm border"></div>
+                <div class="col-sm border">сумма</div>
+                <div class="col-sm border">на сайте</div>
+                <div class="col-sm border">в telegram</div>
+            </div>
 
+        </div>
+        <br>
         <!-- Graphics-->
         <div class="mt-2">
             <h4>Graphics:</h4>
@@ -59,6 +72,19 @@
             <button id="randomizeData">Randomize Data</button>
         </div>
     </div>
+
+    <script>
+        {#// Perform a case-insensitive search for items in a table#}
+        $(document).ready(function () {
+            $("#input_for_table_2").on("keyup", function () {
+                var value = $(this).val().toLowerCase();
+                $("#table_2").filter(function () {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+        });
+    </script>
+
     <script>
         'use strict';
 
