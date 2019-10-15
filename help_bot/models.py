@@ -93,10 +93,10 @@ class NeedHelp(MPTTModel):
 
 class TelegramBot(models.Model):
     """ TBA """
-    name = models.CharField(max_length=50, blank=True, null=True)
+    name = models.CharField(max_length=50, blank=True, null=True, verbose_name="Название")
     token = models.CharField(max_length=100, blank=True, null=True)
     web_hook = models.CharField(max_length=200, blank=True, null=True)
-    in_work = models.BooleanField(default=False)  # TODO: rename - default
+    in_work = models.BooleanField(default=False, verbose_name="Выбран", help_text="Выбран как основной для работы.")
 
     class Meta:
         verbose_name = 'Телеграм бот'
@@ -109,7 +109,7 @@ class TelegramBot(models.Model):
 class HelpText(models.Model):
     """ TBA """
     relation_to = models.OneToOneField(to='NeedHelp', blank=True, null=True,
-                                       on_delete=models.SET_NULL)  # TODO: on_delete ???
+                                       on_delete=models.SET_NULL, verbose_name="Относится к элементу дерева")
     name = models.CharField(max_length=100, null=True, blank=True, default='',
                             verbose_name="Назкание текста бота",
                             help_text="Помощь для администратора при заполнении.")
