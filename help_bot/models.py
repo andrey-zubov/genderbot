@@ -42,6 +42,10 @@ class NeedHelp(MPTTModel):
     class MPTTMeta:
         order_insertion_by = ['name']
 
+    class Meta:
+        verbose_name = 'Дерево диалога'
+        verbose_name_plural = 'Дерево диалога'
+
     def __unicode__(self):
         return self.name
 
@@ -94,6 +98,10 @@ class TelegramBot(models.Model):
     web_hook = models.CharField(max_length=200, blank=True, null=True)
     in_work = models.BooleanField(default=False)  # TODO: rename - default
 
+    class Meta:
+        verbose_name = 'Телеграм бот'
+        verbose_name_plural = 'Телеграм боты'
+
     def __str__(self):
         return self.name
 
@@ -109,6 +117,10 @@ class HelpText(models.Model):
                             verbose_name="Текст сообщения",
                             help_text="Текст сообщения бота для отправки в чат.")
 
+    class Meta:
+        verbose_name = 'Текст сообщения бота'
+        verbose_name_plural = 'Тексты сообщений бота'
+
     def __str__(self):
         return self.name
 
@@ -118,6 +130,10 @@ class StartMessage(models.Model):
     name = models.CharField(default='', max_length=100)
     text = models.TextField(max_length=1000, default='')
     default = models.BooleanField(default=False, blank=True, null=True)
+
+    class Meta:
+        verbose_name = 'Стартовое сообщение бота'
+        verbose_name_plural = 'Стартовое сообщение бота'
 
     def __str__(self):
         return self.name
@@ -146,9 +162,17 @@ class ChatPositionWeb(models.Model):
 
 class StatisticWeb(models.Model):
     """ """
-    count = models.PositiveIntegerField(default=0)
+    count = models.PositiveIntegerField(default=0, verbose_name="Колличество")
+
+    class Meta:
+        verbose_name = 'Статистика чата на сайте'
+        verbose_name_plural = 'Статистика чата на сайте'
 
 
 class StatisticTelegram(models.Model):
     """ """
-    count = models.PositiveIntegerField(default=0)
+    count = models.PositiveIntegerField(default=0, verbose_name="Колличество")
+
+    class Meta:
+        verbose_name = 'Статистика телеграм чата'
+        verbose_name_plural = 'Статистика телеграм чата'
