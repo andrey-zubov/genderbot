@@ -4,6 +4,7 @@ from time import perf_counter
 from telegram import KeyboardButton
 
 from help_bot.models import (NeedHelp, HelpText, StartMessage, ChatPositionTelegram, StatisticTelegram)
+from help_bot.statistic import save_telegram_chat_statistic
 
 
 def keyboard_button(_massage: str, _chat_id: int) -> (list, str):
@@ -60,10 +61,7 @@ def save_telegram_user(_chat_id: int, _us_pos: int, _user: bool):
         chat.save()
 
         if _us_pos:
-            st_web = NeedHelp.objects.get(id=_us_pos).statistic_telegram
-            # st_web = StatisticTelegram.objects.get(id=_us_pos)
-            st_web.count += 1
-            st_web.save()
+            save_telegram_chat_statistic(_us_pos)
     else:
         ChatPositionTelegram(chat_id=_chat_id, position=_us_pos).save()
 

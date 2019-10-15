@@ -3,6 +3,7 @@ import logging
 from time import perf_counter
 
 from help_bot.models import (NeedHelp, StartMessage, ChatPositionWeb, HelpText, StatisticWeb)
+from help_bot.statistic import save_web_chat_statistic
 
 
 def chat_req_get(request) -> str:
@@ -73,10 +74,7 @@ def save_web_user(_ip: str, _user_position: int, _user: bool):
         web_chat.save()
 
         if _user_position:
-            st_web = NeedHelp.objects.get(id=_user_position).statistic_web
-            # st_web = StatisticWeb.objects.get(id=_user_position)
-            st_web.count += 1
-            st_web.save()
+            save_web_chat_statistic(_user_position)
     else:
         ChatPositionWeb(ip_address=_ip, position=_user_position).save()
 
