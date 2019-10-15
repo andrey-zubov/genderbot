@@ -177,7 +177,7 @@ def check_input(string: str) -> bool:
 
 def get_client_ip(request) -> str:
     print("get_client_ip()")
-    # print("request.META: %s" % request.META)
+    print("request.META: %s" % request.META)
     # print("User.HTTP_COOKIE: %s" % request.META.get('HTTP_COOKIE'))
     # 'HTTP_COOKIE': 'lastpath="http://127.0.0.1:8000/log/login/";
     # print("User.REMOTE_ADDR: %s" % request.META.get('REMOTE_ADDR'))
@@ -194,7 +194,9 @@ def get_client_ip(request) -> str:
     # 'USERNAME': 'bequite'
     # print("User.USER: %s" % request.META.get('USER'))
     # 'USER': 'bequite'
+    # print("User.SERVER_NAME: %s" % request.META.get('SERVER_NAME'))
     # 'SERVER_NAME': 'server.Dlink'
+    # print("User.PATH_INFO: %s" % request.META.get('PATH_INFO'))
     # 'PATH_INFO': '/chat_test/'
 
     x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')

@@ -1,7 +1,10 @@
 from django.contrib import admin
+from django.template.response import TemplateResponse
+from django.urls import path
 from mptt.admin import MPTTModelAdmin
 
 from help_bot.models import (NeedHelp, TelegramBot, HelpText, StartMessage, StatisticWeb, StatisticTelegram)
+from help_bot.statistic import get_statistic_web_chat
 
 
 class InlineHelpText(admin.StackedInline):
@@ -53,10 +56,29 @@ class StartMessageAdmin(admin.ModelAdmin):
 
 
 class StatisticWebAdmin(admin.ModelAdmin):
-    model = StatisticWeb
-    readonly_fields = ('count',)
-    fields = ('count',)
-    list_display = ('count',)
+    # model = StatisticWeb
+    # readonly_fields = ('count',)
+    # fields = ('count',)
+    # list_display = ('count',)
+
+    def get_urls(self):
+        urls = super().get_urls()
+        my_urls = [
+            # path('statisticweb/', self.my_view),
+            path('', self.admin_site.admin_view(self.my_view)),
+        ]
+        return my_urls + urls
+
+    def my_view(self, request):
+        context = dict(
+            # Include common variables for rendering the admin template.
+            self.admin_site.each_context(request),
+            # Anything else you want in the context...
+            my_data=get_statistic_web_chat(),
+        )
+        return TemplateResponse(request=request,
+                                template="admin/help_bot/statistic_web/my_view/statistic_web_my_view.html",
+                                context=context)
 
 
 class StatisticTelegramAdmin(admin.ModelAdmin):

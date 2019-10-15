@@ -1,0 +1,10 @@
+{% extends "admin/base_site.html" %}
+
+{% block content %}
+    {% include 'help_bot/bootstrap_and_ko.html' %}
+
+    <h3>Hello statistic web chat</h3>
+
+    nh_all_len = {{ my_data.nh_all_len }}
+
+{% endblock %}

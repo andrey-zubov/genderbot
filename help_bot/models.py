@@ -168,6 +168,9 @@ class StatisticWeb(models.Model):
         verbose_name = 'Статистика чата на сайте'
         verbose_name_plural = 'Статистика чата на сайте'
 
+    # def __str__(self):
+    #     return NeedHelp.objects.get(statistic_web_id=self.id).name
+
 
 class StatisticTelegram(models.Model):
     """ """
