@@ -6,21 +6,38 @@ class NeedHelp(MPTTModel):
     """ TBA
     # http://django-mptt.github.io/django-mptt/models.html
     """
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, blank=False, verbose_name="Название",
+                            help_text="Удобочитаемое имя для родителя.")
     parent = TreeForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True,
-                            related_name='children', db_index=True)
+                            related_name='children', db_index=True,
+                            verbose_name="Родитель", help_text="Кто родитель этого элемента.")
 
-    user_input = models.CharField(max_length=100, default='')
-    go_back = models.BooleanField(default=False, blank=True, null=True)
-    link_to = models.ForeignKey(to='NeedHelp', blank=True, null=True, default=None, on_delete=models.SET_NULL)
-    question = models.CharField(blank=True, null=True, default='', max_length=100)
+    user_input = models.CharField(max_length=100, default='', blank=False,
+                                  verbose_name="Название кнопки",
+                                  help_text="Название кнопки, которое отправится в чат.")
+    go_back = models.BooleanField(default=False, blank=True, null=True,
+                                  verbose_name="Возврат в меню")
+    link_to = models.ForeignKey(to='NeedHelp', blank=True, null=True, default=None, on_delete=models.SET_NULL,
+                                verbose_name="Ссылка на элемент",
+                                help_text="Если эта кнопка является ссылкой на другой элемент дерева -"
+                                          " указать этот элемент.")
+    question = models.CharField(blank=True, null=True, default='', max_length=100,
+                                verbose_name="Вопрос пользователю",
+                                help_text="Помощь для администратора при заполнении. "
+                                          "Указать, если вопрос есть в тексте бота.")
     """ last element in the tree branch """
-    go_default = models.BooleanField(default=False, blank=True, null=True)
+    go_default = models.BooleanField(default=False, blank=True, null=True,
+                                     verbose_name="Последний элемент?",
+                                     help_text="Является ли этот элемент последним для этой ветки дерева.")
     """ hidden root node for a default output that repeats at last tree element """
-    is_default = models.BooleanField(default=False, blank=True, null=True)
+    is_default = models.BooleanField(default=False, blank=True, null=True,
+                                     verbose_name="Элемент по умолчанию",
+                                     help_text="Вспомогательная ветка для последних элементов всего дерева.")
 
-    statistic_web = models.ForeignKey(to='StatisticWeb', on_delete=models.CASCADE, null=True, blank=True)
-    statistic_telegram = models.ForeignKey(to='StatisticTelegram', on_delete=models.CASCADE, null=True, blank=True)
+    statistic_web = models.ForeignKey(to='StatisticWeb', on_delete=models.CASCADE, null=True, blank=True,
+                                      verbose_name="", help_text="")
+    statistic_telegram = models.ForeignKey(to='StatisticTelegram', on_delete=models.CASCADE, null=True, blank=True,
+                                           verbose_name="", help_text="")
 
     class MPTTMeta:
         order_insertion_by = ['name']
@@ -85,8 +102,12 @@ class HelpText(models.Model):
     """ TBA """
     relation_to = models.OneToOneField(to='NeedHelp', blank=True, null=True,
                                        on_delete=models.SET_NULL)  # TODO: on_delete ???
-    name = models.CharField(max_length=100, null=True, blank=True, default='')
-    text = models.TextField(max_length=2000, null=True, blank=True, default='')
+    name = models.CharField(max_length=100, null=True, blank=True, default='',
+                            verbose_name="Назкание текста бота",
+                            help_text="Помощь для администратора при заполнении.")
+    text = models.TextField(max_length=2000, null=True, blank=True, default='',
+                            verbose_name="Текст сообщения",
+                            help_text="Текст сообщения бота для отправки в чат.")
 
     def __str__(self):
         return self.name

@@ -18,15 +18,14 @@ class NeedHelpAdmin(MPTTModelAdmin):
     #  http://django-mptt.github.io/django-mptt/admin.html#mptt-admin-treerelatedfieldlistfilter
 
     inlines = [InlineHelpText]
-
     model = NeedHelp
+
     fieldsets = (
         (None, {
             'fields': (('name', 'parent'), 'user_input', 'question', ('go_back', 'go_default', 'is_default', 'link_to'))
         }),
     )
-    list_display = ('name', 'parent', 'user_input', 'question', 'go_back', 'link_to', 'go_default',
-                    'is_default')  #
+    list_display = ('name', 'parent', 'user_input', 'question', 'go_default', 'link_to', 'go_back', 'is_default')
     search_fields = ('name',)
     autocomplete_fields = ('parent', 'link_to')
 
@@ -40,11 +39,9 @@ class TelegramAdmin(admin.ModelAdmin):
 
 
 class HelpTextAdmin(admin.ModelAdmin):
-    # inlines = [NeedHelp1t1Admin]
     model = HelpText
     fields = ['name', 'text', 'relation_to']
     list_display = ('name', 'relation_to')
-    list_filter = ('relation_to',)
     search_fields = ('name',)
 
 
