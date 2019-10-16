@@ -42,9 +42,9 @@
         </div>
         <br>
         <h6 class="mt-2">2. Подробная статистика переходов по "дереву" чат-бота:</h6>
-        <input class="form-control" id="input_for_table_2" type="text" placeholder="Search..">
+        <input class="form-control" id="input_for_table_2" type="text" placeholder="Поиск по таблице ниже...">
         <br>
-        <div class="container my-2" id="table_2">
+        <div class="container my-2">
             <div class="row bg-light">
                 <div class="col-sm border"></div>
                 <div class="col-sm border">сумма</div>
@@ -52,12 +52,60 @@
                 <div class="col-sm border">в telegram</div>
             </div>
 
+            {% load mptt_tags %}
+            <div class="root" id="table_2">
+                {% recursetree my_data.nodes %}
+                    <div>
+                        {% if node.get_children %}
+                            {% if node.get_ancestors.count >= 1 %}
+                                <div class="collapse" id="collapseExample{{ node.get_ancestors.last.id }}">
+                                    <a role="button"
+                                       data-toggle="collapse" href="#collapseExample{{ node.id }}"
+                                       aria-expanded="false" aria-controls="collapseExample{{ node.id }}">
+                                        <div class="row bg-light align-items-center border my-1">
+                                            <div class="col-sm">-- {{ node.name }} ({{ node.get_children.count }})</div>
+                                            <p class="col-sm">{{ node.statistic_web.count|add:node.statistic_telegram.count }}</p>
+                                            <p class="col-sm">{{ node.statistic_web.count }}</p>
+                                            <p class="col-sm">{{ node.statistic_telegram.count }}</p>
+                                        </div>
+                                    </a>
+                                </div>
+                            {% else %}
+                                <a role="button"
+                                   data-toggle="collapse" href="#collapseExample{{ node.id }}"
+                                   aria-expanded="false" aria-controls="collapseExample{{ node.id }}">
+                                    <div class="row bg-light align-items-center border my-1">
+                                        <div class="col-sm">{{ node.name }} ({{ node.get_children.count }})</div>
+                                        <p class="col-sm">{{ node.statistic_web.count|add:node.statistic_telegram.count }}</p>
+                                        <p class="col-sm">{{ node.statistic_web.count }}</p>
+                                        <p class="col-sm">{{ node.statistic_telegram.count }}</p>
+                                    </div>
+                                </a>
+                            {% endif %}
+                        {% else %}
+                            <div class="collapse" id="collapseExample{{ node.get_ancestors.last.id }}">
+                                <div class="row bg-light align-items-center border my-1">
+                                    <div class="col-sm">-- {{ node.name }} ({{ node.get_children.count }})</div>
+                                    <p class="col-sm">{{ node.statistic_web.count|add:node.statistic_telegram.count }}</p>
+                                    <p class="col-sm">{{ node.statistic_web.count }}</p>
+                                    <p class="col-sm">{{ node.statistic_telegram.count }}</p>
+                                </div>
+                            </div>
+                        {% endif %}
+                        {% if not node.is_leaf_node %}
+                            <div class="children">
+                                {{ children }}
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endrecursetree %}
+            </div>
+
         </div>
         <br>
         <!-- Graphics-->
-        <div class="mt-2">
-            <h4>Graphics:</h4>
-            {# <div style="width: 75%">#}
+        <h6>3. Посещаемость:</h6>
+        <div class="mt-2 container">
             <div class="chartjs-size-monitor">
                 <div class="chartjs-size-monitor-expand">
                     <div class=""></div>
@@ -68,7 +116,6 @@
             </div>
             <canvas id="canvas" style="display: block; height: 247px; width: 494px;" width="617" height="308"
                     class="chartjs-render-monitor"></canvas>
-            {# </div>#}
             <button id="randomizeData">Randomize Data</button>
         </div>
     </div>
@@ -78,7 +125,7 @@
         $(document).ready(function () {
             $("#input_for_table_2").on("keyup", function () {
                 var value = $(this).val().toLowerCase();
-                $("#table_2").filter(function () {
+                $("#table_2 div").filter(function () {
                     $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
                 });
             });

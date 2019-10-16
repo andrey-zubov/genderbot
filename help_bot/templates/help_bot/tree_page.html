@@ -14,23 +14,23 @@
             <div>
                 {% if node.get_children %}
                     {% if node.get_ancestors.count >= 1 %}
-                        <div class="collapse" id="collapseExample{{ node.get_ancestors.last.id }}">
+                        <div class="collapse my-1" id="collapseExample{{ node.get_ancestors.last.id }}">
                             <a class="btn btn-outline-primary btn-sm my-1" role="button"
                                data-toggle="collapse" href="#collapseExample{{ node.id }}"
                                aria-expanded="false" aria-controls="collapseExample{{ node.id }}">
-                                {{ node.name }}
+                                -- {{ node.name }} ({{ node.get_children.count }})
                             </a>
                         </div>
                     {% else %}
                         <a class="btn btn-outline-primary btn-sm my-1" role="button"
                            data-toggle="collapse" href="#collapseExample{{ node.id }}"
                            aria-expanded="false" aria-controls="collapseExample{{ node.id }}">
-                            {{ node.name }}
+                            {{ node.name }} ({{ node.get_children.count }})
                         </a>
                     {% endif %}
                 {% else %}
                     <div class="collapse my-1" id="collapseExample{{ node.get_ancestors.last.id }}">
-                        {{ node.name }}
+                        -- {{ node.name }}
                     </div>
                 {% endif %}
                 {% if not node.is_leaf_node %}

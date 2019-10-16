@@ -24,7 +24,7 @@ def get_chat_statistic():
 
     # send
     response = {
-        "nh_all": nh_all,
+        "nodes": nh_all,
         "nh_all_len": nh_all_len,
         "count_web_sum": count_web_sum,
         "count_tel_sum": count_tel_sum,
