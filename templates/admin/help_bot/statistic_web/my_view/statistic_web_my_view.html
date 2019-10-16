@@ -7,37 +7,47 @@
         <h3>Hello Chat statistic</h3>
         <br>
         <h6>Всего элементов дерева отслеживается: {{ my_data.nh_all_len }}.</h6>
-        <h6 class="mt-2">1. Суммарная статистика переходов по "дереву" чат-бота:</h6>
+        <h6 class="mt-2">1. Статистика переходов по "дереву" чат-бота и посещаемости сайта:</h6>
         <div class="container my-2">
             <div class="row bg-light">
                 <div class="col-sm border"></div>
                 <div class="col-sm border">сумма</div>
                 <div class="col-sm border">на сайте</div>
                 <div class="col-sm border">в telegram</div>
+                <div>&nbsp</div>
+                <div class="col-sm border" style="background-color: lightgray">Посещаемость сайта</div>
             </div>
             <div class="row bg-light">
-                <div class="col-sm border">Всего переходов</div>
+                <div class="col-sm border">Всего</div>
                 <div class="col-sm border">{{ my_data.count_web_sum|add:my_data.count_tel_sum }}</div>
                 <div class="col-sm border">{{ my_data.count_web_sum }}</div>
                 <div class="col-sm border">{{ my_data.count_tel_sum }}</div>
+                <div>&nbsp</div>
+                <div class="col-sm border" style="background-color: lightgray">{{ my_data.site_open_sum }}</div>
             </div>
             <div class="row bg-light">
                 <div class="col-sm border">За день</div>
-                <div class="col-sm border">{{ my_data.count_web_sum_2 }}</div>
-                <div class="col-sm border">{{ d }}</div>
-                <div class="col-sm border">{{ d }}</div>
+                <div class="col-sm border">{{ my_data.stats_day.web_chat_count|add:my_data.stats_day.telegram_chat_count }}</div>
+                <div class="col-sm border">{{ my_data.stats_day.web_chat_count }}</div>
+                <div class="col-sm border">{{ my_data.stats_day.telegram_chat_count }}</div>
+                <div>&nbsp</div>
+                <div class="col-sm border" style="background-color: lightgray">{{ my_data.stats_day.site_open }}</div>
             </div>
             <div class="row bg-light">
                 <div class="col-sm border">За месяц</div>
-                <div class="col-sm border">{{ d }}</div>
-                <div class="col-sm border">{{ d }}</div>
-                <div class="col-sm border">{{ d }}</div>
+                <div class="col-sm border">{{ my_data.stats_month.web_chat|add:my_data.stats_month.telegram_chat }}</div>
+                <div class="col-sm border">{{ my_data.stats_month.web_chat }}</div>
+                <div class="col-sm border">{{ my_data.stats_month.telegram_chat }}</div>
+                <div>&nbsp</div>
+                <div class="col-sm border" style="background-color: lightgray">{{ my_data.stats_month.site_open }}</div>
             </div>
             <div class="row bg-light">
                 <div class="col-sm border">За год</div>
-                <div class="col-sm border">{{ d }}</div>
-                <div class="col-sm border">{{ d }}</div>
-                <div class="col-sm border">{{ d }}</div>
+                <div class="col-sm border">{{ my_data.stats_year.web_chat|add:my_data.stats_year.telegram_chat }}</div>
+                <div class="col-sm border">{{ my_data.stats_year.web_chat }}</div>
+                <div class="col-sm border">{{ my_data.stats_year.telegram_chat }}</div>
+                <div>&nbsp</div>
+                <div class="col-sm border" style="background-color: lightgray">{{ my_data.stats_year.site_open }}</div>
             </div>
         </div>
         <br>

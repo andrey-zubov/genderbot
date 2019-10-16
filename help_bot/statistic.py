@@ -18,19 +18,45 @@ def get_chat_statistic():
     # all
     nh_all = NeedHelp.objects.all()
     nh_all_len = nh_all.count()
+
     # statistic_web
     # count_web_sum = sum([i.count for i in StatisticWeb.objects.all()])    # 0.0028670340007010964
     count_web_sum = StatisticWeb.objects.all().aggregate(models.Sum('count'))['count__sum']  # 0.0004948630003127619
+
     # statistic_telegram
     count_tel_sum = StatisticTelegram.objects.all().aggregate(models.Sum('count'))['count__sum']
-    #
+
+    # Statistic Attendance
     attendance = StatisticAttendance.objects.all()
+    site_open_sum = attendance.aggregate(models.Sum('site_open'))['site_open__sum']
+    # <QuerySet [<StatisticAttendance: StatisticAttendance object (6)>]>
+    stats_day = attendance.filter(date_point__day=date.today().day)
+
+    stats_month_all = attendance.filter(date_point__month=date.today().month)
+    stats_month = {
+        "web_chat": sum([i.web_chat_count for i in stats_month_all]),
+        "telegram_chat": sum([i.telegram_chat_count for i in stats_month_all]),
+        "site_open": sum([i.site_open for i in stats_month_all]),
+    }
+
+    stats_year_all = attendance.filter(date_point__year=date.today().year)
+    stats_year = {
+        "web_chat": sum([i.web_chat_count for i in stats_year_all]),
+        "telegram_chat": sum([i.telegram_chat_count for i in stats_year_all]),
+        "site_open": sum([i.site_open for i in stats_year_all]),
+    }
+
     # send
     response = {
         "nodes": nh_all,
         "nh_all_len": nh_all_len,
         "count_web_sum": count_web_sum,
         "count_tel_sum": count_tel_sum,
+        "site_open_sum": site_open_sum,
+        "stats_day": stats_day[0],
+        "stats_month": stats_month,
+        "stats_year": stats_year,
+        "attendance": attendance,
     }
     print("get_chat_statistic() - OK; TIME: %s" % (perf_counter() - time_0))
     return response
