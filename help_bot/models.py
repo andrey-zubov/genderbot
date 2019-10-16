@@ -165,8 +165,8 @@ class StatisticWeb(models.Model):
     count = models.PositiveIntegerField(default=0, verbose_name="Колличество")
 
     class Meta:
-        verbose_name = 'Статистика чата на сайте'
-        verbose_name_plural = 'Статистика чата на сайте'
+        verbose_name = 'Статистика чат-бота'
+        verbose_name_plural = 'Статистика чат-бота'
 
     # def __str__(self):
     #     return NeedHelp.objects.get(statistic_web_id=self.id).name

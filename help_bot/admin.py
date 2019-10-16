@@ -55,7 +55,7 @@ class StartMessageAdmin(admin.ModelAdmin):
     search_fields = ('name',)
 
 
-class StatisticWebAdmin(admin.ModelAdmin):
+class StatisticAdmin(admin.ModelAdmin):
     # model = StatisticWeb
     # readonly_fields = ('count',)
     # fields = ('count',)
@@ -92,5 +92,5 @@ admin.site.register(NeedHelp, NeedHelpAdmin)
 admin.site.register(TelegramBot, TelegramAdmin)
 admin.site.register(HelpText, HelpTextAdmin)
 admin.site.register(StartMessage, StartMessageAdmin)
-admin.site.register(StatisticWeb, StatisticWebAdmin)
-admin.site.register(StatisticTelegram, StatisticTelegramAdmin)
+admin.site.register(StatisticWeb, StatisticAdmin)
+# admin.site.register(StatisticTelegram, StatisticTelegramAdmin)
