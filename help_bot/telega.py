@@ -7,7 +7,9 @@ import django
 from telegram import ReplyKeyboardMarkup
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 
-path = os.path.expanduser('/home/bequite/PycharmProjects/HelpBot')
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# print(re.match(pattern='(.+HelpBot)', string=BASE_DIR))
+path = os.path.expanduser(BASE_DIR)
 if path not in sys.path:
     sys.path.insert(0, path)
 # os.environ['DJANGO_SETTINGS_MODULE'] = 'HelpBot.settings'

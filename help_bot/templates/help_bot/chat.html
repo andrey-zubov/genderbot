@@ -59,32 +59,40 @@
     });
 </script>
 
-<p>
-    <button id="btn_open_chat" class="btn btn-outline-success m-sm-1">Chat Bot can help you!</button>
-    <button id="btn_hide_chat" class="btn btn-outline-danger m-sm-1">x</button>
-</p>
+<!--CHAT TOP-->
+<div class="row justify-content-between rounded-top"
+     style="background-color: #4CAF50">
+    <a id="btn_open_chat" class="btn btn-outline-success border-0 ml-3 col-6">Chat Bot can help you!</a>
+    <a id="btn_hide_chat" class="btn btn-outline-success border-0 mr-3 col-1">x</a>
+</div>
 
-{#<form method="post">#}
-{#{% csrf_token %}#}
-<div id="chat_show_hide">
+<!--CHAT BODY-->
+<div id="chat_show_hide" style="background-color: #C8E6C9">
     <div id="chat_div"
          class="py-1 d-inline-flex flex-column rounded"
-         style="background-color: #F5F5F5; overflow: scroll; max-height: 400px">
+         style="background-color: #C8E6C9; overflow-y: scroll; max-height: 400px; overflow-x: hidden">
         <p hidden id="bot_text"
-           class="text-left alert alert-dark text-wrap shadow-sm rounded"></p>
+           class="text-left text-wrap shadow-sm rounded m-1 p-1"
+           style="background-color: #FFFFFF"></p>
         {# <div hidden id="bot_text" class="text-left alert alert-dark text-wrap shadow-sm rounded"></div>#}
         <p hidden id="user_text"
-           class="text-right alert alert-success text-wrap shadow-sm rounded"></p>
+           class="text-right alert alert-success text-wrap shadow-sm rounded m-1 p-1"
+           style="color: #212121"></p>
     </div>
 </div>
 
-<div id="div_add_btn" class="my-2">
-    <button hidden id="btn_select" type="button" class="btn btn-outline-primary m-sm-1"></button>
+<!--CHAT BUTTONS-->
+<div id="div_add_btn" class="my-2 text-center rounded"
+     style="overflow-y: scroll; max-height: 150px; overflow-x: hidden; background-color: whitesmoke">
+    <button hidden id="btn_select" type="button"
+            class="btn btn-outline-primary m-1"
+            style="min-width: 200px"></button>
 </div>
 
-<div class="my-2"> {# DO NOT DELETE !!! #}
+<!--CHAT INPUT HIDDEN -->
+<div class="my-2 rounded">
+    {# DO NOT DELETE !!! #}
     <label hidden for="user_input">Send msg</label>
     <input hidden id="user_input" type="text">
     <button hidden type="button" id="btn_send" class="btn btn-outline-success m-sm-1">Send</button>
 </div>
-{#</form>#}
