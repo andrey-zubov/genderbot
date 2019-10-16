@@ -30,7 +30,15 @@ def get_chat_statistic():
     attendance = StatisticAttendance.objects.all()
     site_open_sum = attendance.aggregate(models.Sum('site_open'))['site_open__sum']
     # <QuerySet [<StatisticAttendance: StatisticAttendance object (6)>]>
-    stats_day = attendance.filter(date_point__day=date.today().day)
+    stats_day_all = attendance.filter(date_point__day=date.today().day)
+    if stats_day_all:
+        stats_day = stats_day_all[0]
+    else:
+        stats_day = {
+            "web_chat_count": 0,
+            "telegram_chat_count": 0,
+            "site_open": 0,
+        }
 
     stats_month_all = attendance.filter(date_point__month=date.today().month)
     stats_month = {
@@ -40,11 +48,23 @@ def get_chat_statistic():
     }
 
     stats_year_all = attendance.filter(date_point__year=date.today().year)
+
     stats_year = {
         "web_chat": sum([i.web_chat_count for i in stats_year_all]),
         "telegram_chat": sum([i.telegram_chat_count for i in stats_year_all]),
         "site_open": sum([i.site_open for i in stats_year_all]),
     }
+
+    """ graphics, 3 lists of data for every month """
+    graphics_web = []
+    graphics_tel = []
+    graphics_site = []
+    for i in range(1, 13):
+        graphics_web.append(sum([i.web_chat_count for i in attendance.filter(date_point__month=i)]))
+        graphics_tel.append(sum([i.telegram_chat_count for i in attendance.filter(date_point__month=i)]))
+        graphics_site.append(sum([i.site_open for i in attendance.filter(date_point__month=i)]))
+
+    max_in_month = max(max(graphics_web), max(graphics_tel), max(graphics_site))
 
     # send
     response = {
@@ -53,10 +73,14 @@ def get_chat_statistic():
         "count_web_sum": count_web_sum,
         "count_tel_sum": count_tel_sum,
         "site_open_sum": site_open_sum,
-        "stats_day": stats_day[0],
+        "stats_day": stats_day,
         "stats_month": stats_month,
         "stats_year": stats_year,
         "attendance": attendance,
+        "graphics_web": graphics_web,
+        "graphics_tel": graphics_tel,
+        "graphics_site": graphics_site,
+        "max_in_month": max_in_month,
     }
     print("get_chat_statistic() - OK; TIME: %s" % (perf_counter() - time_0))
     return response

@@ -126,7 +126,6 @@
             </div>
             <canvas id="canvas" style="display: block; height: 247px; width: 494px;" width="617" height="308"
                     class="chartjs-render-monitor"></canvas>
-            <button id="randomizeData">Randomize Data</button>
         </div>
     </div>
 
@@ -135,9 +134,13 @@
         $(document).ready(function () {
             $("#input_for_table_2").on("keyup", function () {
                 var value = $(this).val().toLowerCase();
-                $("#table_2 div").filter(function () {
-                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-                });
+                if (value.length > 0) {
+                    $("#table_2 div").filter(function () {
+                        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                    });
+                } else {
+                    //
+                }
             });
         });
     </script>
@@ -156,33 +159,8 @@
         };
 
         (function (global) {
-            var MONTHS = [
-                'January',
-                'February',
-                'March',
-                'April',
-                'May',
-                'June',
-                'July',
-                'August',
-                'September',
-                'October',
-                'November',
-                'December'
-            ];
-
-            var COLORS = [
-                '#4dc9f6',
-                '#f67019',
-                '#f53794',
-                '#537bc4',
-                '#acc236',
-                '#166a8f',
-                '#00a950',
-                '#58595b',
-                '#8549ba'
-            ];
-
+            var MONTHS = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
+            var COLORS = ['#4dc9f6', '#f67019', '#f53794', '#537bc4', '#acc236', '#166a8f', '#00a950', '#58595b', '#8549ba'];
             var Samples = global.Samples || (global.Samples = {});
             var Color = global.Color;
 
@@ -220,7 +198,6 @@
                             data.push(null);
                         }
                     }
-
                     return data;
                 },
 
@@ -239,7 +216,6 @@
                     for (i = min; i < max; i += step) {
                         values.push(prefix + Math.round(dfactor * i) / dfactor);
                     }
-
                     return values;
                 },
 
@@ -254,7 +230,6 @@
                         value = MONTHS[Math.ceil(i) % 12];
                         values.push(value.substring(0, section));
                     }
-
                     return values;
                 },
 
@@ -267,12 +242,6 @@
                     return Color(color).alpha(alpha).rgbString();
                 }
             };
-
-            // DEPRECATED
-            window.randomScalingFactor = function () {
-                return Math.round(Samples.utils.rand(0, {{ my_data.count_web_sum|add:my_data.count_tel_sum }}));
-            };
-
             // INITIALIZATION
             Samples.utils.srand(Date.now());
         }(this));
@@ -280,43 +249,20 @@
 
     <script>
         var barChartData = {
-            labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+            labels: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
             datasets: [{
-                label: 'Dataset 1',
-                backgroundColor: [
-                    window.chartColors.red,
-                    window.chartColors.orange,
-                    window.chartColors.yellow,
-                    window.chartColors.green,
-                    window.chartColors.blue,
-                    window.chartColors.purple,
-                    window.chartColors.red
-                ],
-                yAxisID: 'y-axis-1',
-                data: [
-                    randomScalingFactor(),
-                    randomScalingFactor(),
-                    randomScalingFactor(),
-                    randomScalingFactor(),
-                    randomScalingFactor(),
-                    randomScalingFactor(),
-                    randomScalingFactor()
-                ]
+                label: 'Чат на сайте',
+                backgroundColor: window.chartColors.green,
+                data: {{ my_data.graphics_web }}
             }, {
-                label: 'Dataset 2',
-                backgroundColor: window.chartColors.grey,
-                yAxisID: 'y-axis-2',
-                data: [
-                    randomScalingFactor(),
-                    randomScalingFactor(),
-                    randomScalingFactor(),
-                    randomScalingFactor(),
-                    randomScalingFactor(),
-                    randomScalingFactor(),
-                    randomScalingFactor()
-                ]
+                label: 'Чат Telegram',
+                backgroundColor: window.chartColors.blue,
+                data: {{ my_data.graphics_tel }}
+            }, {
+                label: 'Посещение сайта',
+                backgroundColor: window.chartColors.yellow,
+                data: {{ my_data.graphics_site }}
             }]
-
         };
         window.onload = function () {
             var ctx = document.getElementById('canvas').getContext('2d');
@@ -327,40 +273,16 @@
                     responsive: true,
                     title: {
                         display: true,
-                        text: 'Chart.js Bar Chart - Multi Axis'
+                        text: 'График посещаемость за текущий год'
                     },
                     tooltips: {
                         mode: 'index',
                         intersect: true
                     },
-                    scales: {
-                        yAxes: [{
-                            type: 'linear', // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
-                            display: true,
-                            position: 'left',
-                            id: 'y-axis-1',
-                        }, {
-                            type: 'linear', // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
-                            display: true,
-                            position: 'right',
-                            id: 'y-axis-2',
-                            gridLines: {
-                                drawOnChartArea: false
-                            }
-                        }],
-                    }
                 }
             });
         };
 
-        document.getElementById('randomizeData').addEventListener('click', function () {
-            barChartData.datasets.forEach(function (dataset) {
-                dataset.data = dataset.data.map(function () {
-                    return randomScalingFactor();
-                });
-            });
-            window.myBar.update();
-        });
     </script>
 
 {% endblock %}
