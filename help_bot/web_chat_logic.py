@@ -175,7 +175,7 @@ def check_input(string: str) -> bool:
 
 def get_client_ip(request) -> str:
     print("get_client_ip()")
-    print("request.META: %s" % request.META)
+    # print("request.META: %s" % request.META)
     # print("User.HTTP_COOKIE: %s" % request.META.get('HTTP_COOKIE'))
     # 'HTTP_COOKIE': 'lastpath="http://127.0.0.1:8000/log/login/";
     # print("User.REMOTE_ADDR: %s" % request.META.get('REMOTE_ADDR'))
