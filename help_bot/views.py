@@ -3,6 +3,7 @@ from django.shortcuts import render
 from django.views.generic import TemplateView
 
 from help_bot.models import NeedHelp
+from help_bot.statistic import save_site_statistic
 from help_bot.web_chat_logic import chat_req_get
 
 
@@ -11,6 +12,7 @@ class MainPage(TemplateView):
 
     def get(self, request, *args, **kwargs):
         # print("MainPage.request.META: %s" % request.META)
+        save_site_statistic()
         return render(request, template_name=self.template_name)
 
     def post(self, request):

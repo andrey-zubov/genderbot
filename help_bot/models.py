@@ -1,3 +1,6 @@
+import logging
+from datetime import date
+
 from django.db import models
 from mptt.models import MPTTModel, TreeForeignKey
 
@@ -57,11 +60,13 @@ class NeedHelp(MPTTModel):
 
         try:
             sw_c = self.statistic_web.count
-        except:
+        except Exception as ex:
+            logging.error("Exception in NeedHelp.save().statistic_web\n%s" % ex)
             sw_c = 0
         try:
             st_c = self.statistic_telegram.count
-        except:
+        except Exception as ex:
+            logging.error("Exception in NeedHelp.save().statistic_telegram\n%s" % ex)
             st_c = 0
 
         if self.id:
@@ -92,7 +97,7 @@ class NeedHelp(MPTTModel):
 
 
 class TelegramBot(models.Model):
-    """ TBA """
+    """ Set up Telegram properties. """
     name = models.CharField(max_length=50, blank=True, null=True, verbose_name="Название")
     token = models.CharField(max_length=100, blank=True, null=True)
     web_hook = models.CharField(max_length=200, blank=True, null=True)
@@ -107,7 +112,7 @@ class TelegramBot(models.Model):
 
 
 class HelpText(models.Model):
-    """ TBA """
+    """ Bot answer text. """
     relation_to = models.OneToOneField(to='NeedHelp', blank=True, null=True,
                                        on_delete=models.SET_NULL, verbose_name="Относится к элементу дерева")
     name = models.CharField(max_length=100, null=True, blank=True, default='',
@@ -126,7 +131,7 @@ class HelpText(models.Model):
 
 
 class StartMessage(models.Model):
-    """ TBA """
+    """ Hello message. """
     name = models.CharField(default='', max_length=100)
     text = models.TextField(max_length=1000, default='')
     default = models.BooleanField(default=False, blank=True, null=True)
@@ -161,21 +166,22 @@ class ChatPositionWeb(models.Model):
 
 
 class StatisticWeb(models.Model):
-    """ """
+    """ NeedHelp Tree buttons clicks for web chat. """
     count = models.PositiveIntegerField(default=0, verbose_name="Колличество")
+
+
+class StatisticTelegram(models.Model):
+    """ NeedHelp Tree buttons clicks for Telegram chat. """
+    count = models.PositiveIntegerField(default=0, verbose_name="Колличество")
+
+
+class StatisticAttendance(models.Model):
+    """ days, months, year. """
+    date_point = models.DateField(default=date.today)  # auto_now_add=True, default=date.today
+    web_chat_count = models.PositiveIntegerField(default=0)
+    telegram_chat_count = models.PositiveIntegerField(default=0)
+    site_open = models.PositiveIntegerField(default=0)
 
     class Meta:
         verbose_name = 'Статистика чат-бота'
         verbose_name_plural = 'Статистика чат-бота'
-
-    # def __str__(self):
-    #     return NeedHelp.objects.get(statistic_web_id=self.id).name
-
-
-class StatisticTelegram(models.Model):
-    """ """
-    count = models.PositiveIntegerField(default=0, verbose_name="Колличество")
-
-    class Meta:
-        verbose_name = 'Статистика телеграм чата'
-        verbose_name_plural = 'Статистика телеграм чата'
