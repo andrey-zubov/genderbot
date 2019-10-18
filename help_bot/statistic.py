@@ -91,7 +91,7 @@ def save_web_chat_statistic(_user_position):
     st_web.count += 1
     st_web.save()
 
-    if_today = StatisticAttendance.objects.filter(date_point__day=date.today().day)
+    if_today = StatisticAttendance.objects.filter(date_point=date.today())
     if if_today:  # <QuerySet [<StatisticAttendance: StatisticAttendance object (4)>]>
         if_today[0].web_chat_count += 1
         if_today[0].save()
@@ -105,7 +105,7 @@ def save_telegram_chat_statistic(_user_position):
     st_tel.count += 1
     st_tel.save()
 
-    if_today = StatisticAttendance.objects.filter(date_point__day=date.today().day)
+    if_today = StatisticAttendance.objects.filter(date_point=date.today())
     if if_today:  # <QuerySet [<StatisticAttendance: StatisticAttendance object (4)>]>
         if_today[0].telegram_chat_count += 1
         if_today[0].save()

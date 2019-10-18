@@ -2,6 +2,7 @@ import logging
 from datetime import date
 
 from django.db import models
+from django.utils.timezone import now
 from mptt.models import MPTTModel, TreeForeignKey
 
 
@@ -177,7 +178,7 @@ class StatisticTelegram(models.Model):
 
 class StatisticAttendance(models.Model):
     """ days, months, year. """
-    date_point = models.DateField(default=date.today)  # auto_now_add=True, default=date.today
+    date_point = models.DateField(auto_now=True)
     web_chat_count = models.PositiveIntegerField(default=0)
     telegram_chat_count = models.PositiveIntegerField(default=0)
     site_open = models.PositiveIntegerField(default=0)
