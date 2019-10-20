@@ -11,7 +11,6 @@ class MainPage(TemplateView):
     template_name = 'help_bot/main_page.html'
 
     def get(self, request, *args, **kwargs):
-        # print("MainPage.request.META: %s" % request.META)
         save_site_statistic()
         return render(request, template_name=self.template_name)
 
@@ -19,36 +18,18 @@ class MainPage(TemplateView):
         pass
 
 
-class ChatPage(TemplateView):
-    template_name = 'help_bot/chat_page.html'
+class WebChatBot(TemplateView):
+    """ Web chat bot pop-up. All Ajax requests come here. """
 
     def get(self, request, *args, **kwargs):
-        print("ChatPage.GET")
-        response = {'data': '-------ChatPage.GET-------', }
-        return render(request, template_name=self.template_name, context=response)
-
-    def post(self, request):
-        print("ChatPage.POST\n%s" % request.POST)
-
-
-class ChatTest(TemplateView):
-
-    def get(self, request, *args, **kwargs):
-        print('ChatTest.GET: %s' % request.GET)
         return HttpResponse(chat_req_get(request))
 
     def post(self, request):
-        print('ChatTest.POST: %s' % request.POST)
+        pass
 
 
 def tree_page(request):
     dictionary = {
         'nodes': NeedHelp.objects.all()
     }
-    return render(request=request,
-                  template_name='help_bot/tree_page.html',
-                  context=dictionary)
-
-
-def hello(request):
-    return HttpResponse('Hello Help Bot!', )
+    return render(request=request, template_name='help_bot/tree_page.html', context=dictionary)

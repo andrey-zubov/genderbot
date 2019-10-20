@@ -95,7 +95,7 @@
                         {% else %}
                             <div class="collapse" id="collapseExample{{ node.get_ancestors.last.id }}">
                                 <div class="row bg-light align-items-center border my-1">
-                                    <div class="col-sm">-- {{ node.name }} ({{ node.get_children.count }})</div>
+                                    <div class="col-sm">-- {{ node.name }}</div>
                                     <p class="col-sm">{{ node.statistic_web.count|add:node.statistic_telegram.count }}</p>
                                     <p class="col-sm">{{ node.statistic_web.count }}</p>
                                     <p class="col-sm">{{ node.statistic_telegram.count }}</p>

@@ -24,7 +24,7 @@
             }
             $("#chat_div").append(user_t_new.text(us_in));
             $.ajax({
-                'url':{% url 'chat_test' %},
+                'url':{% url 'web_chat_bot' %},
                 'data': {'us_in': us_in},
                 success: function (data) {
                     var json_data = jQuery.parseJSON(data);

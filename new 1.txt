@@ -1,0 +1,1 @@
+curl -w "@curl-format.txt" -o /dev/null -s "https://api.telegram.org/botXXXXX/sendMessage?chat_id=XXXXX&text=Test"

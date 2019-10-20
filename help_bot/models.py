@@ -1,21 +1,18 @@
 import logging
-from datetime import date
 
 from django.db import models
-from django.utils.timezone import now
 from mptt.models import MPTTModel, TreeForeignKey
 
 
 class NeedHelp(MPTTModel):
-    """ TBA
-    # http://django-mptt.github.io/django-mptt/models.html
-    """
+    """ Main chat-bot Model. """
+    """ MPTT: http://django-mptt.github.io/django-mptt/models.html """
     name = models.CharField(max_length=100, blank=False, verbose_name="Название",
                             help_text="Удобочитаемое имя для родителя.")
     parent = TreeForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True,
                             related_name='children', db_index=True,
                             verbose_name="Родитель", help_text="Кто родитель этого элемента.")
-
+    """ Normal model fields. """
     user_input = models.CharField(max_length=100, default='', blank=False,
                                   verbose_name="Название кнопки",
                                   help_text="Название кнопки, которое отправится в чат.")
@@ -102,7 +99,9 @@ class TelegramBot(models.Model):
     name = models.CharField(max_length=50, blank=True, null=True, verbose_name="Название")
     token = models.CharField(max_length=100, blank=True, null=True)
     web_hook = models.CharField(max_length=200, blank=True, null=True)
-    in_work = models.BooleanField(default=False, verbose_name="Выбран", help_text="Выбран как основной для работы.")
+    in_work = models.BooleanField(default=False,
+                                  verbose_name="Выбран",
+                                  help_text="Только ОДИН telegram bot может быть выбран как основной для работы.")
 
     class Meta:
         verbose_name = 'Телеграм бот'
@@ -133,9 +132,12 @@ class HelpText(models.Model):
 
 class StartMessage(models.Model):
     """ Hello message. """
-    name = models.CharField(default='', max_length=100)
-    text = models.TextField(max_length=1000, default='')
-    default = models.BooleanField(default=False, blank=True, null=True)
+    name = models.CharField(default='', max_length=100, verbose_name="Название текста")
+    text = models.TextField(max_length=1000, default='', verbose_name="Текст сообщения")
+    default = models.BooleanField(default=False, blank=True, null=True,
+                                  verbose_name="Текст по умолчанию",
+                                  help_text="Только одно сообщение может быть активным, "
+                                            "т.к. отправляется пользователю при старте чата.")
 
     class Meta:
         verbose_name = 'Стартовое сообщение бота'

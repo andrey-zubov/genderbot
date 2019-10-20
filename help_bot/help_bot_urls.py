@@ -1,11 +1,9 @@
 from django.urls import path, re_path
 
-from help_bot.views import (hello, MainPage, ChatPage, tree_page, ChatTest)
+from help_bot.views import (MainPage, tree_page, WebChatBot)
 
 urlpatterns = [
     path('', MainPage.as_view(), name='main_page'),
-    # path('chat_page/', ChatPage.as_view(), name='chat_page'),
-    path('chat_test/', ChatTest.as_view(), name='chat_test'),
+    path('chat_test/', WebChatBot.as_view(), name='web_chat_bot'),
     re_path(r'^tree/$', tree_page, name='tree'),
-    path('hello/', hello, name='hello'),
 ]

@@ -1,20 +1,13 @@
 from datetime import date
-from time import perf_counter
 
 from django.db import models
 
 from help_bot.models import (NeedHelp, StatisticWeb, StatisticTelegram, StatisticAttendance)
-
-"""
-Посещаемость, -> today, this month, this year?
-клики по видам помощи, кнопке «связаться с консультантом», # БЕЗ привязки ко времени
-переходы (откуда пришли пользователи).
-"""
+from help_bot.utility import time_it
 
 
+@time_it
 def get_chat_statistic():
-    print("get_chat_statistic()")
-    time_0 = perf_counter()
     # all
     nh_all = NeedHelp.objects.all()
     nh_all_len = nh_all.count()
@@ -29,7 +22,8 @@ def get_chat_statistic():
     # Statistic Attendance
     attendance = StatisticAttendance.objects.all()
     site_open_sum = attendance.aggregate(models.Sum('site_open'))['site_open__sum']
-    # <QuerySet [<StatisticAttendance: StatisticAttendance object (6)>]>
+
+    # today
     stats_day_all = attendance.filter(date_point__day=date.today().day)
     if stats_day_all:
         stats_day = stats_day_all[0]
@@ -40,35 +34,34 @@ def get_chat_statistic():
             "site_open": 0,
         }
 
+    # this month
     stats_month_all = attendance.filter(date_point__month=date.today().month)
-    stats_month = {
+    stats_month = {  # if stats_month_all = [] -> sum([]) = 0
         "web_chat": sum([i.web_chat_count for i in stats_month_all]),
         "telegram_chat": sum([i.telegram_chat_count for i in stats_month_all]),
         "site_open": sum([i.site_open for i in stats_month_all]),
     }
 
+    # this year
     stats_year_all = attendance.filter(date_point__year=date.today().year)
-
-    stats_year = {
+    stats_year = {  # if stats_year_all = [] -> sum([]) = 0
         "web_chat": sum([i.web_chat_count for i in stats_year_all]),
         "telegram_chat": sum([i.telegram_chat_count for i in stats_year_all]),
         "site_open": sum([i.site_open for i in stats_year_all]),
     }
 
-    """ graphics, 3 lists of data for every month """
+    """ graphics: 3 lists of data for every month. """
     graphics_web = []
     graphics_tel = []
     graphics_site = []
-    for i in range(1, 13):
+    for i in range(1, 13):  # 12 month; if attendance.filter() = [] -> sum([]) = 0
         graphics_web.append(sum([i.web_chat_count for i in attendance.filter(date_point__month=i)]))
         graphics_tel.append(sum([i.telegram_chat_count for i in attendance.filter(date_point__month=i)]))
         graphics_site.append(sum([i.site_open for i in attendance.filter(date_point__month=i)]))
 
-    max_in_month = max(max(graphics_web), max(graphics_tel), max(graphics_site))
-
     # send
     response = {
-        "nodes": nh_all,
+        "nodes": nh_all,  # for {% load mptt_tags %} {% recursetree my_data.nodes %}
         "nh_all_len": nh_all_len,
         "count_web_sum": count_web_sum,
         "count_tel_sum": count_tel_sum,
@@ -76,22 +69,20 @@ def get_chat_statistic():
         "stats_day": stats_day,
         "stats_month": stats_month,
         "stats_year": stats_year,
-        "attendance": attendance,
         "graphics_web": graphics_web,
         "graphics_tel": graphics_tel,
         "graphics_site": graphics_site,
-        "max_in_month": max_in_month,
     }
-    print("get_chat_statistic() - OK; TIME: %s" % (perf_counter() - time_0))
     return response
 
 
+@time_it
 def save_web_chat_statistic(_user_position):
     st_web = NeedHelp.objects.get(id=_user_position).statistic_web
     st_web.count += 1
     st_web.save()
 
-    if_today = StatisticAttendance.objects.filter(date_point=date.today())
+    if_today = StatisticAttendance.objects.filter(date_point=date.today())  # .get(None) -> Exception
     if if_today:  # <QuerySet [<StatisticAttendance: StatisticAttendance object (4)>]>
         if_today[0].web_chat_count += 1
         if_today[0].save()
@@ -100,12 +91,13 @@ def save_web_chat_statistic(_user_position):
         st_a.save()
 
 
+@time_it
 def save_telegram_chat_statistic(_user_position):
     st_tel = NeedHelp.objects.get(id=_user_position).statistic_telegram
     st_tel.count += 1
     st_tel.save()
 
-    if_today = StatisticAttendance.objects.filter(date_point=date.today())
+    if_today = StatisticAttendance.objects.filter(date_point=date.today())  # .get(None) -> Exception
     if if_today:  # <QuerySet [<StatisticAttendance: StatisticAttendance object (4)>]>
         if_today[0].telegram_chat_count += 1
         if_today[0].save()
@@ -114,8 +106,9 @@ def save_telegram_chat_statistic(_user_position):
         st_a.save()
 
 
+@time_it
 def save_site_statistic():
-    if_today = StatisticAttendance.objects.filter(date_point__day=date.today().day)
+    if_today = StatisticAttendance.objects.filter(date_point=date.today())  # .get(None) -> Exception
     if if_today:  # <QuerySet [<StatisticAttendance: StatisticAttendance object (4)>]>
         if_today[0].site_open += 1
         if_today[0].save()
