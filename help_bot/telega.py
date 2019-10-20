@@ -6,8 +6,6 @@ import django
 from telegram import ReplyKeyboardMarkup
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 
-from help_bot.utility import time_it
-
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 path = os.path.expanduser(BASE_DIR)
 if path not in sys.path:
@@ -17,6 +15,7 @@ django.setup()
 
 from help_bot.models import TelegramBot
 from help_bot.telega_logic import keyboard_button
+from help_bot.utility import time_it
 
 
 # def echo(update, context):
