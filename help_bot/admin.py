@@ -51,8 +51,8 @@ class HelpTextAdmin(admin.ModelAdmin):
 
 class StartMessageAdmin(admin.ModelAdmin):
     model = StartMessage
-    fields = ['name', 'text', 'default']
-    list_display = ('name', 'text', 'default')
+    fields = ['name', 'text', 'hello_text', "sorry_text"]
+    list_display = ('name', 'text', 'hello_text', "sorry_text")
     search_fields = ('name',)
 
 

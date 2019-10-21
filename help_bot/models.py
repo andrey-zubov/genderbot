@@ -134,10 +134,14 @@ class StartMessage(models.Model):
     """ Hello message. """
     name = models.CharField(default='', max_length=100, verbose_name="Название текста")
     text = models.TextField(max_length=1000, default='', verbose_name="Текст сообщения")
-    default = models.BooleanField(default=False, blank=True, null=True,
-                                  verbose_name="Текст по умолчанию",
-                                  help_text="Только одно сообщение может быть активным, "
-                                            "т.к. отправляется пользователю при старте чата.")
+    hello_text = models.BooleanField(default=False, blank=True, null=True,
+                                     verbose_name="Текст приветствия по умолчанию",
+                                     help_text="Только одно сообщение-приветствие может быть активным, "
+                                               "т.к. отправляется пользователю при старте чата.")
+    sorry_text = models.BooleanField(default=False, blank=True, null=True,
+                                     verbose_name="Текст об ошибке",
+                                     help_text="Только одно сообщение-ошибка может быть активным, "
+                                               "т.к. отправляется пользователю при неправильном вводе.")
 
     class Meta:
         verbose_name = 'Стартовое сообщение бота'

@@ -11,7 +11,7 @@ def chat_req_get(request) -> str:
     """ Web chat bot main logic. """
     if any(request.GET.values()):
         ui = request.GET['us_in'].strip()
-
+        print(ui)
         ip = get_client_ip(request)
         user, user_position = find_web_user(ip)
 
@@ -25,19 +25,24 @@ def chat_req_get(request) -> str:
                 return user_has_position(ip, user_position, ui)
         else:
             """ random input from a user """
-            return random_input(ip, user)
+            return random_input(ip, user, sorry=True)
     else:
         logging.error("request.GET is empty!")
         return start_chat()
 
 
 @time_it
-def start_chat() -> str:
+def start_chat(sorry=False) -> str:
     """ Start Questions menu. """
     root_nodes = NeedHelp.objects.root_nodes()
     btn_text = [i.user_input for i in root_nodes if not i.is_default]
-    text = StartMessage.objects.get(default=True).text.replace("\n", "<br>")
-    json_data = json.dumps({'btn_text': btn_text, "help_text": text}, ensure_ascii=False)
+    text = StartMessage.objects.get(hello_text=True).text.replace("\n", "<br>")  # filter
+    sorry_text = StartMessage.objects.get(sorry_text=True).text.replace("\n", "<br>")  # filter
+    if sorry:
+        text_out = "%s%s" % (sorry_text, text)
+    else:
+        text_out = text
+    json_data = json.dumps({'btn_text': btn_text, "help_text": text_out}, ensure_ascii=False)
     return json_data
 
 
@@ -81,7 +86,7 @@ def user_from_start_q(_massage: str, ip: str) -> str:
             children = r.get_children()
             save_web_user(ip, user_position, True)
             return buttons_and_text(children, user_position)
-    return random_input(ip, True)
+    return random_input(ip, True, sorry=True)
 
 
 @time_it
@@ -112,13 +117,13 @@ def user_has_position(_ip: str, _user_position: int, _massage: str) -> str:
 
                 save_web_user(_ip, user_position, True)
                 return buttons_and_text(new_child, user_position)
-        return random_input(_ip, True)
+        return random_input(_ip, True, sorry=True)
 
     elif root.go_default:
         """ if user at the last element of the Tree - go to default branch. """
         return go_default_branch(_ip, _massage)
 
-    return random_input(_ip, True)
+    return random_input(_ip, True, sorry=True)
 
 
 @time_it
@@ -134,14 +139,14 @@ def go_default_branch(_ip: str, _massage: str) -> str:
                 return start_chat()
             else:
                 return user_has_position(_ip, new_root.id, _massage)
-    return random_input(_ip, True)
+    return random_input(_ip, True, sorry=True)
 
 
 @time_it
-def random_input(_ip: str, _user: bool) -> str:
+def random_input(_ip: str, _user: bool, sorry=False) -> str:
     """ Reset user position to the Start Questions menu. """
     save_web_user(_ip, 0, _user)
-    return start_chat()
+    return start_chat(sorry=sorry)
 
 
 @time_it
