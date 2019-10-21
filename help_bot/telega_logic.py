@@ -11,7 +11,7 @@ from help_bot.utility import time_it
 def keyboard_button(_massage: str, _chat_id: int) -> (list, str):
     """ Telegram chat bot main logic. """
     if len(_massage) > 1:
-        print("_massage: %s" % _massage)
+        # print("_massage: %s" % _massage)
         user, user_position = find_telegram_user(_chat_id)
 
         if user and not user_position:
@@ -109,7 +109,11 @@ def user_from_start(_chat_id: int, _massage: str) -> (list, str):
             children = r.get_children()
             save_telegram_user(_chat_id, user_position, True)
             return btn_and_text(children, user_position)
-    return random_input(_chat_id, True, sorry=True)
+
+    if _massage == "/start":
+        return random_input(_chat_id, True, sorry=False)
+    else:
+        return random_input(_chat_id, True, sorry=True)
 
 
 @time_it
