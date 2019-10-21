@@ -165,6 +165,13 @@ def buttons_and_text(_child, _user_position: int) -> str:
     """ Avery Tree Field in the Admin menu has 'User input' option.
     'User input' = text buttons, that must be send to the chat. """
     btn_text = [i.user_input for i in _child]
+    # TODO: text_sum = ''
+    #       for i in filter(relation_to=_user_position):
+    #           t_i = i.text.replace("\n", "<br>")
+    #           t_i += ya_geo_link
+    #           t_i += '<br><br>'
+    #           text_sum += t_i
+    #       json_data = text_sum
     text = HelpText.objects.get(relation_to=_user_position).text.replace("\n", "<br>")
     # text  # TODO: url -> <a>
     # print("text: %s" % text)

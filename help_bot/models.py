@@ -113,8 +113,8 @@ class TelegramBot(models.Model):
 
 class HelpText(models.Model):
     """ Bot answer text. """
-    relation_to = models.OneToOneField(to='NeedHelp', blank=True, null=True,
-                                       on_delete=models.SET_NULL, verbose_name="Относится к элементу дерева")
+    relation_to = models.ForeignKey(to='NeedHelp', blank=True, null=True,
+                                    on_delete=models.SET_NULL, verbose_name="Относится к элементу дерева")
     name = models.CharField(max_length=100, null=True, blank=True, default='',
                             verbose_name="Назкание текста бота",
                             help_text="Помощь для администратора при заполнении.")

@@ -11,7 +11,7 @@ from help_bot.statistic import get_chat_statistic
 class InlineHelpText(admin.StackedInline):
     model = HelpText
     extra = 1
-    max_num = 1
+    # max_num = 1
 
 
 class NeedHelpAdmin(MPTTModelAdmin):
