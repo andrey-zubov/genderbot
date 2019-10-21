@@ -24,11 +24,11 @@ def keyboard_button(_massage: str, _chat_id: int) -> (list, str):
 
         else:
             """ From user input: /start, random input """
-            return random_input(_chat_id, True)
+            return random_input(_chat_id, True, sorry=True)
     else:
         logging.basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
                             level=logging.INFO)
-        return default_output()
+        return default_output(sorry=True)
 
 
 @time_it
@@ -62,14 +62,31 @@ def save_telegram_user(_chat_id: int, _us_pos: int, _user: bool):
 
 
 @time_it
-def default_output() -> (list, str):
+def default_output(sorry=False) -> (list, str):
     """ Reset user position to the Start Questions menu. """
     root_nodes = NeedHelp.objects.root_nodes()
     btn_text = [i.user_input for i in root_nodes if not i.is_default]
     """ Telegram buttons: [[KeyboardButton(text='Yes')], [KeyboardButton(text='No')]] """
     btn_to_send = [[KeyboardButton(text=i)] for i in btn_text]
-    text = StartMessage.objects.get(default=True).text
-    return btn_to_send, text
+
+    text_h = StartMessage.objects.filter(hello_text=True)
+    if text_h:
+        text_hello = text_h[0].text
+    else:
+        text_hello = ''
+
+    if sorry:
+        text_s = StartMessage.objects.filter(sorry_text=True)
+        if text_s:
+            text_sorry = text_s[0].text
+        else:
+            text_sorry = ''
+
+        text_out = "%s\n\n%s" % (text_sorry, text_hello)
+    else:
+        text_out = text_hello
+
+    return btn_to_send, text_out
 
 
 @time_it
@@ -92,7 +109,7 @@ def user_from_start(_chat_id: int, _massage: str) -> (list, str):
             children = r.get_children()
             save_telegram_user(_chat_id, user_position, True)
             return btn_and_text(children, user_position)
-    return random_input(_chat_id, True)
+    return random_input(_chat_id, True, sorry=True)
 
 
 @time_it
@@ -122,7 +139,7 @@ def known_user(_chat_id: int, _user_position: int, _massage: str) -> (list, str)
 
                 save_telegram_user(_chat_id, user_position, True)
                 return btn_and_text(new_child, user_position)
-        return random_input(_chat_id, True)
+        return random_input(_chat_id, True, sorry=True)
 
     elif root.go_default:
         """ if user at the last element of the Tree - go to default branch.
@@ -138,11 +155,11 @@ def known_user(_chat_id: int, _user_position: int, _massage: str) -> (list, str)
                 else:
                     return known_user(_chat_id, new_root.id, _massage)
 
-    return random_input(_chat_id, True)
+    return random_input(_chat_id, True, sorry=True)
 
 
 @time_it
-def random_input(_chat_id: int, _user: bool) -> (list, str):
+def random_input(_chat_id: int, _user: bool, sorry=False) -> (list, str):
     """ Reset user position to the Start Questions menu. """
     save_telegram_user(_chat_id, 0, _user)
-    return default_output()
+    return default_output(sorry=sorry)

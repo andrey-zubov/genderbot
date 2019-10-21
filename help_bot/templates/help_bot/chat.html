@@ -62,20 +62,20 @@
     });
 </script>
 
-
-
 <!--CHAT TOP-->
 <div class="row justify-content-between rounded-top"
      style="background-color: #417690">
     <a id="btn_open_chat" class="btn border-0 ml-3 col-6" style="color: white; font-size: 24px;">Карта помощи</a>
-    <a id="btn_hide_chat" class="btn border-0 mr-3 col-1">x</a>
+    <a id="btn_hide_chat" class="btn border-0 mr-3 col-1">
+        <img src="{% static 'img/window-close.png' %}" alt="X" height="30px">
+    </a>
 </div>
 
 <!--CHAT BODY-->
 <div id="chat_show_hide" style="background-color: #f8f8f8">
     <div id="chat_div"
          class="py-1 d-inline-flex flex-column rounded"
-         style="background-color: #f8f8f8; overflow-y: scroll; max-height: 400px; overflow-x: hidden">
+         style="background-color: #f8f8f8; overflow-y: scroll; max-height: 400px; overflow-x: hidden;">
         <p hidden id="bot_text"
            class="text-left text-wrap shadow-sm rounded m-1 p-1"
            style="background-color: #FFFFFF"></p>
@@ -97,7 +97,7 @@
 <!--CHAT INPUT HIDDEN -->
 <div class="my-2 rounded">
     {# DO NOT DELETE !!! #}
-    <label for="user_input">Send msg</label>
-    <input id="user_input" type="text">
-    <button type="button" id="btn_send" class="btn btn-outline-success m-sm-1">Send</button>
+    <label hidden for="user_input">Send msg</label>
+    <input hidden id="user_input" type="text">
+    <button hidden type="button" id="btn_send" class="btn btn-outline-success m-sm-1">Send</button>
 </div>

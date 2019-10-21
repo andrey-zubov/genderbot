@@ -36,12 +36,23 @@ def start_chat(sorry=False) -> str:
     """ Start Questions menu. """
     root_nodes = NeedHelp.objects.root_nodes()
     btn_text = [i.user_input for i in root_nodes if not i.is_default]
-    text = StartMessage.objects.get(hello_text=True).text.replace("\n", "<br>")  # filter
-    sorry_text = StartMessage.objects.get(sorry_text=True).text.replace("\n", "<br>")  # filter
-    if sorry:
-        text_out = "%s%s" % (sorry_text, text)
+
+    text_h = StartMessage.objects.filter(hello_text=True)
+    if text_h:
+        text_hello = text_h[0].text.replace("\n", "<br>")
     else:
-        text_out = text
+        text_hello = ''
+
+    if sorry:
+        text_s = StartMessage.objects.filter(sorry_text=True)
+        if text_s:
+            text_sorry = text_s[0].text.replace("\n", "<br>")
+        else:
+            text_sorry = ''
+
+        text_out = "%s<br><br>%s" % (text_sorry, text_hello)
+    else:
+        text_out = text_hello
     json_data = json.dumps({'btn_text': btn_text, "help_text": text_out}, ensure_ascii=False)
     return json_data
 
