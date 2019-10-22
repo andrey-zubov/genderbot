@@ -1,6 +1,7 @@
 import json
 import logging
 
+from api_keys import Yandex_JS_API_HTTP_geo_link
 from help_bot.models import (NeedHelp, StartMessage, ChatPositionWeb, HelpText)
 from help_bot.statistic import (save_web_chat_statistic)
 from help_bot.utility import (check_input, time_it)
@@ -165,28 +166,40 @@ def buttons_and_text(_child, _user_position: int) -> str:
     """ Avery Tree Field in the Admin menu has 'User input' option.
     'User input' = text buttons, that must be send to the chat. """
     btn_text = [i.user_input for i in _child]
-    # TODO: text_sum = ''
-    #       for i in filter(relation_to=_user_position):
-    #           t_i = i.text.replace("\n", "<br>")
-    #           t_i += ya_geo_link
-    #           t_i += '<br><br>'
-    #           text_sum += t_i
-    #       json_data = text_sum
-    text = HelpText.objects.get(relation_to=_user_position).text.replace("\n", "<br>")
 
-    """ 
-    <script src="https://api-maps.yandex.ru/2.1/?load=Geolink&amp;lang=ru_RU&amp;apikey=<ваш API-ключ>" type="text/javascript"></script>
-    
-    <p><span class="ymaps-geolink" data-type="biz" 
-    data-bounds="[[55.73333783240489,37.586741441564136],[55.73433517114847,37.59017466910319]]">
-    Москва, ул. Льва Толстого, 16
-    x`</span></p> 
-    """
+    text_sum = ''
+    for t in HelpText.objects.filter(relation_to=_user_position):
+        if t:
+            try:
+                text_sum += t.text.replace("\n", "<br>")
+                text_sum += "<br>"
+                if t.address:
+                    text_sum += get_geo_link(t.geo_link_name + " " + t.address, t.latitude, t.longitude)
+                    text_sum += "<br>"
+            except Exception as ex:
+                logging.error("Exception in buttons_and_text():\n%s" % ex)
+                continue
+        else:
+            continue
 
-    # text  # TODO: url -> <a>
-    # print("text: %s" % text)
-    json_data = json.dumps({'btn_text': btn_text, "help_text": text}, ensure_ascii=False)
+    json_data = json.dumps({'btn_text': btn_text, "help_text": text_sum}, ensure_ascii=False)
     return json_data
+
+
+def get_geo_link(link_name: str, _lat: float, _lng: float) -> str:
+    if _lat and _lng:
+        delta_lat = 0.00833  # ~1 km
+        delta_lng = 0.013  # ~1 km
+        coords_square = [[_lat + delta_lat, _lng - delta_lng], [_lat - delta_lat, _lng + delta_lng]]
+    else:
+        coords_square = ''
+
+    html_geo_link = """<script src="https://api-maps.yandex.ru/2.1/?load=Geolink&amp;lang=ru_RU&amp;apikey={}" type="text/javascript"></script>
+    <p><span class="ymaps-geolink" data-type="biz" data-bounds="{}">{}</span></p>""".format(Yandex_JS_API_HTTP_geo_link,
+                                                                                            coords_square,
+                                                                                            link_name)
+
+    return html_geo_link
 
 
 @time_it

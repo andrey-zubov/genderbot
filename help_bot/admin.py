@@ -11,7 +11,7 @@ from help_bot.statistic import get_chat_statistic
 class InlineHelpText(admin.StackedInline):
     model = HelpText
     extra = 1
-    fields = ('name', ('text', 'address', 'latitude', 'longitude'),)
+    fields = ('name', ('text', 'geo_link_name', 'address', 'latitude', 'longitude'),)
 
 
 class NeedHelpAdmin(MPTTModelAdmin):

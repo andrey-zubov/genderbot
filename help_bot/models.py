@@ -123,9 +123,15 @@ class HelpText(models.Model):
                             help_text="Текст сообщения бота для отправки в чат.")
 
     # geo_link
+    geo_link_name = models.CharField(max_length=100, null=True, blank=True, verbose_name="Имя для гео-ссылки",
+                                     help_text="пример: ТЦСОН")
     address = models.CharField(max_length=100, null=True, blank=True,
                                verbose_name="Адрес",
                                help_text="пример: г.Лида, ул. Варшавская, 9")
+
+    """ data-bounds=[[55.729410, 37.584012], [55.738588, 37.598817]]
+    Данный параметр рекомендуется указывать, если в геоссылке задан неполный адрес объекта, 
+    например без указания города или области («ул. Ленина»). """
     latitude = models.FloatField(blank=True, null=True, verbose_name="Широта",
                                  help_text="Широты РБ от 51.258872 до 56.171949")
     longitude = models.FloatField(blank=True, null=True, verbose_name="Долгота",

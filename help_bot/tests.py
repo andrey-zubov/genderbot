@@ -33,4 +33,5 @@ def recreate_need_help_statistic_fk():
 
 
 if __name__ == "__main__":
-    recreate_need_help_statistic_fk()
+    # recreate_need_help_statistic_fk()
+    pass
