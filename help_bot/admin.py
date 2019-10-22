@@ -11,7 +11,7 @@ from help_bot.statistic import get_chat_statistic
 class InlineHelpText(admin.StackedInline):
     model = HelpText
     extra = 1
-    # max_num = 1
+    fields = ('name', ('text', 'address', 'latitude', 'longitude'),)
 
 
 class NeedHelpAdmin(MPTTModelAdmin):
@@ -36,22 +36,22 @@ class NeedHelpAdmin(MPTTModelAdmin):
 
 class TelegramAdmin(admin.ModelAdmin):
     model = TelegramBot
-    fields = ['name', 'token', 'web_hook', 'in_work']
+    fields = ('name', 'in_work', 'token', 'web_hook')
     list_display = ('name', 'token', 'web_hook', 'in_work')
-    list_filter = ('web_hook',)
+    list_filter = ('in_work',)
     search_fields = ('name',)
 
 
 class HelpTextAdmin(admin.ModelAdmin):
     model = HelpText
-    fields = ['name', 'text', 'relation_to']
-    list_display = ('name', 'relation_to')
-    search_fields = ('name',)
+    fields = ('name', ('text', 'address', 'latitude', 'longitude'), 'relation_to')
+    list_display = ('name', 'relation_to', 'address', 'latitude', 'longitude')
+    search_fields = ('name', 'address')
 
 
 class StartMessageAdmin(admin.ModelAdmin):
     model = StartMessage
-    fields = ['name', 'text', 'hello_text', "sorry_text"]
+    fields = ('name', 'text', 'hello_text', "sorry_text")
     list_display = ('name', 'text', 'hello_text', "sorry_text")
     search_fields = ('name',)
 

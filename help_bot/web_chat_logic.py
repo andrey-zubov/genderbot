@@ -173,6 +173,16 @@ def buttons_and_text(_child, _user_position: int) -> str:
     #           text_sum += t_i
     #       json_data = text_sum
     text = HelpText.objects.get(relation_to=_user_position).text.replace("\n", "<br>")
+
+    """ 
+    <script src="https://api-maps.yandex.ru/2.1/?load=Geolink&amp;lang=ru_RU&amp;apikey=<ваш API-ключ>" type="text/javascript"></script>
+    
+    <p><span class="ymaps-geolink" data-type="biz" 
+    data-bounds="[[55.73333783240489,37.586741441564136],[55.73433517114847,37.59017466910319]]">
+    Москва, ул. Льва Толстого, 16
+    x`</span></p> 
+    """
+
     # text  # TODO: url -> <a>
     # print("text: %s" % text)
     json_data = json.dumps({'btn_text': btn_text, "help_text": text}, ensure_ascii=False)

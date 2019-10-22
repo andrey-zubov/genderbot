@@ -100,7 +100,7 @@ class TelegramBot(models.Model):
     token = models.CharField(max_length=100, blank=True, null=True)
     web_hook = models.CharField(max_length=200, blank=True, null=True)
     in_work = models.BooleanField(default=False,
-                                  verbose_name="Выбран",
+                                  verbose_name="Является основным",
                                   help_text="Только ОДИН telegram bot может быть выбран как основной для работы.")
 
     class Meta:
@@ -121,6 +121,15 @@ class HelpText(models.Model):
     text = models.TextField(max_length=2000, null=True, blank=True, default='',
                             verbose_name="Текст сообщения",
                             help_text="Текст сообщения бота для отправки в чат.")
+
+    # geo_link
+    address = models.CharField(max_length=100, null=True, blank=True,
+                               verbose_name="Адрес",
+                               help_text="пример: г.Лида, ул. Варшавская, 9")
+    latitude = models.FloatField(blank=True, null=True, verbose_name="Широта",
+                                 help_text="Широты РБ от 51.258872 до 56.171949")
+    longitude = models.FloatField(blank=True, null=True, verbose_name="Долгота",
+                                  help_text="Долгота РБ от 23.176563 до 32.779784")
 
     class Meta:
         verbose_name = 'Текст сообщения бота'

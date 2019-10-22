@@ -15,7 +15,7 @@ def keyboard_button(_massage: str, _chat_id: int) -> (list, str):
         user, user_position = find_telegram_user(_chat_id)
 
         if user and not user_position:
-            """ user came from a start questions """
+            """ user came from a start questions + /start """
             return user_from_start(_chat_id, _massage)
 
         elif user_position:
@@ -23,7 +23,7 @@ def keyboard_button(_massage: str, _chat_id: int) -> (list, str):
             return known_user(_chat_id, user_position, _massage)
 
         else:
-            """ From user input: /start, random input """
+            """ random input """
             return random_input(_chat_id, True, sorry=True)
     else:
         logging.basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
