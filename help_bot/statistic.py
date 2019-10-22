@@ -1,9 +1,10 @@
 from datetime import date
+from time import perf_counter
 
 from django.db import models
 
 from help_bot.models import (NeedHelp, StatisticWeb, StatisticTelegram, StatisticAttendance)
-from help_bot.utility import time_it
+from help_bot.utility import time_it, try_except
 
 
 @time_it
@@ -76,6 +77,7 @@ def get_chat_statistic():
     return response
 
 
+@try_except
 @time_it
 def save_web_chat_statistic(_user_position):
     st_web = NeedHelp.objects.get(id=_user_position).statistic_web
@@ -91,6 +93,7 @@ def save_web_chat_statistic(_user_position):
         st_a.save()
 
 
+@try_except
 @time_it
 def save_telegram_chat_statistic(_user_position):
     st_tel = NeedHelp.objects.get(id=_user_position).statistic_telegram
@@ -106,6 +109,7 @@ def save_telegram_chat_statistic(_user_position):
         st_a.save()
 
 
+@try_except
 @time_it
 def save_site_statistic():
     if_today = StatisticAttendance.objects.filter(date_point=date.today())  # .get(None) -> Exception

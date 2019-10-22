@@ -3,8 +3,8 @@ import logging
 from telegram import KeyboardButton
 
 from help_bot.models import (NeedHelp, HelpText, StartMessage, ChatPositionTelegram)
-from help_bot.statistic import save_telegram_chat_statistic
-from help_bot.utility import time_it
+from help_bot.statistic import (save_telegram_chat_statistic)
+from help_bot.utility import (time_it, try_except)
 
 
 @time_it
@@ -47,6 +47,7 @@ def find_telegram_user(_chat_id: int) -> (bool, int):
         return False, 0
 
 
+@try_except
 @time_it
 def save_telegram_user(_chat_id: int, _us_pos: int, _user: bool):
     """ save user current position or create new user with default position = 0. """
@@ -58,7 +59,8 @@ def save_telegram_user(_chat_id: int, _us_pos: int, _user: bool):
         if _us_pos:
             save_telegram_chat_statistic(_us_pos)
     else:
-        ChatPositionTelegram(chat_id=_chat_id, position=_us_pos).save()
+        cp = ChatPositionTelegram(chat_id=_chat_id, position=_us_pos)
+        cp.save()
 
 
 @time_it

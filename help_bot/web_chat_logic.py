@@ -3,7 +3,7 @@ import logging
 
 from help_bot.models import (NeedHelp, StartMessage, ChatPositionWeb, HelpText)
 from help_bot.statistic import (save_web_chat_statistic)
-from help_bot.utility import (check_input, time_it)
+from help_bot.utility import (check_input, time_it, try_except)
 
 
 @time_it
@@ -11,7 +11,6 @@ def chat_req_get(request) -> str:
     """ Web chat bot main logic. """
     if any(request.GET.values()):
         ui = request.GET['us_in'].strip()
-        print(ui)
         ip = get_client_ip(request)
         user, user_position = find_web_user(ip)
 
@@ -27,7 +26,7 @@ def chat_req_get(request) -> str:
             """ random input from a user """
             return random_input(ip, user, sorry=True)
     else:
-        logging.error("request.GET is empty!")
+        """ Chat page load. """
         return start_chat()
 
 
@@ -53,8 +52,8 @@ def start_chat(sorry=False) -> str:
         text_out = "%s<br><br>%s" % (text_sorry, text_hello)
     else:
         text_out = text_hello
-    json_data = json.dumps({'btn_text': btn_text, "help_text": text_out}, ensure_ascii=False)
-    return json_data
+
+    return json.dumps({'btn_text': btn_text, "help_text": text_out}, ensure_ascii=False)
 
 
 @time_it
@@ -62,10 +61,9 @@ def find_web_user(_ip: str) -> (bool, int):
     """ If user has ever used HelpBot -> find chat_id id DB and get user last position.
     Else set user_position = 0. """
     try:
-        chat_web_all = ChatPositionWeb.objects.all().values()
-        for w in chat_web_all:
-            if w['ip_address'] == _ip:
-                return True, w['position']
+        for w in ChatPositionWeb.objects.all():
+            if w.ip_address == _ip:
+                return True, w.position
         save_web_user(_ip, 0, False)
         return True, 0
     except Exception as ex:
@@ -73,6 +71,7 @@ def find_web_user(_ip: str) -> (bool, int):
         return False, 0
 
 
+@try_except
 @time_it
 def save_web_user(_ip: str, _user_position: int, _user: bool):
     """ save user current position or create new user with default position = 0. """
@@ -84,7 +83,8 @@ def save_web_user(_ip: str, _user_position: int, _user: bool):
         if _user_position:
             save_web_chat_statistic(_user_position)
     else:
-        ChatPositionWeb(ip_address=_ip, position=_user_position).save()
+        cp = ChatPositionWeb(ip_address=_ip, position=_user_position)
+        cp.save()
 
 
 @time_it
@@ -192,11 +192,9 @@ def get_geo_link_web(link_name: str, _lat: float, _lng: float) -> str:
     else:
         coords_square = ''
 
-    html_geo_link = """<p><span class="ymaps-geolink" data-type="biz" data-bounds="{}">{}</span></p><br>""".format(
+    return """<p><span class="ymaps-geolink" data-type="biz" data-bounds="{}">{}</span></p><br>""".format(
         coords_square,
         link_name)
-
-    return html_geo_link
 
 
 @time_it
@@ -208,7 +206,7 @@ def get_client_ip(request) -> str:
     # 'REMOTE_ADDR': '192.168.0.51'
     # print("User.HTTP_HOST: %s" % request.META.get('HTTP_HOST'))
     # 'HTTP_HOST': '192.168.0.51:8000'
-    print("User.HTTP_REFERER: %s" % request.META.get('HTTP_REFERER'))
+    # print("User.HTTP_REFERER: %s" % request.META.get('HTTP_REFERER'))
     # 'HTTP_REFERER': 'http://192.168.0.51:8000/'
     # print("User.HTTP_COOKIE: %s" % request.META.get('HTTP_COOKIE'))
     # 'HTTP_COOKIE': 'csrftoken=FD0o027YvhJ6eogKBVQFDMerWC8dM9uiNRmL2KVopbCs8z8ZUQukBIPE65Zsmdsz'
