@@ -1,7 +1,6 @@
 import json
 import logging
 
-from api_keys import Yandex_JS_API_HTTP_geo_link
 from help_bot.models import (NeedHelp, StartMessage, ChatPositionWeb, HelpText)
 from help_bot.statistic import (save_web_chat_statistic)
 from help_bot.utility import (check_input, time_it)
@@ -174,8 +173,7 @@ def buttons_and_text(_child, _user_position: int) -> str:
                 text_sum += t.text.replace("\n", "<br>")
                 text_sum += "<br>"
                 if t.address:
-                    text_sum += get_geo_link(t.geo_link_name + " " + t.address, t.latitude, t.longitude)
-                    text_sum += "<br>"
+                    text_sum += get_geo_link_web(t.geo_link_name + " " + t.address, t.latitude, t.longitude)
             except Exception as ex:
                 logging.error("Exception in buttons_and_text():\n%s" % ex)
                 continue
@@ -186,7 +184,7 @@ def buttons_and_text(_child, _user_position: int) -> str:
     return json_data
 
 
-def get_geo_link(link_name: str, _lat: float, _lng: float) -> str:
+def get_geo_link_web(link_name: str, _lat: float, _lng: float) -> str:
     if _lat and _lng:
         delta_lat = 0.00833  # ~1 km
         delta_lng = 0.013  # ~1 km
@@ -194,10 +192,9 @@ def get_geo_link(link_name: str, _lat: float, _lng: float) -> str:
     else:
         coords_square = ''
 
-    html_geo_link = """<script src="https://api-maps.yandex.ru/2.1/?load=Geolink&amp;lang=ru_RU&amp;apikey={}" type="text/javascript"></script>
-    <p><span class="ymaps-geolink" data-type="biz" data-bounds="{}">{}</span></p>""".format(Yandex_JS_API_HTTP_geo_link,
-                                                                                            coords_square,
-                                                                                            link_name)
+    html_geo_link = """<p><span class="ymaps-geolink" data-type="biz" data-bounds="{}">{}</span></p><br>""".format(
+        coords_square,
+        link_name)
 
     return html_geo_link
 

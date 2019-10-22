@@ -137,6 +137,10 @@ class HelpText(models.Model):
     longitude = models.FloatField(blank=True, null=True, verbose_name="Долгота",
                                   help_text="Долгота РБ от 23.176563 до 32.779784")
 
+    telegram_geo_url = models.URLField(max_length=500, blank=True, null=True,
+                                       verbose_name="Ссылка на объект на карте",
+                                       help_text="<b>Только для Телеграма!!!</b>")
+
     class Meta:
         verbose_name = 'Текст сообщения бота'
         verbose_name_plural = 'Тексты сообщений бота'

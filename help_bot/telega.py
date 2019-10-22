@@ -3,7 +3,7 @@ import os
 import sys
 
 import django
-from telegram import ReplyKeyboardMarkup
+from telegram import ReplyKeyboardMarkup, ParseMode
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -63,6 +63,8 @@ def key_bord(update, context):
     context.bot.send_message(
         chat_id=c_id,
         text=help_text,
+        parse_mode=ParseMode.HTML,
+        disable_web_page_preview=True,
         reply_markup=ReplyKeyboardMarkup(key_bord_btn, one_time_keyboard=True),
     )
 
