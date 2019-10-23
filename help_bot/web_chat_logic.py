@@ -173,7 +173,7 @@ def buttons_and_text(_child, _user_position: int) -> str:
                 text_sum += t.text.replace("\n", "<br>")
                 text_sum += "<br>"
                 if t.geo_link_name and t.address:
-                    text_sum += get_geo_link_web(t.geo_link_name + " " + t.address, t.latitude, t.longitude)
+                    text_sum += get_geo_link_web(t.geo_link_name, t.address, t.latitude, t.longitude)
             except Exception as ex:
                 logging.error("Exception in buttons_and_text():\n%s" % ex)
                 continue
@@ -184,20 +184,21 @@ def buttons_and_text(_child, _user_position: int) -> str:
     return json_data
 
 
-def get_geo_link_web(link_name: str, _lat: float, _lng: float) -> str:
+def get_geo_link_web(_link_name: str, _address: str, _lat: float, _lng: float) -> str:
     if _lat and _lng:
         """ data-bounds=[[55.729410, 37.584012], [55.738588, 37.598817]]
             Данный параметр рекомендуется указывать, если в геоссылке задан неполный адрес объекта, 
             например без указания города или области («ул. Ленина»). """
-        delta_lat = 0.00833  # ~1 km
-        delta_lng = 0.013  # ~1 km
+        delta_lat = 0.00415  # ~0.5 km
+        delta_lng = 0.007  # ~0.5 km
         coords_square = [[_lat + delta_lat, _lng - delta_lng], [_lat - delta_lat, _lng + delta_lng]]
     else:
         coords_square = ''
 
-    return """<p><span class="ymaps-geolink" data-type="biz" data-bounds="{}">{}</span></p><br>""".format(
+    return """<p><span class="ymaps-geolink" data-type="biz" data-bounds="{}">{} {}</span></p><br>""".format(
         coords_square,
-        link_name)
+        _link_name,  # no <br> here between them!!!
+        _address)
 
 
 @time_it

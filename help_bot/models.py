@@ -24,7 +24,7 @@ class NeedHelp(MPTTModel):
                                           " указать этот элемент.")
     question = models.CharField(blank=True, null=True, default='', max_length=100,
                                 verbose_name="Вопрос пользователю",
-                                help_text="Помощь для администратора при заполнении. "
+                                help_text="Помощь для администратора при заполнении.<br>"
                                           "Указать, если вопрос есть в тексте бота.")
     """ last element in the tree branch """
     go_default = models.BooleanField(default=False, blank=True, null=True,
@@ -120,26 +120,28 @@ class HelpText(models.Model):
                             help_text="Помощь для администратора при заполнении.")
     text = models.TextField(max_length=2000, null=True, blank=True, default='',
                             verbose_name="Текст сообщения",
-                            help_text="Текст сообщения бота для отправки в чат.\n"
+                            help_text="Текст сообщения бота для отправки в чат.<br>"
                                       "Пример номера телефона: 8 (017) 123-45-67 или +375 (12) 123-45-67")
 
     # geo_link
     geo_link_name = models.CharField(max_length=100, null=True, blank=True, verbose_name="Имя для гео-ссылки",
-                                     help_text="пример: ТЦСОН.\n"
-                                               "Обязательно для создания гео-ссылки в web-чате!")
+                                     help_text="пример: ТЦСОН (необходимо только краткое сокращение).<br>"
+                                               "Обязательно для создания гео-ссылки в web-чате - увеличивает точность!")
     address = models.CharField(max_length=100, null=True, blank=True,
                                verbose_name="Адрес",
-                               help_text="пример: г.Лида, ул. Варшавская, 9.\n"
+                               help_text="пример: г.Лида, ул. Варшавская, 9.<br>"
                                          "Обязательно для создания гео-ссылки в web-чате!")
 
     latitude = models.FloatField(blank=True, null=True, verbose_name="Широта",
-                                 help_text="Широты РБ от 51.258872 до 56.171949")
+                                 help_text="Широты РБ от 51.258872 до 56.171949.<br>"
+                                           "Обязательно для создания гео-ссылки в web-чате - увеличивает точность!")
     longitude = models.FloatField(blank=True, null=True, verbose_name="Долгота",
-                                  help_text="Долгота РБ от 23.176563 до 32.779784")
+                                  help_text="Долгота РБ от 23.176563 до 32.779784.<br>"
+                                            "Обязательно для создания гео-ссылки в web-чате - увеличивает точность!")
 
     telegram_geo_url = models.URLField(max_length=500, blank=True, null=True,
                                        verbose_name="Ссылка на объект на карте",
-                                       help_text="<b>Только для Телеграма!!! Максимум 500 символов.</b>\n"
+                                       help_text="<b>Только для Телеграма!!! Максимум 500 символов.</b><br>"
                                                  "Обязательно для создания гео-ссылки в Телеграм-чате!")
 
     class Meta:
@@ -156,11 +158,11 @@ class StartMessage(models.Model):
     text = models.TextField(max_length=1000, default='', verbose_name="Текст сообщения")
     hello_text = models.BooleanField(default=False, blank=True, null=True,
                                      verbose_name="Текст приветствия по умолчанию",
-                                     help_text="Только одно сообщение-приветствие может быть активным, "
+                                     help_text="Только одно сообщение-приветствие может быть активным,<br>"
                                                "т.к. отправляется пользователю при старте чата.")
     sorry_text = models.BooleanField(default=False, blank=True, null=True,
                                      verbose_name="Текст об ошибке",
-                                     help_text="Только одно сообщение-ошибка может быть активным, "
+                                     help_text="Только одно сообщение-ошибка может быть активным,<br>"
                                                "т.к. отправляется пользователю при неправильном вводе.")
 
     class Meta:
