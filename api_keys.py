@@ -11,4 +11,3 @@
     Ключи API:  имя - help_bot
                 ключ - 65f84225-226c-4cf2-aefa-4dda31ec4386
  """
-Yandex_JS_API_HTTP_geo_link = '65f84225-226c-4cf2-aefa-4dda31ec4386'

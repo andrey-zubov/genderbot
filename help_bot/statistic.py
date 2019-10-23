@@ -1,5 +1,4 @@
 from datetime import date
-from time import perf_counter
 
 from django.db import models
 

@@ -172,7 +172,7 @@ def buttons_and_text(_child, _user_position: int) -> str:
             try:
                 text_sum += t.text.replace("\n", "<br>")
                 text_sum += "<br>"
-                if t.address:
+                if t.geo_link_name and t.address:
                     text_sum += get_geo_link_web(t.geo_link_name + " " + t.address, t.latitude, t.longitude)
             except Exception as ex:
                 logging.error("Exception in buttons_and_text():\n%s" % ex)
@@ -186,6 +186,9 @@ def buttons_and_text(_child, _user_position: int) -> str:
 
 def get_geo_link_web(link_name: str, _lat: float, _lng: float) -> str:
     if _lat and _lng:
+        """ data-bounds=[[55.729410, 37.584012], [55.738588, 37.598817]]
+            Данный параметр рекомендуется указывать, если в геоссылке задан неполный адрес объекта, 
+            например без указания города или области («ул. Ленина»). """
         delta_lat = 0.00833  # ~1 km
         delta_lng = 0.013  # ~1 km
         coords_square = [[_lat + delta_lat, _lng - delta_lng], [_lat - delta_lat, _lng + delta_lng]]
@@ -226,5 +229,5 @@ def get_client_ip(request) -> str:
         ip = x_forwarded_for.split(',')[-1].strip()
     else:
         ip = request.META.get('REMOTE_ADDR')
-    print('User.IP: %s' % ip)
+    # print('User.IP: %s' % ip)
     return ip

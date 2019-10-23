@@ -120,18 +120,18 @@ class HelpText(models.Model):
                             help_text="Помощь для администратора при заполнении.")
     text = models.TextField(max_length=2000, null=True, blank=True, default='',
                             verbose_name="Текст сообщения",
-                            help_text="Текст сообщения бота для отправки в чат.")
+                            help_text="Текст сообщения бота для отправки в чат.\n"
+                                      "Пример номера телефона: 8 (017) 123-45-67 или +375 (12) 123-45-67")
 
     # geo_link
     geo_link_name = models.CharField(max_length=100, null=True, blank=True, verbose_name="Имя для гео-ссылки",
-                                     help_text="пример: ТЦСОН")
+                                     help_text="пример: ТЦСОН.\n"
+                                               "Обязательно для создания гео-ссылки в web-чате!")
     address = models.CharField(max_length=100, null=True, blank=True,
                                verbose_name="Адрес",
-                               help_text="пример: г.Лида, ул. Варшавская, 9")
+                               help_text="пример: г.Лида, ул. Варшавская, 9.\n"
+                                         "Обязательно для создания гео-ссылки в web-чате!")
 
-    """ data-bounds=[[55.729410, 37.584012], [55.738588, 37.598817]]
-    Данный параметр рекомендуется указывать, если в геоссылке задан неполный адрес объекта, 
-    например без указания города или области («ул. Ленина»). """
     latitude = models.FloatField(blank=True, null=True, verbose_name="Широта",
                                  help_text="Широты РБ от 51.258872 до 56.171949")
     longitude = models.FloatField(blank=True, null=True, verbose_name="Долгота",
@@ -139,7 +139,8 @@ class HelpText(models.Model):
 
     telegram_geo_url = models.URLField(max_length=500, blank=True, null=True,
                                        verbose_name="Ссылка на объект на карте",
-                                       help_text="<b>Только для Телеграма!!!</b>")
+                                       help_text="<b>Только для Телеграма!!! Максимум 500 символов.</b>\n"
+                                                 "Обязательно для создания гео-ссылки в Телеграм-чате!")
 
     class Meta:
         verbose_name = 'Текст сообщения бота'

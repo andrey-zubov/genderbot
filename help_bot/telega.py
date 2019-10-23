@@ -3,7 +3,7 @@ import os
 import sys
 
 import django
-from telegram import ReplyKeyboardMarkup, ParseMode
+from telegram import ReplyKeyboardMarkup, ParseMode, ChatAction
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -17,6 +17,22 @@ from help_bot.models import TelegramBot
 from help_bot.telega_logic import keyboard_button
 from help_bot.utility import time_it
 
+from functools import wraps
+
+
+def send_action(action):
+    """Sends `action` while processing func command."""
+
+    def decorator(func):
+        @wraps(func)
+        def command_func(update, context, *args, **kwargs):
+            context.bot.send_chat_action(chat_id=update.effective_message.chat_id, action=action)
+            return func(update, context, *args, **kwargs)
+
+        return command_func
+
+    return decorator
+
 
 # def echo(update, context):
 #     print("telega.echo(); chat_id: %s\nin_message: %s" % (update.message.chat_id, update.message.text))
@@ -27,6 +43,7 @@ from help_bot.utility import time_it
 
 
 @time_it
+@send_action(ChatAction.TYPING)
 def start(update, context):
     c_id = update.message.chat_id
 
@@ -39,22 +56,23 @@ def start(update, context):
     )
 
 
+# @time_it
+# def coords(update, context):
+#     c_id = update.message.chat_id
+#     print("telega.coords(); chat_id: %s\nin_message: %s" % (c_id, update.message.text))
+#
+#     lat = float(update.message.location.latitude)
+#     lng = float(update.message.location.longitude)
+#     print("coord: %s, %s" % (lat, lng))
+#
+#     context.bot.send_message(
+#         chat_id=c_id,
+#         text="lat: %s, lng: %s" % (lat, lng),
+#     )
+
+
 @time_it
-def coords(update, context):
-    c_id = update.message.chat_id
-    print("telega.coords(); chat_id: %s\nin_message: %s" % (c_id, update.message.text))
-
-    lat = float(update.message.location.latitude)
-    lng = float(update.message.location.longitude)
-    print("coord: %s, %s" % (lat, lng))
-
-    context.bot.send_message(
-        chat_id=c_id,
-        text="lat: %s, lng: %s" % (lat, lng),
-    )
-
-
-@time_it
+@send_action(ChatAction.TYPING)
 def key_bord(update, context):
     c_id = update.message.chat_id
 
@@ -80,12 +98,12 @@ def go_go_bot():
 
     start_handler = CommandHandler('start', start)
     # echo_handler = MessageHandler(Filters.text, echo)
-    get_coords = MessageHandler(Filters.location, coords)
+    # get_coords = MessageHandler(Filters.location, coords)
     ask_help = MessageHandler(Filters.text, key_bord)
 
     dispatcher.add_handler(start_handler)
     # dispatcher.add_handler(echo_handler)
-    dispatcher.add_handler(get_coords)
+    # dispatcher.add_handler(get_coords)
     dispatcher.add_handler(ask_help)
 
     logging.basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
