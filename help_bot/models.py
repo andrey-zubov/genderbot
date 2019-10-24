@@ -129,7 +129,7 @@ class HelpText(models.Model):
                                                "Обязательно для создания гео-ссылки в web-чате - увеличивает точность!")
     address = models.CharField(max_length=100, null=True, blank=True,
                                verbose_name="Адрес",
-                               help_text="пример: г.Лида, ул. Варшавская, 9.<br>"
+                               help_text="пример: г. Лида, ул. Варшавская, 9.<br>"
                                          "Обязательно для создания гео-ссылки в web-чате!")
 
     latitude = models.FloatField(blank=True, null=True, verbose_name="Широта",

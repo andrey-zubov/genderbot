@@ -97,7 +97,6 @@ def btn_and_text(child, us_pos: int) -> (list, str):
     'User input' = text buttons, that must be send to the chat. """
     btn_text = [i.user_input for i in child]
     btn = [[KeyboardButton(text=i)] for i in btn_text]
-    # text = HelpText.objects.get(relation_to=us_pos).text
 
     text_sum = ''
     for t in HelpText.objects.filter(relation_to=us_pos):
@@ -105,7 +104,7 @@ def btn_and_text(child, us_pos: int) -> (list, str):
             try:
                 text_sum += t.text
                 if t.telegram_geo_url and t.address:
-                    text_sum += """\n<a href="{}">{}</a>\n""".format(t.telegram_geo_url, t.address)
+                    text_sum += """\n<a href="{}">{}</a>\n\n""".format(t.telegram_geo_url, t.address)
             except Exception as ex:
                 logging.error("Exception in btn_and_text():\n%s" % ex)
                 continue

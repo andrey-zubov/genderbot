@@ -1,13 +1,13 @@
 asn1crypto==1.2.0
 backcall==0.1.0
 certifi==2019.9.11
-cffi==1.13.0
-cryptography==2.7
+cffi==1.13.1
+cryptography==2.8
 decorator==4.4.0
 Django==2.2.6
 django-js-asset==1.2.2
 django-mptt==0.10.0
-future==0.18.0
+future==0.18.1
 ipython==7.8.0
 ipython-genutils==0.2.0
 jedi==0.15.1
