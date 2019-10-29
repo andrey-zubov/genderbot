@@ -5,20 +5,15 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-{#    {% include 'help_bot/bootstrap_and_ko.html' %}#}
-
-    {% load staticfiles %}
-    {#    <style type="text/css" href="{% static '' %}"></style>#}
-
     <title>{% block title %}{% endblock %} - ChatBot</title>
 </head>
 
-<body style="font-size: large">
+<body>
 
 <div class="container">
 
     <header>
-        <nav class="nav" style="background-color: #344955">
+        <nav class="nav" style="background-color: #344955;">
             <a class="nav-link text-white" href="/">Main</a>
             <a class="nav-link text-white" href="{% url 'tree' %}">Tree</a>
         </nav>
@@ -26,7 +21,7 @@
 
     <main>
         <div class="container my-2"
-             style="min-height: 600px; background-color: whitesmoke">
+             style="min-height: 600px; background-color: whitesmoke;">
             <section class="content">
                 {% block content %}{% endblock %}
             </section>
@@ -34,14 +29,15 @@
     </main>
 
     <footer>
-        <nav class="nav" style="background-color: #344955">
+        <nav class="nav" style="background-color: #344955;">
             <h4 class="text-white">Footer</h4>
         </nav>
     </footer>
 
     <div id="id_chat_panel"
          class="col-6 rounded mx-2 border"
-         style="background-color: #f8f8f8; position: fixed; bottom: 5px; right: 5px">
+         style="background-color: #f8f8f8; position: fixed; bottom: 5px; right: 5px;
+         font-size: medium; font-weight: 200;">
 
         {% include 'help_bot/chat.html' %}
     </div>
