@@ -42,8 +42,9 @@
 
                     $("#user_input").val('');
                     $("#chat_div").append(bot_p_new.html(json_data.help_text));
+
                     {#//auto scroll to the bottom of the chat div#}
-                    $("#chat_div").animate({scrollTop: $('#chat_div').prop("scrollHeight")}, 1000);
+                    $("#chat_show_hide").animate({scrollTop: $('#chat_div').prop("scrollHeight")}, 1000);
 
                     for (var i = 0; i < btn_length; i++) {
                         var btn_clone = btn_s_new.clone();
@@ -100,10 +101,11 @@
 </div>
 
 <!--CHAT BODY-->
-<div id="chat_show_hide" style="background-color: #f8f8f8;">
+<div id="chat_show_hide" class="row"
+     style="background-color: #f8f8f8; max-height: 400px; overflow-y: scroll; overflow-x: hidden;">
     <div id="chat_div"
-         class="py-1 d-inline-flex flex-column rounded"
-         style="background-color: #f8f8f8; overflow-y: scroll; max-height: 400px; overflow-x: hidden;">
+         class="py-1 mx-2 d-inline-flex flex-column rounded"
+         style="background-color: #f8f8f8;">
         <p hidden id="bot_text"
            class="text-left text-wrap shadow-sm border rounded m-1 px-3 p-1"
            style="background-color: #FFFFFF;"></p>
@@ -115,9 +117,9 @@
 </div>
 
 <!--CHAT BUTTONS-->
-<div class="text-center rounded py-2 ml-1" style="background-color: #dedede">
-    <div id="div_add_btn" class="py-1"
-        style="overflow-y: scroll; max-height: 150px; overflow-x: hidden;" >
+<div class="text-center rounded py-2 my-2"
+     style="background-color: #dedede; max-height: 150px; overflow-y: scroll; overflow-x: hidden;">
+    <div id="div_add_btn" class="" style="">
         <button hidden id="btn_select" type="button"
                 class="btn m-1"
                 style="min-width: 200px; background-color: #8fc2db; color: white;"></button>
@@ -125,7 +127,7 @@
 </div>
 
 <!--CHAT INPUT HIDDEN -->
-<div class="my-2 rounded">
+<div>
     {# DO NOT DELETE !!! #}
     <label hidden for="user_input">Send msg</label>
     <input hidden id="user_input" type="text">
