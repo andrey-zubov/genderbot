@@ -113,6 +113,8 @@ def user_has_position(_ip: str, _user_position: int, _massage: str) -> str:
                     """ If this button has a link to the other help option. Select_list in the Admin menu. """
                     user_position = c.link_to.id
                     new_child = NeedHelp.objects.get(id=user_position).get_children()
+                    if not new_child:
+                        new_child = NeedHelp.objects.get(is_default=True).get_children()
                 elif c.go_back:
                     """ Back to the main questions. Check_box in the Admin menu. """
                     save_web_user(_ip, 0, True)

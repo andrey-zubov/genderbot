@@ -143,6 +143,8 @@ def known_user(_chat_id: int, _user_position: int, _massage: str) -> (list, str)
                     """ If this button has a link to the other help option. Select list in Admin. """
                     user_position = c.link_to.id
                     new_child = NeedHelp.objects.get(id=user_position).get_children()
+                    if not new_child:
+                        new_child = NeedHelp.objects.get(is_default=True).get_children()
                 elif c.go_back:
                     """ Back to the main questions. Check_box in Admin. """
                     save_telegram_user(_chat_id, 0, True)
