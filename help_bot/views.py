@@ -1,5 +1,6 @@
 from django.http import HttpResponse
 from django.shortcuts import render
+from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.generic import TemplateView
 
 from help_bot.models import NeedHelp
@@ -28,16 +29,24 @@ class WebChatBot(TemplateView):
         pass
 
 
-class WebChat(TemplateView):
+# @xframe_options_exempt
+# class WebChat(TemplateView):
+#     """ iframe """
+#     template_name = 'help_bot/chat.html'
+#
+#     def get(self, request, *args, **kwargs):
+#         save_site_statistic()
+#         return render(request, template_name=self.template_name)
+#
+#     def post(self, request):
+#         pass
+
+@xframe_options_exempt
+def web_chat(request):
     """ iframe """
-    template_name = 'help_bot/chat.html'
-
-    def get(self, request, *args, **kwargs):
+    if request.method == "GET":
         save_site_statistic()
-        return render(request, template_name=self.template_name)
-
-    def post(self, request):
-        pass
+        return render(request, template_name='help_bot/chat.html')
 
 
 def tree_page(request):
