@@ -28,6 +28,18 @@ class WebChatBot(TemplateView):
         pass
 
 
+class WebChat(TemplateView):
+    """ iframe """
+    template_name = 'help_bot/chat.html'
+
+    def get(self, request, *args, **kwargs):
+        save_site_statistic()
+        return render(request, template_name=self.template_name)
+
+    def post(self, request):
+        pass
+
+
 def tree_page(request):
     dictionary = {
         'nodes': NeedHelp.objects.all()
