@@ -4,8 +4,8 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    {% include 'help_bot/bootstrap_and_ko.html' %}
-    <title>{% block title %}{% endblock %} - ChatBot</title>
+    {#        {% include 'help_bot/bootstrap_and_ko.html' %}#}
+    <title>{% block title %}{% endblock %} - HelpBot</title>
 </head>
 
 <body>
@@ -35,14 +35,55 @@
         </nav>
     </footer>
 
-    <div class="col-6"
+    <div class="rounded"
          style="position: fixed; bottom: 5px; right: 5px;
-         overflow: hidden; display: block; height: 60%;">
+         overflow: hidden; display: block; height: 60%; width: 45%;">
 
-        <iframe height=100% width=100%
-                src="https://bequite.pythonanywhere.com/web-chat/"
-                class="rounded border"
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+              integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+              crossorigin="anonymous">
+        <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+        <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+                integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+                crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+                integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+                crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+                integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+                crossorigin="anonymous"></script>
+
+        <!--CHAT TOP-->
+        <div class="row justify-content-between"
+             style="background-color: #417690;">
+            <a id="btn_open_chat" class="btn border-0 ml-3 col-6" style="color: white; font-size: 24px;">
+                Карта помощи</a>
+            <a id="btn_hide_chat" class="btn border-0 mr-3 col-1">
+                <img src="https://bequite.pythonanywhere.com/static/img/window-close.png" alt="X" height="30px">
+            </a>
+        </div>
+
+        <iframe height=90% width=100% id="iframe_help_bot"
+                {# src="https://bequite.pythonanywhere.com/web-chat/"#}
+                src="http://192.168.0.51:8000/web-chat/"
+                class="border rounded-bottom"
                 style="border:none; overflow: hidden; background-color: #f8f8f8;"></iframe>
+
+        <script type="text/javascript">
+            $(document).ready(function () {
+                {#var frame = $("#iframe_help_bot");#}
+                {#setTimeout(frame.hide(), 0);#}
+                {#setTimeout(frame.show(), 5000);#}
+
+                $("#btn_hide_chat").on("click", function () {
+                    $("#iframe_help_bot").hide();
+                });
+                $("#btn_open_chat").on("click", function () {
+                    $("#iframe_help_bot").show();
+                });
+            });
+        </script>
     </div>
 
 </div>

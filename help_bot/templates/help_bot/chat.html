@@ -11,7 +11,7 @@
             type="text/javascript"></script>
 
     {% load staticfiles %}
-    <title>{% block title %}{% endblock %} - ChatBot</title>
+    <title>{% block title %}WebChat{% endblock %}</title>
 
     <style>
         {# /* scroll bar style */ #}
@@ -89,14 +89,14 @@
                 });
             }
 
-            $("#btn_hide_chat").on("click", function () {
-                $("#chat_show_hide").hide();
-                $("#div_add_btn").hide();
-            });
-            $("#btn_open_chat").on("click", function () {
-                $("#chat_show_hide").show();
-                $("#div_add_btn").show();
-            });
+            {#$("#btn_hide_chat").on("click", function () {#}
+            {#    $("#chat_show_hide").hide();#}
+            {#    $("#div_add_btn").hide();#}
+            //});
+            {#$("#btn_open_chat").on("click", function () {#}
+            {#    $("#chat_show_hide").show();#}
+            {#    $("#div_add_btn").show();#}
+            //});
         });
     </script>
 
@@ -107,22 +107,22 @@
 <div class="mx-3"
      style="font-size: medium; font-weight: 200;">
 
-    <!--CHAT TOP-->
-    <div class="row justify-content-between rounded-top"
-         style="background-color: #417690;
-         position: fixed; top: 0; width: 100%; height: 50px;">
-        <a id="btn_open_chat" class="btn border-0 ml-3 col-6" style="color: white; font-size: 24px;">Карта помощи</a>
-        <a id="btn_hide_chat" class="btn border-0 mr-3 col-1">
-            <img src="{% static 'img/window-close.png' %}" alt="X" height="30px">
-        </a>
-    </div>
+{#    <!--CHAT TOP-->#}
+{#    <div class="row justify-content-between rounded-top"#}
+{#         style="background-color: #417690;#}
+{#         position: fixed; top: 0; width: 100%; height: 50px;">#}
+{#        <a id="btn_open_chat" class="btn border-0 ml-3 col-6" style="color: white; font-size: 24px;">Карта помощи</a>#}
+{#        <a id="btn_hide_chat" class="btn border-0 mr-3 col-1">#}
+{#            <img src="{% static 'img/window-close.png' %}" alt="X" height="30px">#}
+{#        </a>#}
+{#    </div>#}
 
     <!--CHAT BODY-->
     <div id="chat_show_hide" class="row"
          style="background-color: #f8f8f8; max-height: 450px; overflow-y: scroll; overflow-x: hidden;
-         position: fixed; top: 50px; bottom: 120px; width: 100%;">
+         position: fixed; bottom: 125px; width: 100%;">
         <div id="chat_div"
-             class="py-1 mx-2 d-inline-flex flex-column rounded"
+             class="py-1 mx-2 d-inline-flex flex-column"
              style="background-color: #f8f8f8;">
             <p hidden id="bot_text"
                class="text-left text-wrap shadow-sm border rounded m-1 px-3 p-1"
@@ -136,7 +136,7 @@
 
     <!--CHAT BUTTONS-->
     <div class="text-center rounded py-2 mb-2"
-         style="background-color: #dedede; height: 120px; overflow-y: scroll; overflow-x: hidden;
+         style="background-color: #dedede; max-height: 120px; overflow-y: scroll; overflow-x: hidden;
          position: fixed; bottom: 0; width: 98%">
         <div id="div_add_btn"
              class=""
@@ -148,7 +148,7 @@
     </div>
 
     <!--CHAT INPUT HIDDEN -->
-    <div style="bottom: 1px">
+    <div style="position: fixed; bottom: 0">
         {# DO NOT DELETE !!! #}
         <label hidden for="user_input">Send msg</label>
         <input hidden id="user_input" type="text">
