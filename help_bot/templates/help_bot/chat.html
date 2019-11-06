@@ -20,19 +20,21 @@
         $(document).ready(function f1() {
             setTimeout(foo, 0);
 
-            var bot_p = $("#bot_text").clone().removeAttr('hidden');
-            var us_t = $("#user_text").clone().removeAttr('hidden');
-            var btn_s = $("#btn_select").clone().removeAttr('hidden');
+            var bot_p = $("#id_bot_text").clone().removeAttr('hidden');
+            var us_t = $("#id_user_text").clone().removeAttr('hidden');
+            var btn_s = $("#id_btn_select").clone().removeAttr('hidden');
             var btn_length = 0;
 
-            $("#btn_send").on("click", foo);
+            $("#id_btn_send").on("click", foo);
 
             function foo() {
                 var bot_p_new = bot_p.clone();
                 var user_t_new = us_t.clone();
+                console.log("us_t: ", us_t);
+                console.log("user_t_new: ", user_t_new);
                 var btn_s_new = btn_s.clone();
 
-                var us_in = $("#user_input").val();
+                var us_in = $("#id_user_input").val();
                 if (us_in === '') {
                     if ($(this).text().length < 50) {
                         {#//because Auto start with $(foo) collect all JS+Html code on $(this).text()#}
@@ -40,7 +42,8 @@
                         us_in = $(this).text()
                     }
                 }
-                $("#chat_div").append(user_t_new.text(us_in));
+                $(user_t_new).children('p').text(us_in);
+                $("#id_chat_div").append(user_t_new);
                 $.ajax({
                     'url':{% url 'web_chat_bot' %},
                     'data': {'us_in': us_in},
@@ -52,85 +55,67 @@
                         }
                         btn_length = json_data.btn_text.length;
 
-                        $("#user_input").val('');
-                        $("#chat_div").append(bot_p_new.html(json_data.help_text));
+                        $("#id_user_input").val('');
+                        $("#id_chat_div").append(bot_p_new.html(json_data.help_text));
 
                         {#//auto scroll to the bottom of the chat div#}
-                        $("#chat_show_hide").animate({scrollTop: $('#chat_div').prop("scrollHeight")}, 1000);
+                        $("#id_chat_show_hide").animate({scrollTop: $('#id_chat_div').prop("scrollHeight")}, 1000);
 
                         for (var i = 0; i < btn_length; i++) {
                             var btn_clone = btn_s_new.clone();
                             btn_clone.attr('id', 'id_new_btn').on("click", foo);
-                            $("#div_add_btn").append(btn_clone.text(json_data.btn_text[i]));
+                            $("#id_div_add_btn").append(btn_clone.text(json_data.btn_text[i]));
                         }
                     }
                 });
             }
 
-            $("#btn_hide_chat").on("click", function () {
-                $("#chat_show_hide").hide();
-                $("#div_add_btn").hide();
+            $("#id_btn_hide_chat").on("click", function () {
+                $("#id_chat_show_hide").hide();
+                $("#id_div_add_btn").hide();
             });
-            $("#btn_open_chat").on("click", function () {
-                $("#chat_show_hide").show();
-                $("#div_add_btn").show();
+            $("#id_btn_open_chat").on("click", function () {
+                $("#id_chat_show_hide").show();
+                $("#id_div_add_btn").show();
             });
         });
     </script>
 
 </head>
 
-<body style="background-color: #f8f8f8; overflow: no-display;">
+<body style="background-color: #FFFFFF; overflow: no-display;">
 
-<div style="font-size: medium; font-weight: 200;
-     margin-left: 0.45rem !important;">
+<div class="main_chat_div">
 
     {#<!--CHAT TOP-->#}
-    <div style="background-color: #417690; margin-right: -15px; margin-left: -15px;
-         position: fixed; top: 0; width: 100%; height: 50px; vertical-align: middle;">
-        <a id="btn_open_chat"
-           style="color: white; font-size: 24px; position:fixed; left: 1rem; top: 10px;">
-            Карта помощи</a>
-        <a id="btn_hide_chat"
-           style="vertical-align: middle; position:fixed; right: 1rem; top: 10px;">
-            <img src="{% static 'img/window-close.png' %}" alt="X" height="30px">
-        </a>
+    <div class="chat_head_div">
+        <a id="id_btn_open_chat" class="btn_open_chat">Карта помощи</a>
+        <a id="id_btn_restore_chat" class="btn_restore_chat"><img src="{% static 'img/restore.png' %}" alt="🔁"></a>
+        <a id="id_btn_hide_chat" class="btn_close_chat"><img src="{% static 'img/close_chat_white.png' %}" alt="❌"></a>
     </div>
 
     {#<!--CHAT BODY-->#}
-    <div id="chat_show_hide" class="row"
-         style="background-color: #f8f8f8; max-height: 450px; overflow-y: scroll; overflow-x: hidden;
-         position: fixed; top: 50px; bottom: 140px; width: 100%; padding-bottom: 5px">
-        <div id="chat_div"
-             class="py-1 mx-2 d-inline-flex flex-column"
-             style="background-color: #f8f8f8;">
-            <p hidden id="bot_text"
-               class="text-left text-wrap shadow-sm border rounded m-1 px-3 p-1"
-               style="background-color: #FFFFFF;"></p>
-            <p hidden id="user_text"
-               class="text-right text-wrap shadow-sm border rounded m-1 px-3 p-1"
-               style="color: white; background-color: #8fc2db;"></p>
+    <div id="id_chat_show_hide" class="chat_body_div">
+        <div id="id_chat_div">
+            <p hidden id="id_bot_text" class="bot_text shadow-sm"></p>
+            <div style="text-align: right;" hidden id="id_user_text">
+                <p id="id_user_text_p" class="user_text shadow-sm"></p></div>
         </div>
     </div>
 
     {#<!--CHAT BUTTONS-->#}
-    <div class="text-center"
-         style="background-color: #dedede; max-height: 120px; overflow-y: scroll; overflow-x: hidden;
-         position: fixed; bottom: 0; width: 100%;
-         margin-right: -15px; margin-left: -15px; padding-top: 10px; padding-bottom: 10px;">
-        <div id="div_add_btn">
-            <button hidden id="btn_select" type="button"
-                    class="btn m-1"
-                    style="min-width: 200px; background-color: #8fc2db; color: white;"></button>
+    <div class="chat_buttons_div">
+        <div id="id_div_add_btn">
+            <button hidden id="id_btn_select" type="button" class="btn_2 shadow-sm"></button>
         </div>
     </div>
 
     {#<!--CHAT INPUT HIDDEN -->#}
     <div style="position: fixed; bottom: 0">
         {# DO NOT DELETE !!! #}
-        <label hidden for="user_input">Send msg</label>
-        <input hidden id="user_input" type="text">
-        <a hidden type="button" id="btn_send">Send</a>
+        <label hidden for="id_user_input">Send msg</label>
+        <input hidden id="id_user_input" type="text">
+        <a hidden type="button" id="id_btn_send">Send</a>
     </div>
 
 </div>
