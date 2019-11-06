@@ -21,6 +21,19 @@
     background: #555;
 }
 
+.chat_iframe {
+    overflow: hidden;
+    background-color: #FFFFFF;
+    position: fixed;
+    bottom: 0;
+    right: 20px;
+    height: 60%;
+    width: 45%;
+    border: none;
+    border-radius: 16px 16px 0 0;
+    box-shadow: 0 16px 16px rgba(0, 0, 0, 0.16), 0 16px 48px rgba(0, 0, 0, 0.08);
+}
+
 .user_text {
     background: #2D9CDB;
     border: 1px solid #2D9CDB;
@@ -76,19 +89,19 @@
 }
 
 .chat_head_div {
-    background-color: #3DA4DE;
-    margin-right: -15px;
-    margin-left: -15px;
+    background-color: #2D9CDB;
     position: fixed;
     top: 0;
-    width: 100%;
+    left: 0;
+    right: 0;
     height: 50px;
     vertical-align: middle;
+    /*border-radius: 16px 16px 0 0;*/
 }
 
 .chat_body_div {
     background-color: #FFFFFF;
-    max-height: 450px;
+    /*max-height: 450px;*/
     overflow-y: scroll;
     overflow-x: hidden;
     position: fixed;
