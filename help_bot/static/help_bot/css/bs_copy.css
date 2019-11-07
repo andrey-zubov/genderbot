@@ -146,20 +146,30 @@
     /*width: 96%;*/
     right: 0;
     left: 0;
-    /*margin-right: -15px;*/
-    /*margin-left: -15px;*/
     padding: 10px 16px 10px 16px;
     text-align: center !important;
 }
 
-.btn_restore_chat {
-    color: #FFFFFF;
+/*.btn_restore_chat {*/
+/*    color: #FFFFFF;*/
+/*    vertical-align: middle;*/
+/*    position: fixed;*/
+/*    right: 80px;*/
+/*    top: 10px;*/
+/*    height: 24px;*/
+/*    background-color: green;*/
+/*}*/
+
+.floating_btn_restore_chat {
+    /*color: #2D9CDB;*/
     vertical-align: middle;
     position: fixed;
-    right: 80px;
-    top: 10px;
-    height: 24px;
-    background-color: green;
+    right: 32px;
+    bottom: 140px;
+    border-radius: 24px;
+    padding: 5px 5px 5px 5px;
+    /*height: 24px;*/
+    /*width: 24px;*/
 }
 
 .btn_open_chat {
@@ -176,29 +186,6 @@
     margin: 0 0 0 0;
     padding: 10px 30% 5px 32px;
 }
-
-/*.btn {*/
-/*    display: inline-block;*/
-/*    font-weight: 400;*/
-/*    color: #2D9CDB;*/
-/*    text-align: center;*/
-/*    vertical-align: middle;*/
-/*    -webkit-user-select: none;*/
-/*    -moz-user-select: none;*/
-/*    -ms-user-select: none;*/
-/*    user-select: none;*/
-/*    background-color: transparent;*/
-/*    border: 1px solid #2D9CDB;*/
-/*    padding: 0.375rem 0.75rem;*/
-/*    font-size: 1rem;*/
-/*    line-height: 1.5;*/
-/*    border-radius: 24px;*/
-/*    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;*/
-/*    min-width: 200px;*/
-/*    margin: 0.25rem !important;*/
-/*    position: relative;*/
-/*    top: -1px;*/
-/*}*/
 
 .btn_2 {
     background: #FFFFFF;
@@ -233,38 +220,3 @@
 [hidden] {
     display: none !important;
 }
-
-/*.btn_outline {*/
-/*    color: #2D9CDB;*/
-/*    border-radius: 24px;*/
-/*    border: 1px solid #2D9CDB;*/
-/*    !*box-sizing: border-box;*!*/
-/*}*/
-
-/*.btn_outline:hover {*/
-/*    color: #fff;*/
-/*    background-color: #2D9CDB;*/
-/*    border: 1px solid #2D9CDB;*/
-/*    !*box-sizing: border-box;*!*/
-/*}*/
-
-/*.btn_outline:focus, .btn_outline.focus {*/
-/*    box-shadow: 0 0 0 0.2rem rgba(45, 156, 219, 1);*/
-/*}*/
-
-/*.btn_outline.disabled, .btn_outline:disabled {*/
-/*    color: #2D9CDB;*/
-/*    background-color: transparent;*/
-/*}*/
-
-/*.btn_outline:not(:disabled):not(.disabled):active, .btn_outline:not(:disabled):not(.disabled).active,*/
-/*.show > .btn_outline.dropdown-toggle {*/
-/*    color: #fff;*/
-/*    background-color: #2D9CDB;*/
-/*    border-color: #2D9CDB;*/
-/*}*/
-
-/*.btn_outline:not(:disabled):not(.disabled):active:focus, .btn_outline:not(:disabled):not(.disabled).active:focus,*/
-/*.show > .btn_outline.dropdown-toggle:focus {*/
-/*    box-shadow: 0 0 0 0.2rem rgba(45, 156, 219, 1);*/
-/*}*/
