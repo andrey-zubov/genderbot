@@ -24,7 +24,7 @@ def get_chat_statistic():
     site_open_sum = attendance.aggregate(models.Sum('site_open'))['site_open__sum']
 
     # today
-    stats_day_all = attendance.filter(date_point__day=date.today().day)
+    stats_day_all = attendance.filter(date_point=date.today())
     if stats_day_all:
         stats_day = stats_day_all[0]
     else:
@@ -35,7 +35,7 @@ def get_chat_statistic():
         }
 
     # this month
-    stats_month_all = attendance.filter(date_point__month=date.today().month)
+    stats_month_all = attendance.filter(date_point__month=date.today().month, date_point__year=date.today().year)
     stats_month = {  # if stats_month_all = [] -> sum([]) = 0
         "web_chat": sum([i.web_chat_count for i in stats_month_all]),
         "telegram_chat": sum([i.telegram_chat_count for i in stats_month_all]),
