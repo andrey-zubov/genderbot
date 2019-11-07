@@ -24,6 +24,20 @@
 .chat_iframe {
     overflow: hidden;
     background-color: #FFFFFF;
+    position: center;
+    border: none;
+    height: 91%;
+    width: 100%;
+    /*position: fixed;*/
+    /*bottom: 0;*/
+    /*right: 20px;*/
+    /*height: 60%;*/
+    /*width: 45%;*/
+}
+
+.insert_iframe_div {
+    overflow: hidden;
+    background-color: #FFFFFF;
     position: fixed;
     bottom: 0;
     right: 20px;
@@ -84,20 +98,29 @@
     vertical-align: middle;
     position: fixed;
     right: 32px;
-    top: 10px;
+    /*top: 10px;*/
+    margin-right: 32px;
+    margin-top: 10px;
     height: 24px;
+    /*background-color: orange;*/
 }
 
 .chat_head_div {
     background-color: #2D9CDB;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
     height: 50px;
     vertical-align: middle;
-    /*border-radius: 16px 16px 0 0;*/
 }
+
+/*.chat_head_div {*/
+/*    background-color: #2D9CDB;*/
+/*    position: fixed;*/
+/*    top: 0;*/
+/*    left: 0;*/
+/*    right: 0;*/
+/*    height: 50px;*/
+/*    vertical-align: middle;*/
+/*    !*border-radius: 16px 16px 0 0;*!*/
+/*}*/
 
 .chat_body_div {
     background-color: #FFFFFF;
@@ -105,7 +128,8 @@
     overflow-y: scroll;
     overflow-x: hidden;
     position: fixed;
-    top: 50px;
+    /*top: 50px;*/
+    top: 0;
     bottom: 140px;
     /*width: 100%;*/
     padding-bottom: 5px;
@@ -135,6 +159,7 @@
     right: 80px;
     top: 10px;
     height: 24px;
+    background-color: green;
 }
 
 .btn_open_chat {
@@ -146,8 +171,10 @@
     /* identical to box height, or 27px */
     color: #FFFFFF;
     position: fixed;
-    top: 10px;
-    left: 32px;
+    /*top: 10px;*/
+    /*left: 32px;*/
+    margin: 0 0 0 0;
+    padding: 10px 30% 5px 32px;
 }
 
 /*.btn {*/
