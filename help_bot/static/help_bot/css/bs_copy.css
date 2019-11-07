@@ -73,7 +73,8 @@
 .bot_text {
     background: #F8F8F8;
     border-radius: 24px;
-    font-family: Segoe UI, serif;
+    /*font-family: Segoe UI, serif;*/
+    font-family: Roboto, serif;
     font-style: normal;
     font-weight: normal;
     font-size: 16px;
