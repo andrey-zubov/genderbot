@@ -55,7 +55,7 @@
     border-radius: 24px;
 
     height: 48px;
-    font-family: Roboto, serif;
+    font-family: 'Roboto', sans-serif;
     font-style: normal;
     font-weight: normal;
     font-size: 16px;
@@ -74,7 +74,7 @@
     background: #F8F8F8;
     border-radius: 24px;
     /*font-family: Segoe UI, serif;*/
-    font-family: Roboto, serif;
+    font-family: 'Roboto', sans-serif;
     font-style: normal;
     font-weight: normal;
     font-size: 16px;
@@ -90,7 +90,7 @@
     line-height: 135%;
     font-style: normal;
     font-weight: normal;
-    font-family: Roboto, serif;
+    font-family: 'Roboto', sans-serif;
     margin-left: 0.45rem !important;
 }
 
@@ -174,7 +174,7 @@
 }
 
 .btn_open_chat {
-    font-family: Roboto, serif;
+    font-family: 'Roboto', sans-serif;
     font-style: normal;
     font-weight: bold;
     font-size: 20px;
@@ -194,7 +194,7 @@
     box-sizing: border-box;
     border-radius: 24px;
 
-    font-family: Roboto, serif;
+    font-family: 'Roboto', sans-serif;
     font-style: normal;
     font-weight: normal;
     font-size: 16px;
