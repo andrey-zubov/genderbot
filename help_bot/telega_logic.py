@@ -26,8 +26,8 @@ def keyboard_button(_massage: str, _chat_id: int) -> (list, str):
             """ random input """
             return random_input(_chat_id, True, sorry=True)
     else:
-        logging.basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-                            level=logging.INFO)
+        logger = logging.getLogger(__name__)
+        logger.warning("Error in keyboard_button(), len(_massage) < 1")
         return default_output(sorry=True)
 
 

@@ -17,7 +17,8 @@ class NeedHelp(MPTTModel):
                                   verbose_name="Название кнопки",
                                   help_text="Название кнопки, которое отправится в чат.")
     go_back = models.BooleanField(default=False, blank=True, null=True,
-                                  verbose_name="Возврат в меню")
+                                  verbose_name="Возврат в меню",
+                                  help_text="«ДА» - вернуть пользователя к стартовым вопросам.")
     link_to = models.ForeignKey(to='NeedHelp', blank=True, null=True, default=None, on_delete=models.SET_NULL,
                                 verbose_name="Ссылка на элемент",
                                 help_text="Если эта кнопка является ссылкой на другой элемент дерева -"
@@ -28,7 +29,7 @@ class NeedHelp(MPTTModel):
                                           "Указать, если вопрос есть в тексте бота.")
     """ last element in the tree branch """
     go_default = models.BooleanField(default=False, blank=True, null=True,
-                                     verbose_name="Последний элемент?",
+                                     verbose_name="Последний элемент ветки?",
                                      help_text="Является ли этот элемент последним для этой ветки дерева.")
     """ hidden root node for a default output that repeats at last tree element """
     is_default = models.BooleanField(default=False, blank=True, null=True,

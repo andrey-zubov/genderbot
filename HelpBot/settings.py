@@ -122,3 +122,20 @@ STATICFILES_DIRS = [
 
 # default is 10 pixels
 MPTT_ADMIN_LEVEL_INDENT = 20
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file_error': {
+            'level': 'WARNING',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, 'error.log'),
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file_error'],
+        },
+    },
+}

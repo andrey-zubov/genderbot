@@ -27,6 +27,8 @@ def chat_req_get(request) -> str:
             return random_input(ip, user, sorry=True)
     else:
         """ Chat page load. """
+        logger = logging.getLogger(__name__)
+        logger.info("request.GET is empty.")
         return start_chat()
 
 
@@ -67,7 +69,8 @@ def find_web_user(_ip: str) -> (bool, int):
         save_web_user(_ip, 0, False)
         return True, 0
     except Exception as ex:
-        logging.error("Exception in find_web_user()\n%s" % ex)
+        logger = logging.getLogger(__name__)
+        logger.exception("Exception in find_web_user()\n%s" % ex)
         return False, 0
 
 
@@ -177,7 +180,8 @@ def buttons_and_text(_child, _user_position: int) -> str:
                 if t.geo_link_name and t.address:
                     text_sum += get_geo_link_web(t.geo_link_name, t.address, t.latitude, t.longitude)
             except Exception as ex:
-                logging.error("Exception in buttons_and_text():\n%s" % ex)
+                logger = logging.getLogger(__name__)
+                logger.exception("Exception in buttons_and_text():\n%s" % ex)
                 continue
         else:
             continue

@@ -16,7 +16,8 @@ def try_except(foo):
         try:
             return foo(*args, **kwargs)
         except Exception as ex:
-            logging.error("\tException in - %s()\n\t%s" % (foo.__name__, ex))
+            logger = logging.getLogger(__name__)
+            logger.error("\tException in - %s()\n\t%s" % (foo.__name__, ex))
             return None
 
     return wrapper
