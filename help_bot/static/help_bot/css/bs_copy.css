@@ -21,7 +21,7 @@
     background: #555;
 }
 
-.chat_iframe {
+.help_chat_iframe {
     overflow: hidden;
     background-color: #FFFFFF;
     position: center;
@@ -35,7 +35,7 @@
     /*width: 45%;*/
 }
 
-.insert_iframe_div {
+.help_chat_iframe_div {
     overflow: hidden;
     background-color: #FFFFFF;
     position: fixed;
@@ -48,7 +48,7 @@
     box-shadow: 0 16px 16px rgba(0, 0, 0, 0.16), 0 16px 48px rgba(0, 0, 0, 0.08);
 }
 
-.user_text {
+.help_chat_user_text {
     background: #2D9CDB;
     border: 1px solid #2D9CDB;
     box-sizing: border-box;
@@ -70,7 +70,7 @@
     text-align: right;
 }
 
-.bot_text {
+.help_chat_bot_text {
     background: #F8F8F8;
     border-radius: 24px;
     /*font-family: Segoe UI, serif;*/
@@ -85,7 +85,7 @@
     margin: 10px 70px 10px 0;
 }
 
-.main_chat_div {
+.help_chat_main_div {
     font-size: 16px;
     line-height: 135%;
     font-style: normal;
@@ -94,7 +94,7 @@
     margin-left: 0.45rem !important;
 }
 
-.btn_close_chat {
+.help_chat_btn_close {
     color: #FFFFFF;
     vertical-align: middle;
     position: fixed;
@@ -106,7 +106,7 @@
     /*background-color: orange;*/
 }
 
-.chat_head_div {
+.help_chat_head_div {
     background-color: #2D9CDB;
     height: 50px;
     vertical-align: middle;
@@ -123,7 +123,7 @@
 /*    !*border-radius: 16px 16px 0 0;*!*/
 /*}*/
 
-.chat_body_div {
+.help_chat_body_div {
     background-color: #FFFFFF;
     /*max-height: 450px;*/
     overflow-y: scroll;
@@ -137,7 +137,7 @@
     left: 32px;
 }
 
-.chat_buttons_div {
+.help_chat_buttons_div {
     background-color: #F8F8F8;
     max-height: 120px;
     overflow-y: scroll;
@@ -161,7 +161,7 @@
 /*    background-color: green;*/
 /*}*/
 
-.floating_btn_restore_chat {
+.help_chat_btn_restore {
     /*color: #2D9CDB;*/
     vertical-align: middle;
     position: fixed;
@@ -173,7 +173,7 @@
     /*width: 24px;*/
 }
 
-.btn_open_chat {
+.help_chat_btn_open {
     font-family: 'Roboto', sans-serif;
     font-style: normal;
     font-weight: bold;
@@ -188,7 +188,7 @@
     padding: 10px 30% 5px 32px;
 }
 
-.btn_2 {
+.help_chat_btn_default {
     background: #FFFFFF;
     border: 1px solid #2D9CDB;
     box-sizing: border-box;
@@ -207,14 +207,14 @@
     margin: 4px;
 }
 
-.btn_2:hover {
+.help_chat_btn_default:hover {
     color: #FFFFFF;
     background-color: #2D9CDB;
     border: 1px solid #2D9CDB;
 }
 
 
-.shadow-sm {
+.help_chat_shadow-sm {
     box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
 }
 

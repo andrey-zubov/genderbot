@@ -17,12 +17,12 @@
             crossorigin="anonymous"></script>
     <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap&subset=cyrillic" rel="stylesheet">
 
-    <div id="id_insert_iframe_div" class="insert_iframe_div">
+    <div id="id_iframe_div_help_chat" class="help_chat_iframe_div">
 
         <script type="text/javascript">
             $(document).ready(function f1() {
-                var help_bot_iframe = $("#id_iframe_help_bot");
-                var help_bot_iframe_div = $("#id_insert_iframe_div");
+                var help_bot_iframe = $("#id_iframe_help_chat");
+                var help_bot_iframe_div = $("#id_iframe_div_help_chat");
 
                 $(help_bot_iframe).hide();
                 $(help_bot_iframe_div).height('50px');
@@ -46,15 +46,15 @@
         </script>
 
         {#<!--CHAT TOP-->#}
-        <div id="id_help_chat_top" class="chat_head_div">
-            <p id="id_btn_open_help_chat" class="btn_open_chat">Карта помощи</p>
-            <a id="id_btn_hide_help_chat" class="btn_close_chat">
+        <div class="help_chat_head_div">
+            <p id="id_btn_open_help_chat" class="help_chat_btn_open">Карта помощи</p>
+            <a id="id_btn_hide_help_chat" class="help_chat_btn_close">
                 <img src="http://127.0.0.1:8000/static/help_bot/img/close_chat_white.png" alt="❌">
                 {# <img src="https://bequite.pythonanywhere.com/static/help_bot/img/close_chat_white.png" alt="❌">#}
             </a>
         </div>
 
-        <iframe id="id_iframe_help_bot" class="chat_iframe"
+        <iframe id="id_iframe_help_chat" class="help_chat_iframe"
                 {# src="https://bequite.pythonanywhere.com/web_chat_iframe/"#}
                 src="http://127.0.0.1:8000/web_chat_iframe/">
         </iframe>
