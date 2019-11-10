@@ -50,7 +50,7 @@
                         var json_data = jQuery.parseJSON(data);
                         for (var r = 0; r < btn_length; r++) {
                             {#// remove all old buttons#}
-                            $("#id_new_btn").remove();
+                            $("#id_new_btn_help_chat").remove();
                         }
                         btn_length = json_data.btn_text.length;
 
@@ -62,7 +62,7 @@
 
                         for (var i = 0; i < btn_length; i++) {
                             var btn_clone = btn_s_new.clone();
-                            btn_clone.attr('id', 'id_new_btn').on("click", foo);
+                            btn_clone.attr('id', 'id_new_btn_help_chat').on("click", foo);
                             $("#id_div_add_btn_help_chat").append(btn_clone.text(json_data.btn_text[i]));
                         }
                     }
