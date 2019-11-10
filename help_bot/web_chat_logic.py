@@ -3,10 +3,9 @@ import logging
 
 from help_bot.models import (NeedHelp, StartMessage, ChatPositionWeb, HelpText)
 from help_bot.statistic import (save_web_chat_statistic)
-from help_bot.utility import (check_input, time_it, try_except)
+from help_bot.utility import (check_input, try_except)
 
 
-@time_it
 def chat_req_get(request) -> str:
     """ Web chat bot main logic. """
     if any(request.GET.values()):
@@ -32,7 +31,6 @@ def chat_req_get(request) -> str:
         return start_chat()
 
 
-@time_it
 def start_chat(sorry=False) -> str:
     """ Start Questions menu. """
     root_nodes = NeedHelp.objects.root_nodes()
@@ -58,7 +56,6 @@ def start_chat(sorry=False) -> str:
     return json.dumps({'btn_text': btn_text, "help_text": text_out}, ensure_ascii=False)
 
 
-@time_it
 def find_web_user(_ip: str) -> (bool, int):
     """ If user has ever used HelpBot -> find chat_id id DB and get user last position.
     Else set user_position = 0. """
@@ -75,7 +72,6 @@ def find_web_user(_ip: str) -> (bool, int):
 
 
 @try_except
-@time_it
 def save_web_user(_ip: str, _user_position: int, _user: bool):
     """ save user current position or create new user with default position = 0. """
     if _user:
@@ -90,7 +86,6 @@ def save_web_user(_ip: str, _user_position: int, _user: bool):
         cp.save()
 
 
-@time_it
 def user_from_start_q(_massage: str, ip: str) -> str:
     """ user came from a start questions """
     root_node = NeedHelp.objects.root_nodes()
@@ -103,7 +98,6 @@ def user_from_start_q(_massage: str, ip: str) -> str:
     return random_input(ip, True, sorry=True)
 
 
-@time_it
 def user_has_position(_ip: str, _user_position: int, _massage: str) -> str:
     """ user used HelpBot and have last saved position """
     root = NeedHelp.objects.get(id=_user_position)
@@ -125,7 +119,11 @@ def user_has_position(_ip: str, _user_position: int, _massage: str) -> str:
                 elif c.go_default:
                     """ if user clicked last element of the Tree - go to default branch. """
                     user_position = c.id
-                    new_child = NeedHelp.objects.get(is_default=True).get_children()
+                    try:
+                        new_child = NeedHelp.objects.get(is_default=True).get_children()
+                    except Exception as ex:
+                        logging.exception("Chat Tree DO NOT have element with is_default=True!\n%s" % ex)
+                        return random_input(_ip, True, sorry=True)
                 else:  # How to speed up: add new field -> normal_element = models.BooleanField,
                     """ Normal buttons in the chat. Go deeper. """  # but it'l be to hard for Admin ?!
                     user_position = c.id
@@ -142,30 +140,32 @@ def user_has_position(_ip: str, _user_position: int, _massage: str) -> str:
     return random_input(_ip, True, sorry=True)
 
 
-@time_it
 def go_default_branch(_ip: str, _massage: str) -> str:
     """ is_default=True - hidden root node for a default output that repeats at last tree elements. """
-    new_root = NeedHelp.objects.get(is_default=True)
-    new_child = new_root.get_children()
-    for c in new_child:
-        if _massage == c.user_input:
-            if c.go_back:
-                """ Back to the main questions. Check_box in the Admin menu. """
-                save_web_user(_ip, 0, True)
-                return start_chat()
-            else:
-                return user_has_position(_ip, new_root.id, _massage)
-    return random_input(_ip, True, sorry=True)
+    try:
+        new_root = NeedHelp.objects.get(is_default=True)
+    except Exception as ex:
+        logging.exception("Chat Tree DO NOT have element with is_default=True!\n%s" % ex)
+        return random_input(_ip, True, sorry=True)
+    else:
+        new_child = new_root.get_children()
+        for c in new_child:
+            if _massage == c.user_input:
+                if c.go_back:
+                    """ Back to the main questions. Check_box in the Admin menu. """
+                    save_web_user(_ip, 0, True)
+                    return start_chat()
+                else:
+                    return user_has_position(_ip, new_root.id, _massage)
+        return random_input(_ip, True, sorry=True)
 
 
-@time_it
 def random_input(_ip: str, _user: bool, sorry=False) -> str:
     """ Reset user position to the Start Questions menu. """
     save_web_user(_ip, 0, _user)
     return start_chat(sorry=sorry)
 
 
-@time_it
 def buttons_and_text(_child, _user_position: int) -> str:
     """ Avery Tree Field in the Admin menu has 'User input' option.
     'User input' = text buttons, that must be send to the chat. """
@@ -207,7 +207,6 @@ def get_geo_link_web(_link_name: str, _address: str, _lat: float, _lng: float) -
         _address)
 
 
-@time_it
 def get_client_ip(request) -> str:
     # print("request.META: %s" % request.META)
     # print("User.HTTP_COOKIE: %s" % request.META.get('HTTP_COOKIE'))

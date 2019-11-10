@@ -15,7 +15,6 @@ django.setup()
 
 from help_bot.models import TelegramBot
 from help_bot.telega_logic import keyboard_button
-from help_bot.utility import time_it
 
 from functools import wraps
 
@@ -42,7 +41,6 @@ def send_action(action):
 #     )
 
 
-@time_it
 @send_action(ChatAction.TYPING)
 def start(update, context):
     c_id = update.message.chat_id
@@ -60,7 +58,6 @@ def start(update, context):
         )
 
 
-@time_it
 @send_action(ChatAction.TYPING)
 def key_bord(update, context):
     c_id = update.message.chat_id
@@ -82,31 +79,39 @@ def key_bord(update, context):
 
 def go_go_bot():
     print("telegram.go_go_bot()")
+    logger = logging.getLogger(__name__)
 
     try:
         bot = TelegramBot.objects.get(in_work=True)
         print('bot_name: %s' % bot.name)
     except Exception as ex:
-        logger = logging.getLogger(__name__)
         logger.exception("Exception TelegramBot not found!\n%s" % ex)
     else:
-        updater = Updater(token=bot.token, use_context=True)
-        dispatcher = updater.dispatcher
+        try:
+            _token = bot.token
+        except Exception as ex:
+            logger.error("Telegram Bot token not set!\n%s" % ex)
+        else:
+            if _token:
+                updater = Updater(token=_token, use_context=True)
+                dispatcher = updater.dispatcher
 
-        start_handler = CommandHandler('start', start)
-        # echo_handler = MessageHandler(Filters.text, echo)
-        # get_coords = MessageHandler(Filters.location, coords)
-        ask_help = MessageHandler(Filters.text, key_bord)
+                start_handler = CommandHandler('start', start)
+                # echo_handler = MessageHandler(Filters.text, echo)
+                # get_coords = MessageHandler(Filters.location, coords)
+                ask_help = MessageHandler(Filters.text, key_bord)
 
-        dispatcher.add_handler(start_handler)
-        # dispatcher.add_handler(echo_handler)
-        # dispatcher.add_handler(get_coords)
-        dispatcher.add_handler(ask_help)
+                dispatcher.add_handler(start_handler)
+                # dispatcher.add_handler(echo_handler)
+                # dispatcher.add_handler(get_coords)
+                dispatcher.add_handler(ask_help)
 
-        logging.basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-                            level=logging.INFO)
+                logging.basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+                                    level=logging.INFO)
 
-        updater.start_polling()
+                updater.start_polling()
+            else:
+                raise Exception("Telegram Bot token not set!")
 
 
 if __name__ == "__main__":

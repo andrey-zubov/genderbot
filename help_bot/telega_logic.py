@@ -4,10 +4,9 @@ from telegram import KeyboardButton
 
 from help_bot.models import (NeedHelp, HelpText, StartMessage, ChatPositionTelegram)
 from help_bot.statistic import (save_telegram_chat_statistic)
-from help_bot.utility import (time_it, try_except)
+from help_bot.utility import try_except
 
 
-@time_it
 def keyboard_button(_massage: str, _chat_id: int) -> (list, str):
     """ Telegram chat bot main logic. """
     if len(_massage) > 1:
@@ -31,7 +30,6 @@ def keyboard_button(_massage: str, _chat_id: int) -> (list, str):
         return default_output(sorry=True)
 
 
-@time_it
 def find_telegram_user(_chat_id: int) -> (bool, int):
     """ If user has ever used HelpBot -> find chat_id id DB and get user last position,
     else set user_position = 0. """
@@ -48,7 +46,6 @@ def find_telegram_user(_chat_id: int) -> (bool, int):
 
 
 @try_except
-@time_it
 def save_telegram_user(_chat_id: int, _us_pos: int, _user: bool):
     """ save user current position or create new user with default position = 0. """
     if _user:
@@ -63,7 +60,6 @@ def save_telegram_user(_chat_id: int, _us_pos: int, _user: bool):
         cp.save()
 
 
-@time_it
 def default_output(sorry=False) -> (list, str):
     """ Reset user position to the Start Questions menu. """
     root_nodes = NeedHelp.objects.root_nodes()
@@ -91,7 +87,6 @@ def default_output(sorry=False) -> (list, str):
     return btn_to_send, text_out
 
 
-@time_it
 def btn_and_text(child, us_pos: int) -> (list, str):
     """ Avery Tree Field in the Admin menu has 'User input' option.
     'User input' = text buttons, that must be send to the chat. """
@@ -114,7 +109,6 @@ def btn_and_text(child, us_pos: int) -> (list, str):
     return btn, text_sum
 
 
-@time_it
 def user_from_start(_chat_id: int, _massage: str) -> (list, str):
     """ user came from a start questions """
     root_nodes = NeedHelp.objects.root_nodes()
@@ -131,7 +125,6 @@ def user_from_start(_chat_id: int, _massage: str) -> (list, str):
         return random_input(_chat_id, True, sorry=True)
 
 
-@time_it
 def known_user(_chat_id: int, _user_position: int, _massage: str) -> (list, str):
     """ user used HelpBot and have last saved position """
     root = NeedHelp.objects.get(id=_user_position)
@@ -152,7 +145,11 @@ def known_user(_chat_id: int, _user_position: int, _massage: str) -> (list, str)
                 elif c.go_default:
                     """ if user clicked last element of the Tree - go to default branch. """
                     user_position = c.id
-                    new_child = NeedHelp.objects.get(is_default=True).get_children()
+                    try:
+                        new_child = NeedHelp.objects.get(is_default=True).get_children()
+                    except Exception as ex:
+                        logging.exception("Chat Tree DO NOT have element with is_default=True!\n%s" % ex)
+                        return random_input(_chat_id, True, sorry=True)
                 else:
                     """ Normal buttons in the chat. Go deeper. """
                     user_position = c.id
@@ -165,8 +162,11 @@ def known_user(_chat_id: int, _user_position: int, _massage: str) -> (list, str)
     elif root.go_default:
         """ if user at the last element of the Tree - go to default branch.
         is_default=True - hidden root node for a default output that repeats at last tree element. """
-        # print("root.go_default")
-        new_root = NeedHelp.objects.get(is_default=True)
+        try:
+            new_root = NeedHelp.objects.get(is_default=True)
+        except Exception as ex:
+            logging.exception("Chat Tree DO NOT have element with is_default=True!\n%s" % ex)
+            return random_input(_chat_id, True, sorry=True)
         new_child = new_root.get_children()
         for c in new_child:
             if _massage == c.user_input:
@@ -179,7 +179,6 @@ def known_user(_chat_id: int, _user_position: int, _massage: str) -> (list, str)
     return random_input(_chat_id, True, sorry=True)
 
 
-@time_it
 def random_input(_chat_id: int, _user: bool, sorry=False) -> (list, str):
     """ Reset user position to the Start Questions menu. """
     save_telegram_user(_chat_id, 0, _user)

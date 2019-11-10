@@ -25,7 +25,7 @@ class WebChatBot(TemplateView):
 
 @xframe_options_exempt
 def web_chat(request):
-    """ iframe """
+    """ iframe window/widget """
     if request.method == "GET":
         save_site_statistic()
         return render(request, template_name='help_bot/chat.html')

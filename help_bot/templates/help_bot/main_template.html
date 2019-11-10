@@ -21,13 +21,26 @@
 
         <script type="text/javascript">
             $(document).ready(function f1() {
+                var help_bot_iframe = $("#id_iframe_help_bot");
+                var help_bot_iframe_div = $("#id_insert_iframe_div");
+
+                $(help_bot_iframe).hide();
+                $(help_bot_iframe_div).height('50px');
+
+                setTimeout(popup, 3000);
+
+                function popup() {
+                    $(help_bot_iframe).show();
+                    $(help_bot_iframe_div).height('60%');
+                }
+
                 $("#id_btn_hide_help_chat").on("click", function () {
-                    $("#id_iframe_help_bot").hide();
-                    $("#id_insert_iframe_div").height('50px');
+                    $(help_bot_iframe).hide();
+                    $(help_bot_iframe_div).height('50px');
                 });
                 $("#id_btn_open_help_chat").on("click", function () {
-                    $("#id_iframe_help_bot").show();
-                    $("#id_insert_iframe_div").height('60%');
+                    $(help_bot_iframe).show();
+                    $(help_bot_iframe_div).height('60%');
                 });
             });
         </script>
@@ -42,8 +55,8 @@
         </div>
 
         <iframe id="id_iframe_help_bot" class="chat_iframe"
-                {# src="https://bequite.pythonanywhere.com/web-chat/"#}
-                src="http://127.0.0.1:8000/web-chat/">
+                {# src="https://bequite.pythonanywhere.com/web_chat_iframe/"#}
+                src="http://127.0.0.1:8000/web_chat_iframe/">
         </iframe>
 
     </div>

@@ -36,8 +36,8 @@ class NeedHelpAdmin(MPTTModelAdmin):
 
 class TelegramAdmin(admin.ModelAdmin):
     model = TelegramBot
-    fields = ('name', 'in_work', 'token', 'web_hook')
-    list_display = ('name', 'token', 'web_hook', 'in_work')
+    fields = ('name', 'in_work', 'token')  # 'web_hook'
+    list_display = ('name', 'token', 'in_work')  # , 'web_hook'
     list_filter = ('in_work',)
     search_fields = ('name',)
 

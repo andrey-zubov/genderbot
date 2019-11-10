@@ -3,10 +3,10 @@ from datetime import date
 from django.db import models
 
 from help_bot.models import (NeedHelp, StatisticWeb, StatisticTelegram, StatisticAttendance)
-from help_bot.utility import time_it, try_except
+from help_bot.utility import try_except
 
 
-@time_it
+@try_except
 def get_chat_statistic():
     # all
     nh_all = NeedHelp.objects.all()
@@ -77,7 +77,6 @@ def get_chat_statistic():
 
 
 @try_except
-@time_it
 def save_web_chat_statistic(_user_position):
     st_web = NeedHelp.objects.get(id=_user_position).statistic_web
     st_web.count += 1
@@ -93,7 +92,6 @@ def save_web_chat_statistic(_user_position):
 
 
 @try_except
-@time_it
 def save_telegram_chat_statistic(_user_position):
     st_tel = NeedHelp.objects.get(id=_user_position).statistic_telegram
     st_tel.count += 1
@@ -109,7 +107,6 @@ def save_telegram_chat_statistic(_user_position):
 
 
 @try_except
-@time_it
 def save_site_statistic():
     if_today = StatisticAttendance.objects.filter(date_point=date.today())  # .get(None) -> Exception
     if if_today:  # <QuerySet [<StatisticAttendance: StatisticAttendance object (4)>]>
