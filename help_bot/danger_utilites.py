@@ -10,7 +10,7 @@ if path not in sys.path:
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "HelpBot.settings")
 django.setup()
 
-from help_bot.models import (NeedHelp, StatisticWeb, StatisticTelegram, StatisticAttendance)
+from help_bot.models import (NeedHelp, StatisticWeb, StatisticTelegram, StatisticAttendance, ChatPositionWeb, ChatPositionTelegram)
 
 
 def recreate_need_help_statistic_fk():
@@ -44,6 +44,8 @@ def set_all_statistic_to_zero():
         j.save()
 
     StatisticAttendance.objects.all().delete()
+    ChatPositionWeb.objects.all().delete()
+    ChatPositionTelegram.objects.all().delete()
 
 
 if __name__ == "__main__":

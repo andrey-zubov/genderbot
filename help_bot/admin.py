@@ -4,7 +4,7 @@ from django.urls import path
 from mptt.admin import MPTTModelAdmin
 
 from help_bot.models import (NeedHelp, TelegramBot, HelpText, StartMessage, StatisticTelegram,
-                             StatisticAttendance)
+                             StatisticAttendance, ChatBotIframe)
 from help_bot.statistic import get_chat_statistic
 
 
@@ -88,3 +88,10 @@ admin.site.register(TelegramBot, TelegramAdmin)
 admin.site.register(HelpText, HelpTextAdmin)
 admin.site.register(StartMessage, StartMessageAdmin)
 admin.site.register(StatisticAttendance, StatisticAdmin)
+
+
+class ChatBotIframeAdmin(admin.ModelAdmin):
+    pass
+
+
+admin.site.register(ChatBotIframe, ChatBotIframeAdmin)

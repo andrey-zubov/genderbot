@@ -215,3 +215,16 @@ class StatisticAttendance(models.Model):
     class Meta:
         verbose_name = 'Статистика чат-бота'
         verbose_name_plural = 'Статистика чат-бота'
+
+
+class ChatBotIframe(models.Model):
+    """ How to insert web chat bot code to your page. """
+    iframe_code_name = models.CharField(default='', blank=True, null=True, max_length=50)
+    iframe_code = models.TextField(default='', blank=True, null=True, max_length=5000)
+
+    def __str__(self):
+        return self.iframe_code_name
+
+    class Meta:
+        verbose_name = 'Код для вставки на сайт'
+        verbose_name_plural = 'Код для вставки на сайт'
