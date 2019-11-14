@@ -16,11 +16,11 @@
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"
             integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
             crossorigin="anonymous"></script>
-    <div id="id_iframe_div_help_chat" class="help_chat_iframe_div">
+    <div hidden id="id_iframe_div_help_chat" class="help_chat_iframe_div">
         <script type="text/javascript">
             $(document).ready(function f1() {
-                var help_bot_iframe = $("#id_iframe_help_chat");
-                var help_bot_iframe_div = $("#id_iframe_div_help_chat");
+                var help_bot_iframe = $("#id_iframe_help_chat").removeAttr('hidden');
+                var help_bot_iframe_div = $("#id_iframe_div_help_chat").removeAttr('hidden');
                 $(help_bot_iframe).hide();
                 $(help_bot_iframe_div).height('50px');
                 setTimeout(popup, 3000);
@@ -47,7 +47,7 @@
             </a>
         </div>
         <!-- ИЗМЕНИТЬ ИМЯ САЙТА -->
-        <iframe id="id_iframe_help_chat" class="help_chat_iframe"
+        <iframe hidden id="id_iframe_help_chat" class="help_chat_iframe"
                 {# src="https://bequite.pythonanywhere.com/web_chat_iframe/"#}
                 src="http://127.0.0.1:8000/web_chat_iframe/">
         </iframe>
