@@ -99,19 +99,18 @@
 .help_chat_btn_close {
     color: #FFFFFF;
     vertical-align: middle;
-    position: fixed;
-    right: 32px;
-    /*top: 10px;*/
     margin-right: 32px;
-    margin-top: 10px;
     height: 24px;
-    /*background-color: orange;*/
+    display: none;
 }
 
 .help_chat_head_div {
     background-color: #2D9CDB;
     height: 50px;
     vertical-align: middle;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
 /*.chat_head_div {*/
@@ -145,7 +144,7 @@
     overflow-y: scroll;
     overflow-x: hidden;
     position: fixed;
-    bottom: 0;
+    bottom: 20px;
     /*width: 96%;*/
     right: 0;
     left: 0;
@@ -163,16 +162,19 @@
 /*    background-color: green;*/
 /*}*/
 
-.help_chat_btn_restore {
+.help_chat_btn_default.help_chat_btn_restore {
     /*color: #2D9CDB;*/
     vertical-align: middle;
     position: fixed;
     right: 32px;
-    bottom: 140px;
-    border-radius: 24px;
+    bottom: 160px;
+    border-radius: 50%;
     padding: 5px 5px 5px 5px;
-    /*height: 24px;*/
-    /*width: 24px;*/
+    height: 48px;
+    width: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .help_chat_btn_open {
@@ -180,14 +182,13 @@
     font-style: normal;
     font-weight: bold;
     font-size: 20px;
-    line-height: 135%;
-    /* identical to box height, or 27px */
+    height: 100%;
     color: #FFFFFF;
-    position: fixed;
-    /*top: 10px;*/
-    /*left: 32px;*/
     margin: 0 0 0 0;
-    padding: 10px 30% 5px 32px;
+    padding: 0 0 0 32px;
+    flex: 1 0 auto;
+    display: flex;
+    align-items: center;
 }
 
 .help_chat_btn_default {
@@ -204,9 +205,10 @@
     /* identical to box height, or 22px */
     color: #2D9CDB;
 
-    height: 48px;
+    min-height: 48px;
     padding: 13px 16px 13px 16px;
     margin: 4px;
+    cursor: pointer;
 }
 
 .help_chat_btn_default:hover {
@@ -222,4 +224,22 @@
 
 [hidden] {
     display: none !important;
+}
+
+@media (max-width: 768px) {
+    .help_chat_iframe_div {
+        left: 20px;
+        width: auto;
+    }
+}
+
+@media (max-width: 597px) {
+
+    .help_chat_buttons_div {
+        max-height: 220px;
+    }
+
+    .help_chat_btn_default.help_chat_btn_restore {
+        bottom: 280px;
+    }
 }
