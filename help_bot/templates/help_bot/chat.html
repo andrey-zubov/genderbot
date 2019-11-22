@@ -42,7 +42,9 @@
                     }
                 }
                 $(user_t_new).children('p').text(us_in);
+                $("#id_chat_div_help_chat").css('position', 'relative');
                 $("#id_chat_div_help_chat").append(user_t_new);
+
                 $.ajax({
                     'url':{% url 'web_chat_bot' %},
                     'data': {'us_in': us_in},
@@ -58,12 +60,17 @@
                         $("#id_chat_div_help_chat").append(bot_p_new.html(json_data.help_text));
 
                         {#//auto scroll to the bottom of the chat div#}
-                        $("#id_show_hide_help_chat").animate({scrollTop: $('#id_chat_div_help_chat').prop("scrollHeight")}, 1000);
 
                         for (var i = 0; i < btn_length; i++) {
                             var btn_clone = btn_s_new.clone();
                             btn_clone.attr('id', 'id_new_btn_help_chat').on("click", foo);
                             $("#id_div_add_btn_help_chat").append(btn_clone.text(json_data.btn_text[i]));
+                        }
+
+                        if ($('#id_chat_div_help_chat div').last().find('.help_chat_user_text').text().replace(/^\s+|\s+$/g, "").length != 0) {
+                            $("#id_show_hide_help_chat").animate({scrollTop: $('#id_chat_div_help_chat div').last().position().top}, 1000);
+                        } else {
+                            $("#id_show_hide_help_chat").animate({scrollTop: $("#id_chat_div_help_chat .help_chat_bot_text").last().position().top}, 1000);
                         }
                     }
                 });
@@ -103,7 +110,6 @@
     {#        <a id="id_btn_hide_chat" class="btn_close_chat"><img src="{% static 'img/close_chat_white.png' %}" alt="❌"></a>#}
     {#    </div>#}
 
-
     {#<!--CHAT BODY-->#}
     <div id="id_show_hide_help_chat" class="help_chat_body_div">
         <div id="id_chat_div_help_chat">
@@ -116,7 +122,8 @@
     {#<!--CHAT BUTTONS-->#}
     <div class="help_chat_buttons_div">
         <div id="id_div_add_btn_help_chat">
-            <button hidden id="id_btn_select_help_chat" type="button" class="help_chat_btn_default help_chat_shadow-sm"></button>
+            <button hidden id="id_btn_select_help_chat" type="button"
+                    class="help_chat_btn_default help_chat_shadow-sm"></button>
         </div>
     </div>
 
