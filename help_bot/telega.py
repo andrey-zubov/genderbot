@@ -54,6 +54,8 @@ def start(update, context):
         context.bot.send_message(
             chat_id=c_id,
             text=help_text,
+            parse_mode=ParseMode.HTML,
+            disable_web_page_preview=True,
             reply_markup=ReplyKeyboardMarkup(key_bord_btn, resize_keyboard=True),
         )
 
