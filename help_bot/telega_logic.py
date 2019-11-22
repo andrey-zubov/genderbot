@@ -60,7 +60,7 @@ def save_telegram_user(_chat_id: int, _us_pos: int, _user: bool):
         cp.save()
 
 
-def default_output(sorry=False) -> (list, str):
+def default_output(sorry=False, help_type=False) -> (list, str):
     """ Reset user position to the Start Questions menu. """
     root_nodes = NeedHelp.objects.root_nodes()
     btn_text = [i.user_input for i in root_nodes if not i.is_default]
@@ -73,7 +73,13 @@ def default_output(sorry=False) -> (list, str):
     else:
         text_hello = ''
 
-    if sorry:
+    if help_type:
+        text_ht = StartMessage.objects.filter(name='help_type')
+        if text_ht:
+            text_out = text_ht.first().text
+        else:
+            text_out = text_hello
+    elif sorry:
         text_s = StartMessage.objects.filter(sorry_text=True)
         if text_s:
             text_sorry = text_s[0].text
@@ -141,7 +147,7 @@ def known_user(_chat_id: int, _user_position: int, _massage: str) -> (list, str)
                 elif c.go_back:
                     """ Back to the main questions. Check_box in Admin. """
                     save_telegram_user(_chat_id, 0, True)
-                    return default_output()
+                    return default_output(help_type=True)
                 elif c.go_default:
                     """ if user clicked last element of the Tree - go to default branch. """
                     user_position = c.id
@@ -172,7 +178,7 @@ def known_user(_chat_id: int, _user_position: int, _massage: str) -> (list, str)
             if _massage == c.user_input:
                 if c.go_back:
                     save_telegram_user(_chat_id, 0, True)
-                    return default_output()
+                    return default_output(help_type=True)
                 else:
                     return known_user(_chat_id, new_root.id, _massage)
 

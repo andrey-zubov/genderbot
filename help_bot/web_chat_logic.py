@@ -31,7 +31,7 @@ def chat_req_get(request) -> str:
         return start_chat()
 
 
-def start_chat(sorry=False) -> str:
+def start_chat(sorry=False, help_type=False) -> str:
     """ Start Questions menu. """
     root_nodes = NeedHelp.objects.root_nodes()
     btn_text = [i.user_input for i in root_nodes if not i.is_default]
@@ -42,7 +42,13 @@ def start_chat(sorry=False) -> str:
     else:
         text_hello = ''
 
-    if sorry:
+    if help_type:
+        text_ht = StartMessage.objects.filter(name='help_type')
+        if text_ht:
+            text_out = text_ht.first().text
+        else:
+            text_out = text_hello
+    elif sorry:
         text_s = StartMessage.objects.filter(sorry_text=True)
         if text_s:
             text_sorry = text_s[0].text.replace("\n", "<br>")
@@ -115,7 +121,7 @@ def user_has_position(_ip: str, _user_position: int, _massage: str) -> str:
                 elif c.go_back:
                     """ Back to the main questions. Check_box in the Admin menu. """
                     save_web_user(_ip, 0, True)
-                    return start_chat()
+                    return start_chat(help_type=True)
                 elif c.go_default:
                     """ if user clicked last element of the Tree - go to default branch. """
                     user_position = c.id
@@ -154,7 +160,7 @@ def go_default_branch(_ip: str, _massage: str) -> str:
                 if c.go_back:
                     """ Back to the main questions. Check_box in the Admin menu. """
                     save_web_user(_ip, 0, True)
-                    return start_chat()
+                    return start_chat(help_type=True)
                 else:
                     return user_has_position(_ip, new_root.id, _massage)
         return random_input(_ip, True, sorry=True)
