@@ -42,8 +42,7 @@
     bottom: 0;
     right: 20px;
     height: 60%;
-    /*width: 45%;*/
-    width: 95%;
+    width: 45%;
     max-width: 960px;
     border: none;
     border-radius: 16px 16px 0 0;
@@ -105,6 +104,7 @@
 }
 
 .help_chat_head_div {
+    max-width: 100%;
     background-color: #2D9CDB;
     height: 50px;
     vertical-align: middle;
@@ -186,9 +186,12 @@
     color: #FFFFFF;
     margin: 0 0 0 0;
     padding: 0 0 0 32px;
-    flex: 1 0 auto;
+    flex: auto;
     display: flex;
     align-items: center;
+    -webkit-hyphens: auto;
+    -ms-hyphens: auto;
+    hyphens: auto;
 }
 
 .help_chat_btn_default {
@@ -224,6 +227,12 @@
 
 [hidden] {
     display: none !important;
+}
+
+@media (max-width: 1140px ) {
+    .help_chat_btn_open {
+        font-size: 16px;
+    }
 }
 
 @media (max-width: 768px) {
