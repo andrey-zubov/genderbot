@@ -228,3 +228,27 @@ class ChatBotIframe(models.Model):
     class Meta:
         verbose_name = 'Код для вставки на сайт'
         verbose_name_plural = 'Код для вставки на сайт'
+
+
+class EditionButtons(models.Model):
+    """ buttons exp: "Go back"
+    """
+    btn_name = models.CharField(default='', blank=True, null=True, max_length=50,
+                                verbose_name="Название кнопки",
+                                help_text="")
+    btn_active = models.BooleanField(default=False, blank=True, null=True,
+                                     verbose_name="Кнопка активна",
+                                     help_text="")
+    btn_position_start = models.BooleanField(default=False, blank=True, null=True,
+                                             verbose_name="В начале списка кнопок чата",
+                                             help_text="да/нет")
+    btn_position_end = models.BooleanField(default=False, blank=True, null=True,
+                                           verbose_name="В конце списка кнопок чата",
+                                           help_text="да/нет")
+
+    def __str__(self):
+        return self.btn_name
+
+    class Meta:
+        verbose_name = 'Дополнительная кнопка чата'
+        verbose_name_plural = 'Дополнительные кнопки чата'

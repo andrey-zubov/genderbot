@@ -4,7 +4,7 @@ from django.urls import path
 from mptt.admin import MPTTModelAdmin
 
 from help_bot.models import (NeedHelp, TelegramBot, HelpText, StartMessage, StatisticTelegram,
-                             StatisticAttendance, ChatBotIframe)
+                             StatisticAttendance, ChatBotIframe, EditionButtons)
 from help_bot.statistic import get_chat_statistic
 
 
@@ -94,4 +94,11 @@ class ChatBotIframeAdmin(admin.ModelAdmin):
     pass
 
 
+class EditionButtonsAdmin(admin.ModelAdmin):
+    model = EditionButtons
+    fields = ('btn_name', 'btn_active', 'btn_position_start')  # 'btn_position_end'
+    list_display = ('btn_name', 'btn_active', 'btn_position_start')
+
+
 admin.site.register(ChatBotIframe, ChatBotIframeAdmin)
+admin.site.register(EditionButtons, EditionButtonsAdmin)

@@ -1,7 +1,7 @@
 import json
 import logging
 
-from help_bot.models import (NeedHelp, StartMessage, ChatPositionWeb, HelpText)
+from help_bot.models import (NeedHelp, StartMessage, ChatPositionWeb, HelpText, EditionButtons)
 from help_bot.statistic import (save_web_chat_statistic)
 from help_bot.utility import (check_input, try_except)
 
@@ -137,6 +137,7 @@ def user_has_position(_ip: str, _user_position: int, _massage: str) -> str:
 
                 save_web_user(_ip, user_position, True)
                 return buttons_and_text(new_child, user_position)
+        """ button text not in the list. """
         return random_input(_ip, True, sorry=True)
 
     elif root.go_default:
@@ -175,7 +176,16 @@ def random_input(_ip: str, _user: bool, sorry=False) -> str:
 def buttons_and_text(_child, _user_position: int) -> str:
     """ Avery Tree Field in the Admin menu has 'User input' option.
     'User input' = text buttons, that must be send to the chat. """
-    btn_text = [i.user_input for i in _child]
+    # btn_text = [i.user_input for i in _child]
+    btn_text_list = []
+
+    normal_chat_buttons = [i.user_input for i in _child]
+
+    start_btn = additional_start_btn()
+    if start_btn and start_btn not in normal_chat_buttons:
+        btn_text_list.extend([start_btn])
+
+    btn_text_list.extend(normal_chat_buttons)
 
     text_sum = ''
     for t in HelpText.objects.filter(relation_to=_user_position):
@@ -192,8 +202,17 @@ def buttons_and_text(_child, _user_position: int) -> str:
         else:
             continue
 
-    json_data = json.dumps({'btn_text': btn_text, "help_text": text_sum}, ensure_ascii=False)
+    json_data = json.dumps({'btn_text': btn_text_list, "help_text": text_sum}, ensure_ascii=False)
     return json_data
+
+
+def additional_start_btn():
+    try:
+        active_buttons = EditionButtons.objects.get(btn_active=True, btn_position_start=True)
+        return active_buttons.btn_name
+    except Exception as ex:
+        logging.exception("Exception in additional_start_btn()\n%s" % ex)
+        return None
 
 
 def get_geo_link_web(_link_name: str, _address: str, _lat: float, _lng: float) -> str:

@@ -2,7 +2,7 @@ import logging
 
 from telegram import KeyboardButton
 
-from help_bot.models import (NeedHelp, HelpText, StartMessage, ChatPositionTelegram)
+from help_bot.models import (NeedHelp, HelpText, StartMessage, ChatPositionTelegram, EditionButtons)
 from help_bot.statistic import (save_telegram_chat_statistic)
 from help_bot.utility import try_except
 
@@ -96,23 +96,41 @@ def default_output(sorry=False, help_type=False) -> (list, str):
 def btn_and_text(child, us_pos: int) -> (list, str):
     """ Avery Tree Field in the Admin menu has 'User input' option.
     'User input' = text buttons, that must be send to the chat. """
-    btn_text = [i.user_input for i in child]
-    btn = [[KeyboardButton(text=i)] for i in btn_text]
+    btn_text_list = []
 
-    text_sum = ''
+    normal_chat_buttons = [i.user_input for i in child]
+
+    start_btn = additional_start_btn()
+    if start_btn and start_btn not in normal_chat_buttons:
+        btn_text_list.extend([start_btn])
+
+    btn_text_list.extend(normal_chat_buttons)
+
+    buttons_out = [[KeyboardButton(text=i)] for i in btn_text_list]
+
+    text_out = ''
     for t in HelpText.objects.filter(relation_to=us_pos):
         if t:
             try:
-                text_sum += t.text
+                text_out += t.text
                 if t.telegram_geo_url and t.address:
-                    text_sum += """\n<a href="{}">{}</a>\n\n""".format(t.telegram_geo_url, t.address)
+                    text_out += """\n<a href="{}">{}</a>\n\n""".format(t.telegram_geo_url, t.address)
             except Exception as ex:
                 logging.error("Exception in btn_and_text():\n%s" % ex)
                 continue
         else:
             continue
 
-    return btn, text_sum
+    return buttons_out, text_out
+
+
+def additional_start_btn():
+    try:
+        active_buttons = EditionButtons.objects.get(btn_active=True, btn_position_start=True)
+        return active_buttons.btn_name
+    except Exception as ex:
+        logging.exception("Exception in additional_start_btn()\n%s" % ex)
+        return None
 
 
 def user_from_start(_chat_id: int, _massage: str) -> (list, str):
@@ -163,6 +181,7 @@ def known_user(_chat_id: int, _user_position: int, _massage: str) -> (list, str)
 
                 save_telegram_user(_chat_id, user_position, True)
                 return btn_and_text(new_child, user_position)
+        """ button text not in the list. """
         return random_input(_chat_id, True, sorry=True)
 
     elif root.go_default:
