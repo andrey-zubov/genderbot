@@ -132,7 +132,7 @@
     position: fixed;
     /*top: 50px;*/
     top: 0;
-    bottom: 140px;
+    bottom: 150px;
     /*width: 100%;*/
     padding-bottom: 5px;
     left: 32px;
@@ -245,7 +245,10 @@
 @media (max-width: 597px) {
 
     .help_chat_buttons_div {
-        max-height: 220px;
+        max-height: 200px;
+    }
+    .help_chat_body_div{
+        bottom: 240px;
     }
 
     .help_chat_btn_default.help_chat_btn_restore {

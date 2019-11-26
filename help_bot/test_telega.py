@@ -12,7 +12,7 @@ if path not in sys.path:
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "HelpBot.settings")
 django.setup()
 
-from help_bot.models import (NeedHelp, StartMessage, HelpText)
+from help_bot.models import (NeedHelp, StartMessage, HelpText, EditionButtons)
 from help_bot.telega_logic import keyboard_button
 from help_bot.utility import time_it
 
@@ -31,7 +31,7 @@ def zero_character_input() -> (list, str):
     btn_to_send = [[KeyboardButton(text=i)] for i in btn_text]
     text_out = "%s\n\n%s" % (
         StartMessage.objects.get(sorry_text=True).text,
-        StartMessage.objects.get(hello_text=True).text
+        StartMessage.objects.get(name='help_type').text
     )
     return btn_to_send, text_out
 
@@ -39,8 +39,16 @@ def zero_character_input() -> (list, str):
 def btn_input(btn_text: str) -> (list, str):
     tree_element = NeedHelp.objects.get(user_input=btn_text, link_to=None)
     child_element = tree_element.get_children()
-    btn_text = [i.user_input for i in child_element]
-    btn_out = [[KeyboardButton(text=i)] for i in btn_text]
+
+    btn_text_list = []
+
+    normal_chat_buttons = [i.user_input for i in child_element]
+
+    start_btn = EditionButtons.objects.get(btn_active=True, btn_position_start=True).btn_name
+    if start_btn and start_btn not in normal_chat_buttons:
+        btn_text_list.extend([start_btn])
+    btn_text_list.extend(normal_chat_buttons)
+    btn_out = [[KeyboardButton(text=i)] for i in btn_text_list]
 
     text_out = HelpText.objects.get(relation_to=tree_element.id).text
 
@@ -53,24 +61,28 @@ class TelegramTests(TestCase):
     @time_it
     def test_start_input(self):
         """ out == (btn_to_send, text_out) """
+        self.maxDiff = None
         self.assertEqual(keyboard_button("/start", 123456), start_msg())
 
     @time_it
     def test_zero_input(self):
+        self.maxDiff = None
         self.assertEqual(keyboard_button("", 123456), zero_character_input())
 
     @time_it
     def test_one_character_input(self):
+        self.maxDiff = None
         self.assertEqual(keyboard_button("1", 123456), zero_character_input())
 
     @time_it
     def test_text_input(self):
+        self.maxDiff = None
         btn_name = 'Юридическая помощь'
         self.assertEqual(keyboard_button(btn_name, 123456), btn_input(btn_name))
 
     @time_it
     def test_tree_root_nodes(self):
-        # self.maxDiff = None
+        self.maxDiff = None
         root_nodes = NeedHelp.objects.root_nodes()
         btn_text = [i.user_input for i in root_nodes if not i.is_default]
         # print(btn_text)

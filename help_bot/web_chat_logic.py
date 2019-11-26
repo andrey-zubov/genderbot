@@ -36,30 +36,58 @@ def start_chat(sorry=False, help_type=False) -> str:
     root_nodes = NeedHelp.objects.root_nodes()
     btn_text = [i.user_input for i in root_nodes if not i.is_default]
 
-    text_h = StartMessage.objects.filter(hello_text=True)
-    if text_h:
-        text_hello = text_h[0].text.replace("\n", "<br>")
-    else:
-        text_hello = ''
-
     if help_type:
-        text_ht = StartMessage.objects.filter(name='help_type')
-        if text_ht:
-            text_out = text_ht.first().text
-        else:
-            text_out = text_hello
+        text_ht = help_type_text_msg()
+        text_out = text_ht if text_ht else start_msg_text()
     elif sorry:
-        text_s = StartMessage.objects.filter(sorry_text=True)
-        if text_s:
-            text_sorry = text_s[0].text.replace("\n", "<br>")
-        else:
-            text_sorry = ''
-
-        text_out = "%s<br><br>%s" % (text_sorry, text_hello)
+        text_out = "%s<br><br>%s" % (sorry_text_msg(), help_type_text_msg())
     else:
-        text_out = text_hello
+        text_out = start_msg_text()
 
     return json.dumps({'btn_text': btn_text, "help_text": text_out}, ensure_ascii=False)
+
+
+def start_msg_text() -> str:
+    logger = logging.getLogger(__name__)
+    try:
+        text_h = StartMessage.objects.filter(hello_text=True)
+        if text_h:
+            return text_h.first().text.replace("\n", "<br>")
+        logger.error("Стартовое сообщение приветствия отсутствует!")
+        return ''
+    except Exception as ex:
+        logger.exception("Exception in start_msg_text()\n%s" % ex)
+        return ''
+
+
+def sorry_text_msg() -> str:
+    """ Sorry text if wrong input. Adding to the TOP of the "Hello" text. """
+    logger = logging.getLogger(__name__)
+    try:
+        text_obj = StartMessage.objects.filter(sorry_text=True)
+        if any(text_obj):
+            return text_obj.first().text.replace("\n", "<br>")
+        logger.error("Сообщение об ошибке ввода отсутствует!")
+        return ''
+    except Exception as ex:
+        logger.exception("Exception in sorry_text_msg()\n%s" % ex)
+        return ''
+
+
+def help_type_text_msg() -> str:
+    """ костыль, чтобы сообщение приветствия не повторялось при возврате к стартовым вопросам.
+        "help_type" - название специального сообщения в разделе "Стартовое сообщение бота".
+    """
+    logger = logging.getLogger(__name__)
+    try:
+        text_obj = StartMessage.objects.filter(name='help_type')
+        if text_obj:
+            return text_obj.first().text
+        logger.error("Альтернативное сообщение при возврате к стартовым вопросам отсутствует!")
+        return ''
+    except Exception as ex:
+        logger.exception("Exception in help_type_text_msg()\n%s" % ex)
+        return ''
 
 
 def find_web_user(_ip: str) -> (bool, int):
@@ -128,7 +156,8 @@ def user_has_position(_ip: str, _user_position: int, _massage: str) -> str:
                     try:
                         new_child = NeedHelp.objects.get(is_default=True).get_children()
                     except Exception as ex:
-                        logging.exception("Chat Tree DO NOT have element with is_default=True!\n%s" % ex)
+                        logger = logging.getLogger(__name__)
+                        logger.exception("Chat Tree DO NOT have element with is_default=True!\n%s" % ex)
                         return random_input(_ip, True, sorry=True)
                 else:  # How to speed up: add new field -> normal_element = models.BooleanField,
                     """ Normal buttons in the chat. Go deeper. """  # but it'l be to hard for Admin ?!
@@ -152,7 +181,8 @@ def go_default_branch(_ip: str, _massage: str) -> str:
     try:
         new_root = NeedHelp.objects.get(is_default=True)
     except Exception as ex:
-        logging.exception("Chat Tree DO NOT have element with is_default=True!\n%s" % ex)
+        logger = logging.getLogger(__name__)
+        logger.exception("Chat Tree DO NOT have element with is_default=True!\n%s" % ex)
         return random_input(_ip, True, sorry=True)
     else:
         new_child = new_root.get_children()
@@ -208,10 +238,14 @@ def buttons_and_text(_child, _user_position: int) -> str:
 
 def additional_start_btn():
     try:
-        active_buttons = EditionButtons.objects.get(btn_active=True, btn_position_start=True)
-        return active_buttons.btn_name
+        active_buttons = EditionButtons.objects.filter(btn_active=True, btn_position_start=True)
+        if any(active_buttons):
+            return active_buttons.first().btn_name
+        else:
+            return None
     except Exception as ex:
-        logging.exception("Exception in additional_start_btn()\n%s" % ex)
+        logger = logging.getLogger(__name__)
+        logger.exception("Exception in additional_start_btn() - Start button NOT set!\n%s" % ex)
         return None
 
 

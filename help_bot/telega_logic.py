@@ -67,30 +67,58 @@ def default_output(sorry=False, help_type=False) -> (list, str):
     """ Telegram buttons: [[KeyboardButton(text='Yes')], [KeyboardButton(text='No')]] """
     btn_to_send = [[KeyboardButton(text=i)] for i in btn_text]
 
-    text_h = StartMessage.objects.filter(hello_text=True)
-    if text_h:
-        text_hello = text_h[0].text
-    else:
-        text_hello = ''
-
     if help_type:
-        text_ht = StartMessage.objects.filter(name='help_type')
-        if text_ht:
-            text_out = text_ht.first().text
-        else:
-            text_out = text_hello
+        text_ht = help_type_text_msg()
+        text_out = text_ht if text_ht else start_msg_text()
     elif sorry:
-        text_s = StartMessage.objects.filter(sorry_text=True)
-        if text_s:
-            text_sorry = text_s[0].text
-        else:
-            text_sorry = ''
-
-        text_out = "%s\n\n%s" % (text_sorry, text_hello)
+        text_out = "%s\n\n%s" % (sorry_text_msg(), help_type_text_msg())
     else:
-        text_out = text_hello
+        text_out = start_msg_text()
 
     return btn_to_send, text_out
+
+
+def start_msg_text() -> str:
+    logger = logging.getLogger(__name__)
+    try:
+        text_h = StartMessage.objects.filter(hello_text=True)
+        if text_h:
+            return text_h.first().text
+        logger.error("Стартовое сообщение приветствия отсутствует!")
+        return ''
+    except Exception as ex:
+        logger.exception("Exception in start_msg_text()\n%s" % ex)
+        return ''
+
+
+def sorry_text_msg() -> str:
+    """ Sorry text if wrong input. Adding to the TOP of the "Hello" text. """
+    logger = logging.getLogger(__name__)
+    try:
+        text_obj = StartMessage.objects.filter(sorry_text=True)
+        if any(text_obj):
+            return text_obj.first().text
+        logger.error("Сообщение об ошибке ввода отсутствует!")
+        return ''
+    except Exception as ex:
+        logger.exception("Exception in sorry_text_msg()\n%s" % ex)
+        return ''
+
+
+def help_type_text_msg() -> str:
+    """ костыль, чтобы сообщение приветствия не повторялось при возврате к стартовым вопросам.
+        "help_type" - название специального сообщения в разделе "Стартовое сообщение бота".
+    """
+    logger = logging.getLogger(__name__)
+    try:
+        text_obj = StartMessage.objects.filter(name='help_type')
+        if text_obj:
+            return text_obj.first().text
+        logger.error("Альтернативное сообщение при возврате к стартовым вопросам отсутствует!")
+        return ''
+    except Exception as ex:
+        logger.exception("Exception in help_type_text_msg()\n%s" % ex)
+        return ''
 
 
 def btn_and_text(child, us_pos: int) -> (list, str):
