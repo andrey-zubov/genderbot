@@ -140,15 +140,15 @@
 
 .help_chat_buttons_div {
     background-color: #F8F8F8;
-    max-height: 120px;
+    height: 120px;
     overflow-y: scroll;
     overflow-x: hidden;
     position: fixed;
-    bottom: 20px;
+    bottom: 0;
     /*width: 96%;*/
     right: 0;
     left: 0;
-    padding: 10px 16px 10px 16px;
+    padding: 10px 16px 30px 16px;
     text-align: center !important;
 }
 
@@ -229,6 +229,10 @@
     display: none !important;
 }
 
+.ymaps-geolink {
+    white-space: pre-wrap !important;
+}
+
 @media (max-width: 1140px ) {
     .help_chat_btn_open {
         font-size: 16px;
@@ -245,10 +249,14 @@
 @media (max-width: 597px) {
 
     .help_chat_buttons_div {
-        max-height: 200px;
+        height: 200px;
     }
     .help_chat_body_div{
         bottom: 240px;
+    }
+
+    .ymaps-geolink:after {
+        display: none;
     }
 
     .help_chat_btn_default.help_chat_btn_restore {

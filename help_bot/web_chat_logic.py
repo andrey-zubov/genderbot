@@ -1,6 +1,6 @@
 import json
-import logging
 
+from help_bot.loger_set_up import logger_web_chat
 from help_bot.models import (NeedHelp, StartMessage, ChatPositionWeb, HelpText, EditionButtons)
 from help_bot.statistic import (save_web_chat_statistic)
 from help_bot.utility import (check_input, try_except)
@@ -26,8 +26,7 @@ def chat_req_get(request) -> str:
             return random_input(ip, user, sorry=True)
     else:
         """ Chat page load. """
-        logger = logging.getLogger(__name__)
-        logger.info("request.GET is empty.")
+        logger_web_chat().info("request.GET is empty.")
         return start_chat()
 
 
@@ -48,29 +47,27 @@ def start_chat(sorry=False, help_type=False) -> str:
 
 
 def start_msg_text() -> str:
-    logger = logging.getLogger(__name__)
     try:
         text_h = StartMessage.objects.filter(hello_text=True)
         if text_h:
             return text_h.first().text.replace("\n", "<br>")
-        logger.error("Стартовое сообщение приветствия отсутствует!")
+        logger_web_chat().error("Стартовое сообщение приветствия отсутствует!")
         return ''
     except Exception as ex:
-        logger.exception("Exception in start_msg_text()\n%s" % ex)
+        logger_web_chat().exception("Exception in start_msg_text()\n%s" % ex)
         return ''
 
 
 def sorry_text_msg() -> str:
     """ Sorry text if wrong input. Adding to the TOP of the "Hello" text. """
-    logger = logging.getLogger(__name__)
     try:
         text_obj = StartMessage.objects.filter(sorry_text=True)
         if any(text_obj):
             return text_obj.first().text.replace("\n", "<br>")
-        logger.error("Сообщение об ошибке ввода отсутствует!")
+        logger_web_chat().error("Сообщение об ошибке ввода отсутствует!")
         return ''
     except Exception as ex:
-        logger.exception("Exception in sorry_text_msg()\n%s" % ex)
+        logger_web_chat().exception("Exception in sorry_text_msg()\n%s" % ex)
         return ''
 
 
@@ -78,15 +75,14 @@ def help_type_text_msg() -> str:
     """ костыль, чтобы сообщение приветствия не повторялось при возврате к стартовым вопросам.
         "help_type" - название специального сообщения в разделе "Стартовое сообщение бота".
     """
-    logger = logging.getLogger(__name__)
     try:
         text_obj = StartMessage.objects.filter(name='help_type')
         if text_obj:
             return text_obj.first().text
-        logger.error("Альтернативное сообщение при возврате к стартовым вопросам отсутствует!")
+        logger_web_chat().error("Альтернативное сообщение при возврате к стартовым вопросам отсутствует!")
         return ''
     except Exception as ex:
-        logger.exception("Exception in help_type_text_msg()\n%s" % ex)
+        logger_web_chat().exception("Exception in help_type_text_msg()\n%s" % ex)
         return ''
 
 
@@ -100,8 +96,7 @@ def find_web_user(_ip: str) -> (bool, int):
         save_web_user(_ip, 0, False)
         return True, 0
     except Exception as ex:
-        logger = logging.getLogger(__name__)
-        logger.exception("Exception in find_web_user()\n%s" % ex)
+        logger_web_chat().exception("Exception in find_web_user()\n%s" % ex)
         return False, 0
 
 
@@ -156,8 +151,7 @@ def user_has_position(_ip: str, _user_position: int, _massage: str) -> str:
                     try:
                         new_child = NeedHelp.objects.get(is_default=True).get_children()
                     except Exception as ex:
-                        logger = logging.getLogger(__name__)
-                        logger.exception("Chat Tree DO NOT have element with is_default=True!\n%s" % ex)
+                        logger_web_chat().exception("Chat Tree DO NOT have element with is_default=True!\n%s" % ex)
                         return random_input(_ip, True, sorry=True)
                 else:  # How to speed up: add new field -> normal_element = models.BooleanField,
                     """ Normal buttons in the chat. Go deeper. """  # but it'l be to hard for Admin ?!
@@ -181,8 +175,7 @@ def go_default_branch(_ip: str, _massage: str) -> str:
     try:
         new_root = NeedHelp.objects.get(is_default=True)
     except Exception as ex:
-        logger = logging.getLogger(__name__)
-        logger.exception("Chat Tree DO NOT have element with is_default=True!\n%s" % ex)
+        logger_web_chat().exception("Chat Tree DO NOT have element with is_default=True!\n%s" % ex)
         return random_input(_ip, True, sorry=True)
     else:
         new_child = new_root.get_children()
@@ -226,8 +219,7 @@ def buttons_and_text(_child, _user_position: int) -> str:
                 if t.geo_link_name and t.address:
                     text_sum += get_geo_link_web(t.geo_link_name, t.address, t.latitude, t.longitude)
             except Exception as ex:
-                logger = logging.getLogger(__name__)
-                logger.exception("Exception in buttons_and_text():\n%s" % ex)
+                logger_web_chat().exception("Exception in buttons_and_text():\n%s" % ex)
                 continue
         else:
             continue
@@ -244,8 +236,7 @@ def additional_start_btn():
         else:
             return None
     except Exception as ex:
-        logger = logging.getLogger(__name__)
-        logger.exception("Exception in additional_start_btn() - Start button NOT set!\n%s" % ex)
+        logger_web_chat().exception("Exception in additional_start_btn() - Start button NOT set!\n%s" % ex)
         return None
 
 

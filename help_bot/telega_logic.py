@@ -1,7 +1,6 @@
-import logging
-
 from telegram import KeyboardButton
 
+from help_bot.loger_set_up import logger_telegram
 from help_bot.models import (NeedHelp, HelpText, StartMessage, ChatPositionTelegram, EditionButtons)
 from help_bot.statistic import (save_telegram_chat_statistic)
 from help_bot.utility import try_except
@@ -25,8 +24,7 @@ def keyboard_button(_massage: str, _chat_id: int) -> (list, str):
             """ random input """
             return random_input(_chat_id, True, sorry=True)
     else:
-        logger = logging.getLogger(__name__)
-        logger.warning("Error in keyboard_button(), len(_massage) < 1")
+        logger_telegram().warning("Error in keyboard_button(), len(_massage) < 1")
         return default_output(sorry=True)
 
 
@@ -41,7 +39,7 @@ def find_telegram_user(_chat_id: int) -> (bool, int):
         save_telegram_user(_chat_id, 0, False)
         return True, 0
     except Exception as ex:
-        logging.error("Exception in find_telegram_user()\n%s" % ex)
+        logger_telegram().error("Exception in find_telegram_user()\n%s" % ex)
         return False, 0
 
 
@@ -79,29 +77,27 @@ def default_output(sorry=False, help_type=False) -> (list, str):
 
 
 def start_msg_text() -> str:
-    logger = logging.getLogger(__name__)
     try:
         text_h = StartMessage.objects.filter(hello_text=True)
         if text_h:
             return text_h.first().text
-        logger.error("Стартовое сообщение приветствия отсутствует!")
+        logger_telegram().error("Стартовое сообщение приветствия отсутствует!")
         return ''
     except Exception as ex:
-        logger.exception("Exception in start_msg_text()\n%s" % ex)
+        logger_telegram().exception("Exception in start_msg_text()\n%s" % ex)
         return ''
 
 
 def sorry_text_msg() -> str:
     """ Sorry text if wrong input. Adding to the TOP of the "Hello" text. """
-    logger = logging.getLogger(__name__)
     try:
         text_obj = StartMessage.objects.filter(sorry_text=True)
         if any(text_obj):
             return text_obj.first().text
-        logger.error("Сообщение об ошибке ввода отсутствует!")
+        logger_telegram().error("Сообщение об ошибке ввода отсутствует!")
         return ''
     except Exception as ex:
-        logger.exception("Exception in sorry_text_msg()\n%s" % ex)
+        logger_telegram().exception("Exception in sorry_text_msg()\n%s" % ex)
         return ''
 
 
@@ -109,15 +105,14 @@ def help_type_text_msg() -> str:
     """ костыль, чтобы сообщение приветствия не повторялось при возврате к стартовым вопросам.
         "help_type" - название специального сообщения в разделе "Стартовое сообщение бота".
     """
-    logger = logging.getLogger(__name__)
     try:
         text_obj = StartMessage.objects.filter(name='help_type')
         if text_obj:
             return text_obj.first().text
-        logger.error("Альтернативное сообщение при возврате к стартовым вопросам отсутствует!")
+        logger_telegram().error("Альтернативное сообщение при возврате к стартовым вопросам отсутствует!")
         return ''
     except Exception as ex:
-        logger.exception("Exception in help_type_text_msg()\n%s" % ex)
+        logger_telegram().exception("Exception in help_type_text_msg()\n%s" % ex)
         return ''
 
 
@@ -144,7 +139,7 @@ def btn_and_text(child, us_pos: int) -> (list, str):
                 if t.telegram_geo_url and t.address:
                     text_out += """\n<a href="{}">{}</a>\n\n""".format(t.telegram_geo_url, t.address)
             except Exception as ex:
-                logging.error("Exception in btn_and_text():\n%s" % ex)
+                logger_telegram().error("Exception in btn_and_text():\n%s" % ex)
                 continue
         else:
             continue
@@ -157,7 +152,7 @@ def additional_start_btn():
         active_buttons = EditionButtons.objects.get(btn_active=True, btn_position_start=True)
         return active_buttons.btn_name
     except Exception as ex:
-        logging.exception("Exception in additional_start_btn()\n%s" % ex)
+        logger_telegram().exception("Exception in additional_start_btn()\n%s" % ex)
         return None
 
 
@@ -200,7 +195,7 @@ def known_user(_chat_id: int, _user_position: int, _massage: str) -> (list, str)
                     try:
                         new_child = NeedHelp.objects.get(is_default=True).get_children()
                     except Exception as ex:
-                        logging.exception("Chat Tree DO NOT have element with is_default=True!\n%s" % ex)
+                        logger_telegram().exception("Chat Tree DO NOT have element with is_default=True!\n%s" % ex)
                         return random_input(_chat_id, True, sorry=True)
                 else:
                     """ Normal buttons in the chat. Go deeper. """
@@ -218,7 +213,7 @@ def known_user(_chat_id: int, _user_position: int, _massage: str) -> (list, str)
         try:
             new_root = NeedHelp.objects.get(is_default=True)
         except Exception as ex:
-            logging.exception("Chat Tree DO NOT have element with is_default=True!\n%s" % ex)
+            logger_telegram().exception("Chat Tree DO NOT have element with is_default=True!\n%s" % ex)
             return random_input(_chat_id, True, sorry=True)
         new_child = new_root.get_children()
         for c in new_child:

@@ -1,4 +1,15 @@
-1	код веб-чата	"<!-- HELP BOT CHAT -->
+1	код веб-чата	"<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""utf-8"">
+    <title>{% block title %}Main{% endblock %} - HelpBot</title>
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+</head>
+<body>
+
+{% block content %}{% endblock %}
+
+<!-- HELP BOT CHAT -->
 <div>
     <link href=""https://fonts.googleapis.com/css?family=Roboto&display=swap&subset=cyrillic"" rel=""stylesheet"">
     <!-- ИЗМЕНИТЬ ИМЯ САЙТА -->
@@ -43,7 +54,7 @@
 
     <div hidden id=""id_iframe_div_help_chat"" class=""help_chat_iframe_div"" style=""z-index: 10;"">
         <div class=""help_chat_head_div"">
-            <p id=""id_btn_open_help_chat"" class=""help_chat_btn_open"">Карта помощи</p>
+            <p id=""id_btn_open_help_chat"" class=""help_chat_btn_open"">Помощь пострадавшим от домашнего насилия</p>
             <a id=""id_btn_hide_help_chat"" class=""help_chat_btn_close"">
                 <!-- ИЗМЕНИТЬ ИМЯ САЙТА -->
                 <img src=""https://bequite.pythonanywhere.com/static/help_bot/img/close_chat_white.png"" alt=""❌"">
@@ -53,4 +64,7 @@
         <iframe hidden id=""id_iframe_help_chat"" class=""help_chat_iframe""
                 src=""https://bequite.pythonanywhere.com/web_chat_iframe/""></iframe>
     </div>
-</div>"
+</div>
+
+</body>
+</html>"

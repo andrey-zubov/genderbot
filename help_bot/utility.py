@@ -1,5 +1,6 @@
-import logging
 from time import perf_counter
+
+from help_bot.loger_set_up import logger_utility
 
 
 def check_input(string: str) -> bool:
@@ -16,8 +17,7 @@ def try_except(foo):
         try:
             return foo(*args, **kwargs)
         except Exception as ex:
-            logger = logging.getLogger(__name__)
-            logger.error("\tException in - %s()\n\t%s" % (foo.__name__, ex))
+            logger_utility().exception("Exception in - %s():\n\t%s" % (foo.__name__, ex))
             return None
 
     return wrapper
