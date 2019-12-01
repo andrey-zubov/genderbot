@@ -123,8 +123,7 @@ def go_go_bot(_logger) -> bool:
     return start_telegram_bot
 
 
-if __name__ == "__main__":
-
+def lets_start_a_telegram_bot():
     __my_logger = logger_telegram()
     __restart_bot_in_sec = 10
 
@@ -138,3 +137,7 @@ if __name__ == "__main__":
             sleep(__restart_bot_in_sec)
 
     print("! All OK, Telegram bot STARTed !\n")
+
+
+if __name__ == "__main__":
+    lets_start_a_telegram_bot()
