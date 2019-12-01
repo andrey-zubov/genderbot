@@ -1,5 +1,6 @@
 import os
 import sys
+from time import sleep
 
 import django
 from telegram import ReplyKeyboardMarkup, ParseMode, ChatAction
@@ -32,26 +33,18 @@ def send_action(action):
     return decorator
 
 
-# def echo(update, context):
-#     print("telega.echo(); chat_id: %s\nin_message: %s" % (update.message.chat_id, update.message.text))
-#     context.bot.send_message(
-#         chat_id=update.message.chat_id,
-#         text=update.message.text
-#     )
-
-
 @send_action(ChatAction.TYPING)
 def start(update, context):
-    c_id = update.message.chat_id
+    _chat_id = update.message.chat_id
 
     try:
-        key_bord_btn, help_text = keyboard_button(update.message.text, c_id)
+        key_bord_btn, help_text = keyboard_button(update.message.text, _chat_id)
     except Exception as ex:
         logger_telegram().exception("Exception TelegramBot.start().\n%s" % ex)
     else:
         try:
             context.bot.send_message(
-                chat_id=c_id,
+                chat_id=_chat_id,
                 text=help_text,
                 parse_mode=ParseMode.HTML,
                 disable_web_page_preview=True,
@@ -63,16 +56,16 @@ def start(update, context):
 
 @send_action(ChatAction.TYPING)
 def key_bord(update, context):
-    c_id = update.message.chat_id
+    _chat_id = update.message.chat_id
 
     try:
-        key_bord_btn, help_text = keyboard_button(update.message.text, c_id)
+        key_bord_btn, help_text = keyboard_button(update.message.text, _chat_id)
     except Exception as ex:
         logger_telegram().exception("Exception TelegramBot.key_bord().\n%s" % ex)
     else:
         try:
             context.bot.send_message(
-                chat_id=c_id,
+                chat_id=_chat_id,
                 text=help_text,
                 parse_mode=ParseMode.HTML,
                 disable_web_page_preview=True,
@@ -82,51 +75,66 @@ def key_bord(update, context):
             logger_telegram().exception("Exception TelegramBot.key_bord().\n%s" % ex)
 
 
-def go_go_bot():
-    print("telegram.go_go_bot()")
-
+def go_go_bot(_logger) -> bool:
+    start_telegram_bot = False
     try:
         bot_filter = TelegramBot.objects.filter(in_work=True)
         if len(bot_filter) > 1:
-            print([i for i in bot_filter])
-            raise Exception("More than 2 ACTIVE TelegramBot was found!")
+            raise Exception("More than 2 ACTIVE TelegramBot was found! %s" % [i for i in bot_filter],
+                            start_telegram_bot)
         elif any(bot_filter):
             bot = bot_filter.first()
             print('TelegramBot name: %s' % bot.name)
         else:
-            raise Exception("Active TelegramBot not found!")
+            raise Exception("Active TelegramBot not found!", start_telegram_bot)
     except Exception as ex:
-        logger_telegram().exception("Exception in TelegramBot:\n%s" % ex)
+        _logger.exception("Exception in TelegramBot:\n%s" % ex.args[0])
+        return ex.args[1]
     else:
         try:
             get_bot_token = bot.token
             if get_bot_token:
                 bot_token = get_bot_token
                 print('TelegramBot token - OK')
+                start_telegram_bot = True
             else:
-                raise Exception("TelegramBot token NOT set!")
+                start_telegram_bot = False
+                raise Exception("TelegramBot token NOT set!", start_telegram_bot)
         except Exception as ex:
-            logger_telegram().exception("Exception in TelegramBot:\n%s" % ex)
+            _logger.exception("Exception in TelegramBot:\n%s" % ex.args[0])
+            return ex.args[1]
         else:
             try:
+                start_telegram_bot = True
                 updater = Updater(token=bot_token, use_context=True)
                 dispatcher = updater.dispatcher
 
                 start_handler = CommandHandler('start', start)
-                # echo_handler = MessageHandler(Filters.text, echo)
-                # get_coords = MessageHandler(Filters.location, coords)
                 ask_help = MessageHandler(Filters.text, key_bord)
 
                 dispatcher.add_handler(start_handler)
-                # dispatcher.add_handler(echo_handler)
-                # dispatcher.add_handler(get_coords)
                 dispatcher.add_handler(ask_help)
 
                 updater.start_polling()
 
             except Exception as ex:
-                logger_telegram().exception("Exception in TelegramBot token:\n%s" % ex)
+                _logger.exception("Exception in TelegramBot token:\n%s" % ex)
+
+    return start_telegram_bot
 
 
 if __name__ == "__main__":
-    go_go_bot()
+
+    __my_logger = logger_telegram()
+    __restart_bot_in_sec = 10
+
+    print("Let's try to start telegram bot...")
+    is_telegram_bot_running = False
+
+    while not is_telegram_bot_running:
+        is_telegram_bot_running = go_go_bot(__my_logger)
+        if not is_telegram_bot_running:
+            print('\tTelegramBot will restart in %s sec.' % __restart_bot_in_sec)
+            sleep(__restart_bot_in_sec)
+
+    print("! All OK, Telegram bot STARTed !\n")
