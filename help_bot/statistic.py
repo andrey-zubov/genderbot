@@ -8,7 +8,9 @@ from help_bot.utility import try_except
 
 @try_except
 def get_chat_statistic():
-    # all
+    get_date_point = date.today()
+
+    # all elements from the tree
     nh_all = NeedHelp.objects.all()
     nh_all_len = nh_all.count()
 
@@ -20,11 +22,11 @@ def get_chat_statistic():
     count_tel_sum = StatisticTelegram.objects.all().aggregate(models.Sum('count'))['count__sum']
 
     # Statistic Attendance
-    attendance = StatisticAttendance.objects.all()
+    attendance = StatisticAttendance.objects.filter(date_point__year=get_date_point.year)
     site_open_sum = attendance.aggregate(models.Sum('site_open'))['site_open__sum']
 
     # today
-    stats_day_all = attendance.filter(date_point=date.today())
+    stats_day_all = attendance.filter(date_point=get_date_point)
     if stats_day_all:
         stats_day = stats_day_all[0]
     else:
@@ -35,7 +37,7 @@ def get_chat_statistic():
         }
 
     # this month
-    stats_month_all = attendance.filter(date_point__month=date.today().month, date_point__year=date.today().year)
+    stats_month_all = attendance.filter(date_point__month=get_date_point.month, date_point__year=get_date_point.year)
     stats_month = {  # if stats_month_all = [] -> sum([]) = 0
         "web_chat": sum([i.web_chat_count for i in stats_month_all]),
         "telegram_chat": sum([i.telegram_chat_count for i in stats_month_all]),
@@ -43,7 +45,7 @@ def get_chat_statistic():
     }
 
     # this year
-    stats_year_all = attendance.filter(date_point__year=date.today().year)
+    stats_year_all = attendance.filter(date_point__year=get_date_point.year)
     stats_year = {  # if stats_year_all = [] -> sum([]) = 0
         "web_chat": sum([i.web_chat_count for i in stats_year_all]),
         "telegram_chat": sum([i.telegram_chat_count for i in stats_year_all]),
