@@ -7,3 +7,11 @@ Telegram: <a href="http://t.me/HelpHotlineBot" target="_blank">@HelpHotlineBot</
 Web site - <a href="https://www.genderperspectives.by/" target="_blank">МОО “Гендерные перспективы”</a>
 
 <img src="https://github.com/Valentin-Golyonko/HelpBot/blob/master/help_bot/static/help_bot/img/web_chat_bot.png" alt="">
+
+
+# Test Telegram ping
+- see 'new 1.txt'
+- change bot token
+- change chat id (@userinfobot)
+- enter command to console
+- see result (form in the 'curl-format.txt')
