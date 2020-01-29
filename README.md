@@ -6,7 +6,7 @@ Telegram: <a href="http://t.me/HelpHotlineBot" target="_blank">@HelpHotlineBot</
 
 Web site - <a href="https://www.genderperspectives.by/" target="_blank">МОО “Гендерные перспективы”</a>
 
-<img src="https://github.com/Valentin-Golyonko/HelpBot/blob/master/help_bot/static/help_bot/img/web_chat_bot.png" alt="">
+<img src="https://github.com/Valentin-Golyonko/HelpBot/blob/master/HelpBot/help_bot/static/help_bot/img/web_chat_bot.png" alt="">
 
 
 # Test Telegram ping
