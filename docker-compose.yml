@@ -21,13 +21,21 @@ services:
     restart: always
     depends_on:
       - db
+      - web
     volumes:
       - ./HelpBot:/src
     expose:
       - "8000"
-    env_file:
-      - ./.envs/.django
-    command: ["sh", "-c", "echo hello world; python3 help_bot/telega.py"]
+    command: sh -c
+      "echo hello world
+      && python3 help_bot/telega.py"
+    environment:
+      DEBUG: ${DEBUG}
+      POSTGRES_DATABASE: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_HOST: ${DB_HOST}
+      POSTGRES_PORT: ${DB_PORT}
 
   web:
     build:
@@ -41,13 +49,26 @@ services:
       - ./HelpBot:/src
     expose:
       - "8000"
-    env_file:
-      - ./.envs/.django
-    command: ["sh", "-c", "python3 manage.py migrate; gunicorn HelpBot.wsgi -b 0.0.0.0:8000"]
+    command: sh -c
+      "python3 manage.py makemigrations
+      && python3 manage.py migrate
+      && gunicorn HelpBot.wsgi -b 0.0.0.0:8000"
+    environment:
+      DEBUG: ${DEBUG}
+      POSTGRES_DATABASE: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_HOST: ${DB_HOST}
+      POSTGRES_PORT: ${DB_PORT}
 
   db:
+    build:
+      context: compose/postgres/
+      dockerfile: Dockerfile
+      args:
+        psql_pass: ${DB_PASSWORD}
+        psql_db: ${DB_NAME}
+        psql_user: ${DB_USER}
     image: postgres
     restart: always
     container_name: cel_postgres
-    env_file:
-      - ./.envs/.postgres

@@ -8,6 +8,11 @@ Web site - <a href="https://www.genderperspectives.by/" target="_blank">МОО �
 
 <img src="https://github.com/Valentin-Golyonko/HelpBot/blob/master/HelpBot/help_bot/static/help_bot/img/web_chat_bot.png" alt="">
 
+# Deploy:
+- <code>docker-compose build</code>
+- <code>docker-compose up -d</code>
+- <code>docker-compose run web python3 manage.py collectstatic</code>
+- <code>docker-compose run web python3 manage.py loaddata initial_data.json</code>
 
 # Test Telegram ping
 - see 'new 1.txt'
